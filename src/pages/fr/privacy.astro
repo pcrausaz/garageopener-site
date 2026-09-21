@@ -1,0 +1,119 @@
+---
+import Base from "../../layouts/Base.astro";
+import { CLOUD_HOST, SUPPORT_EMAIL, UPDATED } from "../../config";
+import { path } from "../../i18n/ui";
+
+const description =
+  "Ce que Garage Opener conserve et ce qu’il ne voit jamais. Aucun compte, aucune analytique, aucun pistage. Les alertes cloud ne gardent que le type d’événement, l’identifiant de l’appareil et l’horodatage, pendant 7 jours, et vous pouvez tout effacer depuis l’app.";
+---
+
+<Base locale="fr" route="privacy" title="Confidentialité" description={description} updated={UPDATED}>
+  <div class="prose">
+    <h1>Confidentialité</h1>
+    <p class="lede">
+      Il n’y a ni compte, ni inscription, ni analytique. L’essentiel de ce que fait l’app ne quitte jamais
+      votre réseau domestique. Cette page dit exactement ce que conserve la seule brique en ligne, qui est
+      facultative.
+    </p>
+
+    <h2>En résumé</h2>
+    <div class="note">
+      <p>
+        Les <strong>alertes cloud</strong> transmettent les événements d’ouverture et de fermeture de votre
+        porte, depuis votre console UniFi Protect vers un petit service que nous hébergeons sur Cloudflare,
+        afin de vous prévenir si la porte reste ouverte. Nous ne conservons que le type d’événement,
+        l’identifiant du capteur et l’heure, pendant 7 jours, ainsi que le jeton de notification des appareils
+        que vous enregistrez et vos réglages d’alerte. Nous ne recevons jamais d’images, ni votre clé d’API
+        Protect, ni l’adresse de votre console, ni votre position. Il n’y a pas de compte. Vous pouvez tout
+        effacer depuis l’app à tout moment.
+      </p>
+    </div>
+
+    <h2>Ce qui reste sur votre appareil et votre réseau</h2>
+    <p>
+      Votre clé d’API Protect, l’adresse de votre console et le jeton de votre bridge résident dans le
+      trousseau de votre iPhone, ou dans la configuration de votre propre bridge. Ils ne nous sont jamais
+      transmis et nous n’avons aucun moyen de les lire. Quand l’app parle à votre console ou à votre bridge,
+      ce trafic circule directement entre eux sur votre réseau : il ne passe pas par nous.
+    </p>
+    <p>
+      Le journal d’activité du bridge — qui a ouvert la porte et quand — est un fichier sur <em>votre</em>
+      machine. Nous ne le voyons jamais. Vous pouvez l’exporter ou le supprimer.
+    </p>
+
+    <h2>Les alertes cloud en détail</h2>
+    <p>
+      Les alertes cloud sont facultatives et désactivées tant que vous ne les activez pas. Si vous faites
+      tourner le bridge, vous n’en avez pas besoin. À l’activation, l’app crée une installation anonyme sur
+      <code>{CLOUD_HOST}</code> et reçoit en retour une URL de webhook privée, que vous collez dans deux
+      règles Alarm Manager sur votre console.
+    </p>
+
+    <table>
+      <thead><tr><th>Ce que nous conservons</th><th>Pourquoi</th><th>Combien de temps</th></tr></thead>
+      <tbody>
+        <tr><td>Identifiant d’installation, empreinte du secret, jeton de routage</td><td>Router les webhooks de votre console et reconnaître votre app</td><td>Jusqu’à effacement</td></tr>
+        <tr><td>Jetons de notification des appareils enregistrés, et leur environnement</td><td>Envoyer la notification</td><td>Jusqu’à effacement, ou jusqu’à ce qu’Apple signale le jeton invalide</td></tr>
+        <tr><td>Vos réglages d’alerte : seuils, heure du contrôle nocturne, fuseau, langue</td><td>Décider quand prévenir, et dans quelle langue</td><td>Jusqu’à effacement</td></tr>
+        <tr><td><strong>Événements : type, identifiant d’appareil et horodatage uniquement</strong></td><td>Savoir si la porte est ouverte et depuis combien de temps</td><td><strong>7 jours</strong>, puis suppression automatique</td></tr>
+        <tr><td>L’indicateur de maintien ouvert et son échéance</td><td>Rester silencieux quand vous l’avez demandé</td><td>Jusqu’à expiration</td></tr>
+        <tr><td>Le résultat de la dernière notification envoyée</td><td>Permettre à l’app de vous expliquer pourquoi une notification n’est pas arrivée</td><td>Jusqu’à effacement</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Ce que nous ne recevons jamais</h2>
+    <ul>
+      <li><strong>Ni images ni vidéo.</strong> Si votre console joint une vignette, elle est écartée avant même que le corps de la requête ne soit analysé. Elle n’est écrite nulle part.</li>
+      <li><strong>Votre clé d’API Protect.</strong> Le service n’a aucun moyen d’atteindre votre console et ne demande jamais d’identifiant vers elle.</li>
+      <li><strong>L’adresse de votre console</strong>, celle de votre bridge, ni les noms de vos caméras.</li>
+      <li><strong>Votre position.</strong> Le rappel d’arrivée à la maison est une zone géographique évaluée par iOS sur votre téléphone ; elle ne le quitte jamais.</li>
+      <li><strong>Votre identifiant Apple, votre nom ou votre e-mail.</strong> Il n’y a pas de compte pour les contenir.</li>
+      <li><strong>Aucune analytique.</strong> Pas de SDK, pas de rapport de plantage, pas d’identifiant publicitaire.</li>
+    </ul>
+    <p>
+      Cloudflare, en tant qu’hébergeur, conserve des journaux techniques standard contenant des adresses IP
+      pendant une courte durée. C’est une journalisation d’infrastructure que nous ne maîtrisons pas et
+      n’exploitons pas ; voir la documentation de Cloudflare sur la protection des données.
+    </p>
+
+    <h2>Notifications</h2>
+    <p>
+      Les notifications sont acheminées par le service de notifications push d’Apple. Apple assure donc la
+      remise du message à votre appareil, comme pour toute app iOS. La notification contient le texte de
+      l’alerte et votre identifiant d’installation — jamais d’images, jamais les détails de votre console.
+    </p>
+
+    <h2>Tout effacer</h2>
+    <p>
+      Dans l’app : <strong>Réglages → Alertes → Désactiver les alertes cloud → Effacer</strong>. Le stockage de
+      votre installation est détruit intégralement et immédiatement ; votre URL de webhook cesse de
+      fonctionner dans la seconde. Il n’y a aucune sauvegarde à purger et rien n’est conservé ensuite.
+      Supprimez ensuite les deux règles Alarm Manager sur votre console pour qu’elle cesse d’émettre vers une
+      adresse morte.
+    </p>
+    <p>
+      Supprimer l’app sans effacer d’abord laisse une installation que nous ne pouvons ni identifier ni
+      rattacher à vous ; ses événements disparaissent sous 7 jours.
+    </p>
+
+    <h2>Enfants</h2>
+    <p>
+      L’app ne s’adresse pas aux enfants et ne collecte rien qui puisse identifier qui que ce soit, à quelque
+      âge que ce soit.
+    </p>
+
+    <h2>Modifications</h2>
+    <p>
+      Si cette page change d’une manière qui affecte ce qui est conservé, la date ci-dessous change et les
+      notes de version de l’app le mentionnent. Nous ne commencerons pas à collecter quelque chose de nouveau
+      en modifiant discrètement une page web.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Questions sur cette page, ou demande relative à vos données :
+      <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>. Voir aussi
+      <a href={path("fr", "support")}> l’assistance</a> et <a href={path("fr", "terms")}>les conditions</a>.
+    </p>
+  </div>
+</Base>

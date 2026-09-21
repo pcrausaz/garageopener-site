@@ -1,0 +1,6 @@
+# Inert on GitHub Pages (meta-refresh only). Live the moment the origin moves. Nothing SEO-critical depends
+# on these: real pages exist at both / and /fr, each self-canonical with a reciprocal hreflang.
+/en        /       301
+/en/*      /:splat 301
+/fr/       /fr     301
+/privacy/  /privacy 301

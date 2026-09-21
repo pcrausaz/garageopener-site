@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://garageopener.app/sitemap-index.xml

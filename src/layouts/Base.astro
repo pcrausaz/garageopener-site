@@ -1,0 +1,112 @@
+---
+import "../styles/global.css";
+import { absolute, HTML_LANG, NAV, path, t, ui, type Locale, type RouteKey } from "../i18n/ui";
+
+interface Props {
+  locale: Locale;
+  route: RouteKey;
+  title: string;
+  description: string;
+  /** Overrides the <title> pattern when the page title already reads as a full title. */
+  bareTitle?: boolean;
+  updated?: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { locale, route, title, description, bareTitle = false, updated, jsonLd } = Astro.props;
+const tr = t(locale);
+const site = Astro.site?.origin ?? "https://garageopener.app";
+const canonical = absolute(site, locale, route);
+const enHref = absolute(site, "en", route);
+const frHref = absolute(site, "fr", route);
+const other: Locale = locale === "en" ? "fr" : "en";
+const otherHref = other === "en" ? enHref : frHref;
+const fullTitle = bareTitle ? title : `${title} — ${ui[locale]["site.name"]}`;
+const ogImage = new URL("/og.png", site).href;
+---
+
+<!doctype html>
+<html lang={HTML_LANG[locale]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    {/* Reciprocal pairs plus x-default, so neither locale is treated as a duplicate of the other. */}
+    <link rel="alternate" hreflang="en-US" href={enHref} />
+    <link rel="alternate" hreflang="fr-FR" href={frHref} />
+    <link rel="alternate" hreflang="x-default" href={enHref} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={ui[locale]["site.name"]} />
+    <meta property="og:locale" content={locale === "en" ? "en_US" : "fr_FR"} />
+    <meta property="og:locale:alternate" content={locale === "en" ? "fr_FR" : "en_US"} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14130f" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+
+  <body>
+    <a class="skip" href="#main">{tr("nav.skip")}</a>
+
+    <header class="site-head">
+      <div class="wrap bar">
+        <a class="brand" href={path(locale, "home")}>
+          <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M5.9 14.9 16 7.6l10.1 7.3V26.8H5.9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+            <path d="M10 17.6h12v9.2H10z" fill="var(--accent)" />
+            <path d="M10 20.1h12v1.2H10zM10 23.2h12v1.2H10z" fill="var(--bg)" />
+          </svg>
+          {ui[locale]["site.name"]}
+        </a>
+        <nav aria-label={locale === "en" ? "Main" : "Principale"}>
+          {NAV.map((key) => (
+            <a href={path(locale, key)} aria-current={route === key ? "page" : undefined}>
+              {tr(`nav.${key}` as never)}
+            </a>
+          ))}
+          <a class="lang" href={otherHref} hreflang={HTML_LANG[other]} lang={HTML_LANG[other]} rel="alternate">
+            {tr("lang.switch")}
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="wrap">
+        <slot />
+        {updated && <p style="color:var(--muted);font-size:0.875rem;margin-top:3em">{tr("updated")}: <time datetime={updated}>{updated}</time></p>}
+      </div>
+    </main>
+
+    <footer class="site-foot">
+      <div class="wrap">
+        <nav aria-label={locale === "en" ? "Footer" : "Pied de page"}>
+          <a href={path(locale, "home")}>{tr("nav.home")}</a>
+          <a href={path(locale, "faq")}>{tr("nav.faq")}</a>
+          <a href={path(locale, "selfHosting")}>{tr("nav.selfHosting")}</a>
+          <a href={path(locale, "support")}>{tr("nav.support")}</a>
+          <a href={path(locale, "privacy")}>{tr("nav.privacy")}</a>
+          <a href={path(locale, "terms")}>{tr("nav.terms")}</a>
+        </nav>
+        <p>{tr("footer.note")}</p>
+        <p>{tr("footer.trademark")}</p>
+      </div>
+    </footer>
+  </body>
+</html>

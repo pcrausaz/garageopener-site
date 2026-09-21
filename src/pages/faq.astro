@@ -1,0 +1,26 @@
+---
+import Base from "../layouts/Base.astro";
+import Faq from "../components/Faq.astro";
+import { faqJsonLd } from "../i18n/faq";
+import { UPDATED } from "../config";
+import { path } from "../i18n/ui";
+
+const description =
+  "Answers about Garage Opener: required hardware, why the UniFi Protect relay toggles instead of pulsing, running without the bridge, Bonjour discovery, access from away, family invites and cloud alerts.";
+---
+
+<Base locale="en" route="faq" title="FAQ" description={description} jsonLd={faqJsonLd("en")} updated={UPDATED}>
+  <div class="prose">
+    <h1>Questions</h1>
+    <p class="lede">
+      The things people actually run into, in roughly the order they run into them.
+    </p>
+  </div>
+  <div class="prose">
+    <Faq locale="en" />
+    <p style="margin-top:2em">
+      Not here? <a href={path("en", "support")}>Support</a> explains what to send so it can be answered in one
+      exchange.
+    </p>
+  </div>
+</Base>

@@ -1,0 +1,114 @@
+---
+import Base from "../../layouts/Base.astro";
+import { APP_STORE_URL, UPDATED } from "../../config";
+import { path } from "../../i18n/ui";
+
+const description =
+  "Ouvrez et fermez votre porte de garage depuis l’iPhone, l’Apple Watch, les widgets, Siri ou le bouton Action, à partir d’un relais et d’un capteur UniFi Protect. Vérifié par le capteur, sans hub, sans abonnement.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Garage Opener",
+  applicationCategory: "LifestyleApplication",
+  operatingSystem: "iOS, watchOS",
+  description,
+  url: "https://garageopener.app/fr",
+  inLanguage: ["fr-FR", "en-US"],
+  offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+};
+---
+
+<Base locale="fr" route="home" title="Une vraie porte de garage connectée pour UniFi Protect" description={description} jsonLd={jsonLd} updated={UPDATED}>
+  <section class="hero">
+    <span class="badge">Compatible UniFi Protect</span>
+    <h1>Votre porte de garage, enfin sur votre téléphone.</h1>
+    <p class="lede">
+      Vous avez déjà une console UniFi Protect, un relais câblé sur le moteur et un capteur sur la porte.
+      Garage Opener en fait une vraie porte de garage connectée — sur votre iPhone, votre Apple Watch, votre
+      écran verrouillé et dans Siri. Sans hub. Sans abonnement. Sans Home Assistant.
+    </p>
+
+    <div class="actions">
+      {APP_STORE_URL
+        ? <a class="btn" href={APP_STORE_URL}>Télécharger dans l’App Store</a>
+        : <span class="btn ghost" aria-disabled="true">Bientôt sur l’App Store</span>}
+      <a class="btn ghost" href={path("fr", "faq")}>Comment ça marche</a>
+    </div>
+  </section>
+
+  <div class="prose">
+    <h2>C’est le capteur qui décide, pas l’app</h2>
+    <p>
+      La plupart des intégrations de garage déclenchent le moteur puis supposent que tout s’est bien passé.
+      Pas celle-ci. Chaque commande est vérifiée sur le capteur de porte avant que l’app ne vous dise qu’elle
+      a réussi : <em>ouverte</em> signifie donc que la porte est ouverte, pas qu’un relais a cliqué. Et quand
+      la porte ne fait pas ce qu’on lui a demandé, on vous le dit clairement.
+    </p>
+
+    <h2>Trois façons de l’utiliser</h2>
+    <p>Vous choisissez pendant la configuration, et vous pouvez changer d’avis ensuite.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Connexion directe à Protect</h3>
+        <p>
+          L’app parle à votre console sur votre réseau domestique. Rien d’autre à installer, rien d’autre à
+          maintenir. La configuration la plus simple, et la bonne pour la plupart des gens.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Faire tourner le bridge</h3>
+        <p>
+          Un petit service sur un NAS, un Pi ou n’importe quelle machine avec Docker. Il ajoute des règles
+          d’alerte permanentes, un journal d’activité exportable, les invitations familiales et des raccourcis
+          fiables en arrière-plan.
+          <a href={path("fr", "selfHosting")}>Guide d’auto-hébergement →</a>
+        </p>
+      </div>
+      <div class="card">
+        <h3>Alertes cloud</h3>
+        <p>
+          Pas de bridge, mais vous voulez quand même être prévenu si la porte reste ouverte. Votre console
+          envoie les événements à un petit service que nous hébergeons, qui vous renvoie une notification. Il
+          ne détient jamais votre clé Protect.
+          <a href={path("fr", "privacy")}>Ce qui est conservé →</a>
+        </p>
+      </div>
+    </div>
+
+    <h2>Ce que vous obtenez vraiment</h2>
+    <ul>
+      <li><strong>Partout où c’est utile</strong> — iPhone, Apple Watch, widgets, Centre de contrôle, bouton Action, Siri et Raccourcis.</li>
+      <li><strong>Une activité en direct pendant que la porte est ouverte</strong>, avec un bouton Fermer sur l’écran verrouillé.</li>
+      <li><strong>Prévenu quand il le faut</strong> — porte ouverte trop longtemps, encore ouverte le soir, ou voiture dans le garage porte levée. Maintenez-la ouverte quand c’est voulu.</li>
+      <li><strong>À votre arrivée</strong>, une notification avec un bouton Ouvrir. Rien ne s’ouvre jamais tout seul.</li>
+      <li><strong>Arrêt à mi-course</strong>, et l’appui suivant va dans le sens que vous attendez.</li>
+      <li><strong>La famille sans partager de secret</strong> — les autres téléphones rejoignent par invitation à usage unique, visibles et révocables.</li>
+      <li><strong>Français et anglais</strong>, partout.</li>
+    </ul>
+
+    <h2>Essayez avant de câbler quoi que ce soit</h2>
+    <p>
+      Le mode Démo fait tourner toute l’app sur une porte simulée — temps de course, capteur, alertes,
+      l’ensemble. Sans console, sans identifiants, sans matériel. C’est le mode qu’utilise la revue de
+      l’App Store.
+    </p>
+
+    <h2>Ce qu’il vous faut</h2>
+    <table>
+      <thead><tr><th>Élément</th><th>Remarques</th></tr></thead>
+      <tbody>
+        <tr><td>Une console UniFi Protect</td><td>Testé sur Protect 7.2.x. UDM, Cloud Key ou Dream Machine — tout ce qui fait tourner Protect et propose une clé d’API d’intégration.</td></tr>
+        <tr><td>Un relais avec une sortie en <strong>Pulse</strong></td><td>Câblée sur les bornes du bouton-poussoir de votre moteur, exactement comme l’interrupteur mural.</td></tr>
+        <tr><td>Un capteur tout-en-un, monté en <strong>Garage</strong></td><td>C’est ce qui rend le système honnête : c’est lui qui dit si la porte est réellement ouverte.</td></tr>
+        <tr><td>Un iPhone à jour</td><td>Apple Watch facultative.</td></tr>
+      </tbody>
+    </table>
+    <p>
+      L’installation du matériel est détaillée pas à pas dans le
+      <a href={path("fr", "selfHosting")}>guide</a>, et la <a href={path("fr", "faq")}>FAQ</a> répond aux
+      questions qu’on se pose vraiment — à commencer par celle du relais qui semble « basculer ».
+    </p>
+  </div>
+</Base>

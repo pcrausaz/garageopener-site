@@ -1,0 +1,24 @@
+---
+import Base from "../../layouts/Base.astro";
+import Faq from "../../components/Faq.astro";
+import { faqJsonLd } from "../../i18n/faq";
+import { UPDATED } from "../../config";
+import { path } from "../../i18n/ui";
+
+const description =
+  "Réponses sur Garage Opener : matériel nécessaire, pourquoi le relais UniFi Protect bascule au lieu d’impulser, utilisation sans bridge, découverte Bonjour, accès à distance, invitations familiales et alertes cloud.";
+---
+
+<Base locale="fr" route="faq" title="FAQ" description={description} jsonLd={faqJsonLd("fr")} updated={UPDATED}>
+  <div class="prose">
+    <h1>Questions</h1>
+    <p class="lede">Ce sur quoi les gens butent vraiment, à peu près dans l’ordre où ils y butent.</p>
+  </div>
+  <div class="prose">
+    <Faq locale="fr" />
+    <p style="margin-top:2em">
+      Votre question n’y est pas ? <a href={path("fr", "support")}>L’assistance</a> explique quoi envoyer pour
+      obtenir une réponse en un seul échange.
+    </p>
+  </div>
+</Base>

@@ -1,0 +1,67 @@
+---
+import Base from "../layouts/Base.astro";
+import { SOURCE_REPO_URL, SUPPORT_EMAIL, UPDATED } from "../config";
+import { path } from "../i18n/ui";
+
+const description =
+  "How to get help with Garage Opener, what to include in a report so it can actually be answered, and the current known limitations.";
+---
+
+<Base locale="en" route="support" title="Support" description={description} updated={UPDATED}>
+  <div class="prose">
+    <h1>Support</h1>
+    <p class="lede">
+      This is a one-person project. That means you'll get a real answer from someone who knows the code — and
+      that it may take a few days.
+    </p>
+
+    <h2>Before you write</h2>
+    <p>
+      The <a href={path("en", "faq")}>FAQ</a> covers the things people hit most: the door not being found, the
+      relay appearing to toggle, Bonjour not discovering the bridge, and what works away from home. It is
+      worth two minutes.
+    </p>
+
+    <h2>How to reach us</h2>
+    <p>
+      Email <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+      {SOURCE_REPO_URL
+        ? <Fragment>Bugs and setup questions are also welcome as GitHub issues and discussions on <a href={SOURCE_REPO_URL}>the bridge repository</a>, which is usually the faster route.</Fragment>
+        : <Fragment>A public issue tracker will open alongside the bridge source; until then email is the way.</Fragment>}
+    </p>
+
+    <h2>What to include</h2>
+    <p>Nearly every question comes down to these five things. Sending them up front usually turns three exchanges into one:</p>
+    <ol>
+      <li><strong>What the bridge says about itself</strong> — the output of <code>curl -s http://&lt;bridge-host&gt;:8787/healthz</code>. If you don't run a bridge, say so.</li>
+      <li><strong>Your Protect version</strong> — console → Settings → System, or the <code>applicationVersion</code> in the healthz output above.</li>
+      <li><strong>The app version</strong> — Settings, at the bottom.</li>
+      <li><strong>Your relay and sensor model</strong>, and how the relay output is configured (Pulse or not, and its pulse duration).</li>
+      <li><strong>What you expected and what happened</strong>, with rough times, so it can be lined up against the activity log.</li>
+    </ol>
+    <div class="note">
+      <p>
+        Please redact your API key, bridge tokens and webhook secret before sending anything. <code>/healthz</code>
+        does not contain them, but container logs at debug level can.
+      </p>
+    </div>
+
+    <h2>Known limitations</h2>
+    <ul>
+      <li><strong>One door per bridge.</strong> Multiple doors are not supported.</li>
+      <li><strong>UniFi Protect only.</strong> Other relays, other hubs and Home Assistant are out of scope.</li>
+      <li><strong>iOS and watchOS only.</strong> There is no Android app and none is planned.</li>
+      <li><strong>A stopped door reads as open.</strong> A tilt sensor reports the same contact for a door stopped part-way as for one standing fully open, so the app remembers the direction rather than pretending to measure it.</li>
+      <li><strong>Cloud alerts cannot close the door.</strong> The service never holds a credential to your console; “Close now” is carried out by the app, over your own connection.</li>
+      <li><strong>Lost webhooks look like an open door.</strong> If your console never sends the “closed” event, cloud alerts keep believing the door is open — which is why the wording says “reported”.</li>
+      <li><strong>Protect can change.</strong> Ubiquiti may alter the integration API at any time; when that happens, things break until there is an update.</li>
+    </ul>
+
+    <h2>Security reports</h2>
+    <p>
+      If you have found a security problem, email <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a> with
+      “security” in the subject and please don't post it publicly first. You'll get an acknowledgement, and
+      credit if you want it.
+    </p>
+  </div>
+</Base>

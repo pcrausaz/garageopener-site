@@ -1,0 +1,81 @@
+---
+import Base from "../../layouts/Base.astro";
+import { CLOUD_HOST, SUPPORT_EMAIL, UPDATED } from "../../config";
+import { path } from "../../i18n/ui";
+
+const description =
+  "Conditions d’utilisation de Garage Opener : l’app commande une porte physique, le bridge auto-hébergé relève de vous, et le service partagé d’alertes cloud est fourni au mieux.";
+---
+
+<Base locale="fr" route="terms" title="Conditions" description={description} updated={UPDATED}>
+  <div class="prose">
+    <h1>Conditions</h1>
+    <p class="lede">
+      Courtes, parce qu’il n’y a pas grand-chose à dire. Vous avez acheté une app qui pilote du matériel qui
+      vous appartient. Voici ce que cela promet, et ce que cela ne promet pas.
+    </p>
+
+    <h2>Cette app ouvre une porte physique</h2>
+    <p>
+      Cela mérite d’être dit clairement. Une porte de garage est une machine lourde. N’utilisez l’app qu’avec
+      un moteur dont les sécurités fonctionnent — cellule photoélectrique et inversion automatique — installé
+      et entretenu selon les instructions du fabricant et la réglementation locale. Ne manœuvrez jamais la
+      porte si vous ne pouvez pas constater qu’elle est dégagée. Ne considérez ni l’app, ni le capteur, ni les
+      notifications comme un dispositif de sécurité : ils vous rapportent ce que le capteur a signalé, ce qui
+      n’est pas une garantie sur ce qui se trouve sous la porte.
+    </p>
+    <p>
+      L’app est fournie « en l’état », sans garantie d’aucune sorte. Dans toute la mesure permise par la loi,
+      nous déclinons toute responsabilité pour les dommages, blessures ou pertes résultant du fonctionnement
+      de la porte, de son absence de fonctionnement, ou d’un état rapporté qui s’avérerait inexact.
+    </p>
+
+    <h2>Votre matériel et votre réseau vous appartiennent</h2>
+    <p>
+      Vous êtes responsable de votre console UniFi Protect, du câblage de votre relais, de votre capteur, de
+      votre réseau et des identifiants que vous créez. Si vous exposez votre bridge à Internet, la manière de
+      le faire est votre décision et votre responsabilité —
+      <a href={path("fr", "selfHosting")}>nos recommandations sont ici</a>, et ce sont des recommandations,
+      pas une garantie.
+    </p>
+
+    <h2>Le bridge auto-hébergé</h2>
+    <p>
+      Le bridge est un logiciel que vous faites tourner sur votre propre machine. Vous en choisissez la
+      version, vous le tenez à jour, vous en détenez les jetons. Il est proposé « en l’état », comme l’app.
+      L’assistance sur les installations auto-hébergées est fournie au mieux — voir
+      <a href={path("fr", "support")}>l’assistance</a> pour ce que cela signifie concrètement.
+    </p>
+
+    <h2>Le service d’alertes cloud</h2>
+    <p>
+      <code>{CLOUD_HOST}</code> est un petit service gratuit, financé sur un budget de loisir. Il est fourni
+      <strong>au mieux</strong> : aucun engagement de disponibilité, aucune garantie de remise, et il peut
+      être limité, modifié ou arrêté. Une notification peut arriver en retard ou ne pas arriver pour des
+      raisons qui lui échappent totalement : une console qui n’envoie pas son webhook, le service push
+      d’Apple, un téléphone sans réseau.
+    </p>
+    <p>
+      Ne l’utilisez pas comme seul rempart entre votre garage et une porte laissée ouverte. C’est un rappel
+      utile, pas un système de surveillance.
+    </p>
+    <p>
+      Tout abus du service — l’inonder de requêtes, tenter d’atteindre l’installation d’autrui, ou l’utiliser
+      pour autre chose qu’une porte de garage qui vous appartient — entraînera le blocage de votre
+      installation. <a href={path("fr", "privacy")}>Ce qu’il conserve est décrit ici</a>.
+    </p>
+
+    <h2>Aucun lien avec Ubiquiti</h2>
+    <p>
+      « UniFi » et « UniFi Protect » sont des marques d’Ubiquiti Inc. Cette app et ce site sont indépendants,
+      sans affiliation, approbation ni parrainage d’Ubiquiti. La compatibilité est énoncée comme un fait, pas
+      comme un partenariat. Ubiquiti peut modifier Protect à tout moment d’une manière qui casse cette app.
+    </p>
+
+    <h2>Modifications</h2>
+    <p>Ces conditions peuvent évoluer ; la date ci-dessous indique quand elles ont changé pour la dernière fois.</p>
+
+    <h2>Contact</h2>
+    <p><a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p>
+  </div>
+</Base>

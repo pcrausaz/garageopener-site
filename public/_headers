@@ -1,0 +1,12 @@
+# Inert on GitHub Pages, which cannot set headers at all (ADR-0018). Committed so that moving the origin to
+# a Cloudflare Worker or Cloudflare Pages is a DNS change and nothing else.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+
+# Apple requires application/json here, which is the single concrete thing GitHub Pages cannot do and the
+# reason a universal-link form of garageopener://join is blocked until the origin moves.
+/.well-known/apple-app-site-association
+  Content-Type: application/json

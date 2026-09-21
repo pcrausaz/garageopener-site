@@ -1,0 +1,189 @@
+---
+import Base from "../layouts/Base.astro";
+import { BRIDGE_IMAGE, SOURCE_REPO_URL, SUPPORT_EMAIL, UPDATED } from "../config";
+import { path } from "../i18n/ui";
+
+const description =
+  "Run your own Garage Opener bridge: Protect API key, relay and sensor setup, Docker, first-run pairing, Alarm Manager webhooks and reaching it from outside the house.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "Run your own Garage Opener bridge",
+  inLanguage: "en-US",
+  description,
+  step: [
+    { "@type": "HowToStep", name: "Prepare the hardware in UniFi Protect", text: "Set one relay output to Pulse and mount the all-in-one sensor on the door with mount type Garage." },
+    { "@type": "HowToStep", name: "Create a Protect API key", text: "Console settings, Control Plane, Integrations, Create API Key." },
+    { "@type": "HowToStep", name: "Run the bridge in Docker", text: "Copy the example environment file, generate tokens and start the container." },
+    { "@type": "HowToStep", name: "Pair your phone", text: "Paste the single-use invite link the bridge prints at startup into the app." },
+    { "@type": "HowToStep", name: "Point Alarm Manager at the bridge", text: "Add sensor opened and closed rules posting to the webhook URL." },
+  ],
+};
+---
+
+<Base locale="en" route="selfHosting" title="Self-hosting the bridge" description={description} jsonLd={jsonLd} updated={UPDATED}>
+  <div class="prose">
+    <h1>Self-hosting the bridge</h1>
+    <p class="lede">
+      The bridge is one small service in a container. It talks to your Protect console, keeps the door state
+      machine, serves the app and runs the alert rules. It runs on a NAS, a Raspberry Pi or any box with
+      Docker — amd64 and arm64.
+    </p>
+
+    <div class="note">
+      <p>
+        <strong>You don't have to run it.</strong> The app connects straight to your Protect console and works
+        on your home network with nothing else installed. Run the bridge if you want always-on alert rules, an
+        exportable activity log, family invites, or background-reliable Shortcuts.
+      </p>
+    </div>
+
+    <h2>Before you start</h2>
+    <ol class="steps">
+      <li>
+        <strong>Set one relay output to Pulse.</strong> In Protect, open the relay and configure the output
+        that is wired to your opener's push-button terminals as <em>Pulse</em>, type garage door. Note which
+        output it is — the numbering in the app starts at 1, but the API's own ids start at 0.
+      </li>
+      <li>
+        <strong>Mount the sensor and set its mount type to Garage.</strong> This is what the bridge reads to
+        decide whether the door is open. If the mount type is anything else, auto-discovery will not pair it.
+      </li>
+      <li>
+        <strong>Create a Protect API key.</strong> Console → Settings → Control Plane → Integrations → Create
+        API Key. Copy it once; it is not shown again.
+        <div class="note">
+          <p>
+            This key can read every camera on your console. Treat it like a password to your house, because
+            functionally that is what it is.
+          </p>
+        </div>
+      </li>
+    </ol>
+
+    <h2>Run it</h2>
+    <p>Create a directory, drop in a <code>docker-compose.yml</code> and a <code>.env</code>, and start it:</p>
+
+    <pre><code>{`# .env — the five things that matter
+GARAGE_BRIDGE_TAG=0.4.1                 # pin a version; latest is a development tag
+PROTECT_URL=https://192.168.1.1         # your console, with https://
+PROTECT_API_KEY=…                       # the key you just created
+BRIDGE_TOKENS=$(openssl rand -hex 24)   # admin token — generate it, don't invent it
+WEBHOOK_SECRET=$(openssl rand -hex 24)  # path secret for the Alarm Manager webhook
+TZ=Europe/Zurich`}</code></pre>
+
+    <pre><code>{`docker compose up -d
+curl -s localhost:8787/healthz`}</code></pre>
+
+    <p>
+      You should get <code>{`{"ok":true,"ready":true,…}`}</code> with a <code>version</code> matching the tag
+      you pinned. If <code>ready</code> is <code>false</code>, the bridge is up but hasn't reached the console
+      yet — the message says why.
+    </p>
+
+    <h3>A note on tokens</h3>
+    <p>
+      <code>BRIDGE_TOKENS</code> is the credential that opens your garage door. The bridge refuses to start on
+      anything shorter than 24 characters, or on anything guessable. Generate it. Your family's phones do
+      <em>not</em> need an entry here — they join by invite, below.
+    </p>
+
+    <h3>Host networking, or not</h3>
+    <p>
+      The app finds the bridge over Bonjour, and multicast does not cross Docker's bridge network, so the
+      reference compose uses <code>network_mode: host</code>. If that isn't available to you — Docker Desktop
+      on macOS or Windows — publish <code>8787:8787</code> instead, set <code>BONJOUR=false</code>, and type
+      the address into the app. Everything except discovery is identical.
+    </p>
+
+    <h2>Pair your phone</h2>
+    <p>
+      Don't copy your admin token into the app. While no phone has joined, the bridge prints a single-use
+      invite at startup:
+    </p>
+    <pre><code>docker logs garage-bridge | tail -20</code></pre>
+    <p>
+      Paste the <code>garageopener://join…</code> link — or just the code — into the app's
+      <strong>Family → Join</strong> sheet. It's good for fifteen minutes; restart the container for a fresh
+      one. Once a phone has joined, the banner stops and any further phones are invited from the app itself.
+    </p>
+
+    <h2>Let the console tell the bridge about the door</h2>
+    <p>
+      The bridge polls, but webhooks make it react immediately. In Protect, create two Alarm Manager rules —
+      sensor <em>opened</em> and sensor <em>closed</em> — both posting to:
+    </p>
+    <pre><code>http://&lt;bridge-host&gt;:8787/v1/webhooks/alarm-manager/&lt;WEBHOOK_SECRET&gt;</code></pre>
+    <p>
+      The console has to be able to reach that address; it is on the same network as the bridge, so this needs
+      nothing from the internet. A wrong secret returns a bare 404, so if the rules appear to do nothing,
+      check the secret first.
+    </p>
+
+    <h2>Certificates</h2>
+    <p>
+      Your console presents a self-signed certificate, so the default is <code>PROTECT_TLS=insecure</code> —
+      fine on a LAN. Pin it properly once you're running:
+    </p>
+    <pre><code>{`openssl s_client -connect 192.168.1.1:443 -servername 192.168.1.1 </dev/null 2>/dev/null \\
+  | openssl x509 -noout -fingerprint -sha256`}</code></pre>
+    <p>
+      Put the result in <code>PROTECT_TLS=fingerprint:&lt;sha256&gt;</code>. If your console has a real
+      certificate, use <code>system</code>. The bridge <strong>refuses to start</strong> with
+      <code>insecure</code> if <code>PROTECT_URL</code> is not a LAN address, because that would expose your
+      API key to anyone on the path.
+    </p>
+
+    <h2>Reaching it from outside the house</h2>
+    <p>
+      Set <code>PUBLIC_URL</code> to whatever address the phone will use — it is what invite links carry. Then
+      pick one:
+    </p>
+    <table>
+      <thead><tr><th>Approach</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><strong>VPN back home</strong> (WireGuard on the UDM, or Tailscale)</td><td>Recommended. Nothing is exposed; the phone simply joins your network.</td></tr>
+        <tr><td><strong>Cloudflare Tunnel</strong></td><td>Real hostname, real certificate, no inbound port. Set <code>TRUST_PROXY=true</code>.</td></tr>
+        <tr><td><strong>Your own reverse proxy</strong></td><td>Caddy, nginx or Traefik terminating TLS. Set <code>TRUST_PROXY=true</code>, and turn off response buffering on <code>/v1/events</code> or the door state will lag.</td></tr>
+        <tr><td><strong>Port forwarding</strong></td><td>No. This puts a device that opens your garage on the public internet behind one token, usually without TLS.</td></tr>
+      </tbody>
+    </table>
+    <div class="note">
+      <p>
+        <code>TRUST_PROXY</code> matters more than it looks. Without it, every request appears to come from
+        the proxy, so the per-address limit on invite claims becomes five a minute for your entire household.
+        With it set when nothing in front strips <code>X-Forwarded-For</code>, a caller can forge its own
+        address — so set it only when a proxy you control is genuinely there.
+      </p>
+    </div>
+
+    <h2>Keeping it up to date</h2>
+    <p>
+      Pin a version and bump it deliberately. <code>latest</code> is the development tag and can move under
+      you. The changelog says what changed, and calls out anything that needs a configuration change before
+      you upgrade.
+    </p>
+    <pre><code>{`docker compose pull && docker compose up -d
+curl -s localhost:8787/healthz   # confirm the version is what you intended`}</code></pre>
+
+    <h2>Source and licence</h2>
+    <p>
+      {SOURCE_REPO_URL
+        ? <Fragment>The bridge and the cloud-alerts Worker are open source under Apache-2.0: <a href={SOURCE_REPO_URL}>{SOURCE_REPO_URL}</a>. The iOS app is not.</Fragment>
+        : <Fragment>The bridge is currently distributed as a container image (<code>{BRIDGE_IMAGE}</code>). The source for the bridge and the cloud-alerts Worker is being prepared for publication under Apache-2.0; this page will link to it when it is genuinely available, and not before.</Fragment>}
+    </p>
+
+    <h2>Out of scope</h2>
+    <p>
+      One door per bridge. UniFi Protect only — no other relays, no other hubs. No Home Assistant integration.
+      No Android. A non-Docker install (Node 22 directly) will run but is not supported: Docker is the tested
+      path and the only one the instructions cover.
+    </p>
+
+    <p style="margin-top:2.5em">
+      Stuck? <a href={path("en", "faq")}>The FAQ</a> covers the common ones, and
+      <a href={`mailto:${SUPPORT_EMAIL}`}> {SUPPORT_EMAIL}</a> reaches a person.
+    </p>
+  </div>
+</Base>

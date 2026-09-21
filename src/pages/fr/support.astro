@@ -1,0 +1,71 @@
+---
+import Base from "../../layouts/Base.astro";
+import { SOURCE_REPO_URL, SUPPORT_EMAIL, UPDATED } from "../../config";
+import { path } from "../../i18n/ui";
+
+const description =
+  "Comment obtenir de l’aide sur Garage Opener, quoi joindre à votre message pour qu’il puisse être traité, et les limites connues du produit.";
+---
+
+<Base locale="fr" route="support" title="Assistance" description={description} updated={UPDATED}>
+  <div class="prose">
+    <h1>Assistance</h1>
+    <p class="lede">
+      C’est un projet d’une seule personne. Cela veut dire que vous aurez une vraie réponse de quelqu’un qui
+      connaît le code — et que cela peut prendre quelques jours.
+    </p>
+
+    <h2>Avant d’écrire</h2>
+    <p>
+      La <a href={path("fr", "faq")}>FAQ</a> couvre ce sur quoi on bute le plus : la porte qui n’est pas
+      trouvée, le relais qui semble basculer, Bonjour qui ne découvre pas le bridge, et ce qui fonctionne à
+      distance. Deux minutes bien employées.
+    </p>
+
+    <h2>Comment nous joindre</h2>
+    <p>
+      Par e-mail : <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+      {SOURCE_REPO_URL
+        ? <Fragment>Les bugs et les questions d’installation sont aussi les bienvenus en issues et discussions GitHub sur <a href={SOURCE_REPO_URL}>le dépôt du bridge</a>, généralement la voie la plus rapide.</Fragment>
+        : <Fragment>Un suivi public ouvrira en même temps que les sources du bridge ; d’ici là, l’e-mail est la voie à suivre.</Fragment>}
+    </p>
+
+    <h2>Quoi joindre</h2>
+    <p>
+      Presque toutes les questions se ramènent à ces cinq éléments. Les envoyer d’emblée transforme
+      généralement trois échanges en un seul :
+    </p>
+    <ol>
+      <li><strong>Ce que le bridge dit de lui-même</strong> — la sortie de <code>curl -s http://&lt;hôte-du-bridge&gt;:8787/healthz</code>. Si vous n’utilisez pas de bridge, précisez-le.</li>
+      <li><strong>Votre version de Protect</strong> — console → Réglages → Système, ou le champ <code>applicationVersion</code> dans la sortie ci-dessus.</li>
+      <li><strong>La version de l’app</strong> — dans les Réglages, tout en bas.</li>
+      <li><strong>Les modèles de votre relais et de votre capteur</strong>, et la configuration de la sortie du relais (Pulse ou non, et sa durée d’impulsion).</li>
+      <li><strong>Ce que vous attendiez et ce qui s’est passé</strong>, avec les heures approximatives, pour pouvoir recouper avec le journal d’activité.</li>
+    </ol>
+    <div class="note">
+      <p>
+        Merci de masquer votre clé d’API, vos jetons de bridge et votre secret de webhook avant d’envoyer quoi
+        que ce soit. <code>/healthz</code> ne les contient pas, mais les journaux du conteneur en mode debug
+        peuvent les contenir.
+      </p>
+    </div>
+
+    <h2>Limites connues</h2>
+    <ul>
+      <li><strong>Une porte par bridge.</strong> Plusieurs portes ne sont pas prises en charge.</li>
+      <li><strong>UniFi Protect uniquement.</strong> Les autres relais, les autres hubs et Home Assistant sont hors périmètre.</li>
+      <li><strong>iOS et watchOS uniquement.</strong> Il n’y a pas d’app Android et il n’en est pas prévu.</li>
+      <li><strong>Une porte arrêtée est lue comme ouverte.</strong> Un capteur d’inclinaison rapporte le même contact pour une porte arrêtée à mi-course et pour une porte grande ouverte ; l’app mémorise donc le sens plutôt que de prétendre le mesurer.</li>
+      <li><strong>Les alertes cloud ne peuvent pas fermer la porte.</strong> Le service ne détient aucun identifiant vers votre console ; « Fermer maintenant » est exécuté par l’app, via votre propre connexion.</li>
+      <li><strong>Un webhook perdu ressemble à une porte ouverte.</strong> Si votre console n’envoie jamais l’événement « fermée », les alertes cloud continuent de la croire ouverte — d’où la formulation « a signalé ».</li>
+      <li><strong>Protect peut changer.</strong> Ubiquiti peut modifier l’API d’intégration à tout moment ; le cas échéant, les choses cassent jusqu’à une mise à jour.</li>
+    </ul>
+
+    <h2>Signaler un problème de sécurité</h2>
+    <p>
+      Si vous avez trouvé une faille, écrivez à <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a> avec
+      « security » en objet, et merci de ne pas la publier d’abord. Vous recevrez un accusé de réception, et
+      le crédit si vous le souhaitez.
+    </p>
+  </div>
+</Base>

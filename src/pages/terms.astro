@@ -1,0 +1,77 @@
+---
+import Base from "../layouts/Base.astro";
+import { CLOUD_HOST, SUPPORT_EMAIL, UPDATED } from "../config";
+import { path } from "../i18n/ui";
+
+const description =
+  "Terms of use for Garage Opener: the app controls a physical door, the self-hosted bridge is yours to run, and the shared cloud-alerts service is best effort.";
+---
+
+<Base locale="en" route="terms" title="Terms" description={description} updated={UPDATED}>
+  <div class="prose">
+    <h1>Terms</h1>
+    <p class="lede">
+      Short, because there isn't much to say. You bought an app that talks to hardware you own. Here is what
+      that does and does not promise.
+    </p>
+
+    <h2>This app opens a physical door</h2>
+    <p>
+      That is worth saying plainly. A garage door is heavy machinery. Use the app only with an opener that has
+      working safety features — a functioning photo-eye and auto-reverse — installed and maintained to its
+      manufacturer's instructions and your local rules. Never operate the door when you cannot see that it is
+      clear. Do not rely on the app, the sensor or the notifications as a safety device: they tell you what
+      the sensor reported, which is not the same as a guarantee about what is under the door.
+    </p>
+    <p>
+      The app is provided as is, without warranty of any kind. To the fullest extent the law allows, we are
+      not liable for damage, injury or loss arising from the door operating, failing to operate, or reporting
+      a state that turns out to be wrong.
+    </p>
+
+    <h2>Your hardware and your network are yours</h2>
+    <p>
+      You are responsible for your UniFi Protect console, your relay wiring, your sensor, your network and the
+      credentials you create. If you expose your bridge to the internet, how you do that is your decision and
+      your responsibility — <a href={path("en", "selfHosting")}>our guidance is here</a>, and it is guidance,
+      not a guarantee.
+    </p>
+
+    <h2>The self-hosted bridge</h2>
+    <p>
+      The bridge is software you run on your own machine. You choose the version, you keep it updated, you
+      hold its tokens. It is offered on the same as-is basis as the app. Support for self-hosted setups is
+      best effort — see <a href={path("en", "support")}>Support</a> for what that means in practice.
+    </p>
+
+    <h2>The cloud-alerts service</h2>
+    <p>
+      <code>{CLOUD_HOST}</code> is a small free service run on a hobby budget. It is <strong>best
+      effort</strong>: no uptime commitment, no delivery guarantee, and it may be rate-limited, changed or
+      discontinued. Notifications can be late or lost for reasons entirely outside it — your console not
+      sending a webhook, Apple's push service, a phone with no signal.
+    </p>
+    <p>
+      Do not use it as the only thing standing between your garage and being left open. It is a helpful
+      reminder, not a monitoring system.
+    </p>
+    <p>
+      Abuse of the service — flooding it, trying to reach other people's installs, or using it for anything
+      other than a garage door you own — will get your install blocked. <a href={path("en", "privacy")}>What
+      it stores is here</a>.
+    </p>
+
+    <h2>Not affiliated with Ubiquiti</h2>
+    <p>
+      “UniFi” and “UniFi Protect” are trademarks of Ubiquiti Inc. This app and this site are independent, and
+      are not affiliated with, endorsed by or sponsored by Ubiquiti. Compatibility is stated as fact, not as a
+      partnership. Ubiquiti may change Protect at any time in ways that break this app.
+    </p>
+
+    <h2>Changes</h2>
+    <p>These terms may change; the date below tells you when they last did.</p>
+
+    <h2>Contact</h2>
+    <p><a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p>
+  </div>
+</Base>
