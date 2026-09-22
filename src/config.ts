@@ -12,9 +12,9 @@ export const CLOUD_HOST = "garage-alerts.liqpil.com";
 export const BRIDGE_IMAGE = "ghcr.io/pcrausaz/garage-opener-bridge";
 
 /**
- * ADR-0017: the bridge and Worker become public under Apache-2.0 once the split checklist has been run.
- * Until this is a URL, no page may claim the source is available.
+ * ADR-0017: the bridge is public under Apache-2.0. The iOS app and the cloud-alerts Worker are not, and the
+ * pages say so explicitly rather than staying quiet about it.
  */
-export const SOURCE_REPO_URL: string | null = null;
+export const SOURCE_REPO_URL: string | null = "https://github.com/pcrausaz/garage-opener-bridge";
 
 export const UPDATED = "2026-09-21";

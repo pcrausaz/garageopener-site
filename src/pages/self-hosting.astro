@@ -199,7 +199,7 @@ curl -s localhost:8787/healthz   # check the version that came down`}</code></pr
     <h2 id="source">Source and licence</h2>
     <p>
       {SOURCE_REPO_URL
-        ? <Fragment>The bridge and its OpenAPI contract are open source under Apache-2.0: <a href={SOURCE_REPO_URL}>{SOURCE_REPO_URL}</a>. You are running it on your own hardware with a credential to your console, so you should be able to read it.</Fragment>
+        ? <Fragment>The bridge and its OpenAPI contract are <a href={SOURCE_REPO_URL}>open source under Apache-2.0</a>. You are running it on your own hardware with a credential to your console, so you should be able to read it rather than take it on trust, including the <a href={`${SOURCE_REPO_URL}/blob/main/docs/security-review.md`}>security review</a> carried out before it was published.</Fragment>
         : <Fragment>The bridge is currently distributed as a container image (<code>{BRIDGE_IMAGE}</code>). Its source, and the OpenAPI contract with it, is being prepared for publication under Apache-2.0. This page will link to it when it is genuinely available, and not before.</Fragment>}
     </p>
     <p>

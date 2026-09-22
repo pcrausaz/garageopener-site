@@ -211,7 +211,7 @@ curl -s localhost:8787/healthz   # vérifiez la version récupérée`}</code></p
     <h2 id="source">Sources et licence</h2>
     <p>
       {SOURCE_REPO_URL
-        ? <Fragment>Le bridge et son contrat OpenAPI sont open source sous licence Apache-2.0 : <a href={SOURCE_REPO_URL}>{SOURCE_REPO_URL}</a>. Vous le faites tourner sur votre propre matériel avec un identifiant vers votre console : vous devez pouvoir le lire.</Fragment>
+        ? <Fragment>Le bridge et son contrat OpenAPI sont <a href={SOURCE_REPO_URL}>open source sous licence Apache-2.0</a>. Vous le faites tourner sur votre propre matériel avec un identifiant vers votre console : vous devez pouvoir le lire plutôt que de le croire sur parole, y compris l’<a href={`${SOURCE_REPO_URL}/blob/main/docs/security-review.md`}>audit de sécurité</a> mené avant sa publication.</Fragment>
         : <Fragment>Le bridge est actuellement distribué sous forme d’image de conteneur (<code>{BRIDGE_IMAGE}</code>). Ses sources, avec le contrat OpenAPI, sont en cours de préparation pour une publication sous licence Apache-2.0. Cette page y renverra quand elles seront réellement disponibles, et pas avant.</Fragment>}
     </p>
     <p>

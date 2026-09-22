@@ -3,6 +3,7 @@ import "../styles/global.css";
 import { absolute, HTML_LANG, NAV, path, t, ui, type Locale, type RouteKey } from "../i18n/ui";
 import Toc from "../components/Toc.astro";
 import AppMark from "../components/AppMark.astro";
+import { SOURCE_REPO_URL } from "../config";
 
 interface Props {
   locale: Locale;
@@ -108,6 +109,7 @@ const ogImage = new URL("/og.png", site).href;
           <a href={path(locale, "support")}>{tr("nav.support")}</a>
           <a href={path(locale, "privacy")}>{tr("nav.privacy")}</a>
           <a href={path(locale, "terms")}>{tr("nav.terms")}</a>
+          {SOURCE_REPO_URL && <a href={SOURCE_REPO_URL} rel="noopener">{tr("nav.source")}</a>}
         </nav>
         <p>{tr("footer.note")}</p>
         <p>{tr("footer.trademark")}</p>
