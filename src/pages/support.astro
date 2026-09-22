@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-import { SOURCE_REPO_URL, SUPPORT_EMAIL, UPDATED } from "../config";
+import { SOURCE_REPO_URL, STATUS_PAGE_URL, SUPPORT_EMAIL, UPDATED } from "../config";
 import { path } from "../i18n/ui";
 
 const description =
@@ -13,6 +13,18 @@ const description =
     <p class="lede">
       This is a one-person project. That means you'll get a real answer from someone who knows the code,
       and that it may take a few days.
+    </p>
+
+    <h2>Is it you or is it us?</h2>
+    <p>
+      The shared services have a <a href={STATUS_PAGE_URL}>public status page</a>: the cloud-alerts service,
+      this website, and the demo bridge. It needs no login. Worth thirty seconds before anything else, because
+      it separates "something is down" from "something is wrong with my setup", and those have very different
+      next steps.
+    </p>
+    <p>
+      Your own bridge is not on it, and cannot be: it runs on your hardware, on your network. Check that one
+      with <code>curl -s http://&lt;bridge-host&gt;:8787/healthz</code>.
     </p>
 
     <h2>Before you write</h2>

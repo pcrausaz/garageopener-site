@@ -17,4 +17,7 @@ export const BRIDGE_IMAGE = "ghcr.io/pcrausaz/garage-opener-bridge";
  */
 export const SOURCE_REPO_URL: string | null = "https://github.com/pcrausaz/garage-opener-bridge";
 
-export const UPDATED = "2026-09-21";
+/** Public uptime page for the shared services: the cloud-alerts Worker, this site, and the demo bridge. */
+export const STATUS_PAGE_URL = "https://monitor.liqpil.com/status/garageopener";
+
+export const UPDATED = "2026-09-22";

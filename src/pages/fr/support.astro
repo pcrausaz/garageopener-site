@@ -1,6 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { SOURCE_REPO_URL, SUPPORT_EMAIL, UPDATED } from "../../config";
+import { SOURCE_REPO_URL, STATUS_PAGE_URL, SUPPORT_EMAIL, UPDATED } from "../../config";
 import { path } from "../../i18n/ui";
 
 const description =
@@ -13,6 +13,18 @@ const description =
     <p class="lede">
       C’est un projet d’une seule personne. Cela veut dire que vous aurez une vraie réponse de quelqu’un qui
       connaît le code, et que cela peut prendre quelques jours.
+    </p>
+
+    <h2>Est-ce vous, ou est-ce nous ?</h2>
+    <p>
+      Les services partagés disposent d’une <a href={STATUS_PAGE_URL}>page d’état publique</a> : le service
+      d’alertes cloud, ce site et le bridge de démonstration. Aucune connexion requise. Trente secondes bien
+      employées avant toute autre chose : elles distinguent « un service est en panne » de « ma configuration
+      a un problème », et les suites à donner n’ont rien à voir.
+    </p>
+    <p>
+      Votre propre bridge n’y figure pas, et ne peut pas y figurer : il tourne sur votre matériel, sur votre
+      réseau. Vérifiez celui-là avec <code>curl -s http://&lt;hôte-du-bridge&gt;:8787/healthz</code>.
     </p>
 
     <h2>Avant d’écrire</h2>
