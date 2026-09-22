@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import AppMark from "../../components/AppMark.astro";
+import ConnectDiagram from "../../components/ConnectDiagram.astro";
 import { APP_STORE_URL, CLOUD_HOST, UPDATED } from "../../config";
 import { path } from "../../i18n/ui";
 
@@ -51,6 +52,8 @@ const jsonLd = {
     <h2>Deux façons de se connecter</h2>
     <p>Vous en choisissez une pendant la configuration, et vous pouvez changer d’avis ensuite.</p>
 
+    <ConnectDiagram locale="fr" />
+
     <div class="grid two">
       <div class="card">
         <h3>Directement à votre console</h3>
@@ -68,7 +71,7 @@ const jsonLd = {
           ou non. Il ajoute aussi un journal d’activité exportable et des raccourcis fiables en arrière-plan.
         </p>
         <p class="card-foot">
-          Les alertes tournent sur le bridge : aucun service cloud n’intervient.
+          Les alertes tournent sur le bridge : aucun service Garage Opener n’intervient.
           <a href={path("fr", "selfHosting")}>Guide d’auto-hébergement</a>
         </p>
       </div>
@@ -82,8 +85,10 @@ const jsonLd = {
       <strong>Là où ces règles s’exécutent est la seule vraie différence entre les deux configurations.</strong>
     </p>
     <p>
-      <strong>Avec un bridge</strong>, elles s’exécutent sur le bridge, sur votre propre matériel. Rien ne
-      quitte votre réseau et il n’y a rien à activer.
+      <strong>Avec un bridge</strong>, elles s’exécutent sur le bridge, sur votre propre matériel, en
+      permanence. L’app les affiche quand elle est ouverte ou qu’elle se rafraîchit en arrière-plan. Pour une
+      notification qui atteint un téléphone en veille ou loin de chez vous, faites publier le bridge sur
+      <a href={`${path("fr", "selfHosting")}#alerts`}>ntfy</a>, le vôtre ou ntfy.sh.
     </p>
     <p>
       <strong>Sans bridge</strong>, l’app ne peut surveiller la porte que pendant qu’elle tourne, ce qui ne
@@ -160,8 +165,8 @@ const jsonLd = {
       </tbody>
     </table>
     <p>
-      L’installation du matériel est détaillée pas à pas dans le
-      <a href={path("fr", "selfHosting")}>guide</a>, et la <a href={path("fr", "faq")}>FAQ</a> répond aux
+      La configuration du relais et du capteur dans Protect est détaillée dans le
+      <a href={path("fr", "selfHosting")}>guide</a>. Le relais se câble comme un second bouton mural, et la <a href={path("fr", "faq")}>FAQ</a> répond aux
       questions qu’on se pose vraiment, à commencer par celle du relais qui semble « basculer ».
     </p>
   </div>

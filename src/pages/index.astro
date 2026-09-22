@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import AppMark from "../components/AppMark.astro";
+import ConnectDiagram from "../components/ConnectDiagram.astro";
 import { APP_STORE_URL, CLOUD_HOST, UPDATED } from "../config";
 import { path } from "../i18n/ui";
 
@@ -50,6 +51,8 @@ const jsonLd = {
     <h2>Two ways to connect</h2>
     <p>You pick one during setup, and you can change your mind later.</p>
 
+    <ConnectDiagram locale="en" />
+
     <div class="grid two">
       <div class="card">
         <h3>Straight to your console</h3>
@@ -67,7 +70,7 @@ const jsonLd = {
           export and Shortcuts that work reliably in the background.
         </p>
         <p class="card-foot">
-          Alerts run on the bridge, so no cloud service is involved.
+          Alerts run on the bridge, so no Garage Opener service is involved.
           <a href={path("en", "selfHosting")}>Self-hosting guide</a>
         </p>
       </div>
@@ -80,8 +83,10 @@ const jsonLd = {
       purpose. <strong>Where those rules run is the one real difference between the two setups.</strong>
     </p>
     <p>
-      <strong>With a bridge</strong>, they run on the bridge, on your own hardware. Nothing leaves your
-      network and there is nothing to enable.
+      <strong>With a bridge</strong>, they run on the bridge, on your own hardware, around the clock. The app
+      shows them whenever it is running or refreshing in the background. For a notification that reaches a
+      phone that is asleep or away from home, point the bridge at <a href={`${path("en", "selfHosting")}#alerts`}>ntfy</a>,
+      your own or ntfy.sh.
     </p>
     <p>
       <strong>Without one</strong>, the app can only watch the door while it is running, which is no good for
@@ -155,8 +160,8 @@ const jsonLd = {
       </tbody>
     </table>
     <p>
-      Setting the hardware up is covered step by step in the
-      <a href={path("en", "selfHosting")}>guide</a>, and the <a href={path("en", "faq")}>FAQ</a> answers the
+      Configuring the relay and sensor in Protect is covered in the
+      <a href={path("en", "selfHosting")}>guide</a>. The relay is wired like a second wall button, and the <a href={path("en", "faq")}>FAQ</a> answers the
       questions people actually hit, starting with why the relay seems to "toggle".
     </p>
   </div>

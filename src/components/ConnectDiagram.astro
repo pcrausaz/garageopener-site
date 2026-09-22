@@ -1,0 +1,122 @@
+---
+// The two ways to connect, drawn once for both locales. Inline SVG: the site loads nothing from anywhere else.
+interface Props { locale: "en" | "fr" }
+const { locale } = Astro.props;
+const t = {
+  en: {
+    title: "How the pieces connect",
+    desc: "Your home network holds the relay, the door sensor, the Protect console and, optionally, your bridge. With a bridge, the phone talks to the bridge on port 8787, the bridge talks to the console over HTTPS on port 443, and the console posts webhooks to the bridge on port 8787. Without one, the phone talks to the console directly and the console posts webhooks to the optional cloud alerts service, which pushes notifications to the phone.",
+    home: "Your home network",
+    relay: "Relay",
+    sensor: "Door sensor",
+    console: "Protect console",
+    bridge: "Your bridge",
+    phone: "iPhone · Watch",
+    cloud: "Cloud alerts",
+    https: "HTTPS :443",
+    webhook: "webhook :8787",
+    toBridge: ":8787 (LAN, VPN or tunnel)",
+    direct: "direct, on your LAN",
+    cloudHook: "webhook",
+    push: "push",
+    solid: "Through your own bridge",
+    dashed: "Straight to your console, with optional cloud alerts",
+  },
+  fr: {
+    title: "Comment les éléments se connectent",
+    desc: "Votre réseau domestique contient le relais, le capteur de porte, la console Protect et, en option, votre bridge. Avec un bridge, le téléphone parle au bridge sur le port 8787, le bridge parle à la console en HTTPS sur le port 443, et la console envoie ses webhooks au bridge sur le port 8787. Sans bridge, le téléphone parle directement à la console, et la console envoie ses webhooks au service d'alertes cloud facultatif, qui envoie les notifications au téléphone.",
+    home: "Votre réseau domestique",
+    relay: "Relais",
+    sensor: "Capteur de porte",
+    console: "Console Protect",
+    bridge: "Votre bridge",
+    phone: "iPhone · Watch",
+    cloud: "Alertes cloud",
+    https: "HTTPS :443",
+    webhook: "webhook :8787",
+    toBridge: ":8787 (LAN, VPN ou tunnel)",
+    direct: "direct, sur votre LAN",
+    cloudHook: "webhook",
+    push: "push",
+    solid: "Via votre propre bridge",
+    dashed: "Directement à la console, avec alertes cloud facultatives",
+  },
+}[locale];
+---
+
+<figure class="diagram">
+  <svg viewBox="0 0 600 330" role="img" aria-labelledby="cd-title cd-desc">
+    <title id="cd-title">{t.title}</title>
+    <desc id="cd-desc">{t.desc}</desc>
+    <defs>
+      <marker id="cd-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" class="cd-head" />
+      </marker>
+      <marker id="cd-arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" class="cd-head-muted" />
+      </marker>
+    </defs>
+
+    <rect x="4" y="4" width="360" height="290" rx="14" class="cd-zone" />
+    <text x="20" y="30" class="cd-zone-label">{t.home}</text>
+
+    <rect x="20" y="52" width="110" height="40" rx="8" class="cd-box" />
+    <text x="75" y="77" class="cd-label">{t.relay}</text>
+    <rect x="20" y="112" width="110" height="40" rx="8" class="cd-box" />
+    <text x="75" y="137" class="cd-label">{t.sensor}</text>
+    <line x1="130" y1="72" x2="190" y2="95" class="cd-wire" />
+    <line x1="130" y1="132" x2="190" y2="110" class="cd-wire" />
+
+    <rect x="190" y="78" width="150" height="46" rx="8" class="cd-box" />
+    <text x="265" y="106" class="cd-label cd-strong">{t.console}</text>
+
+    <rect x="190" y="218" width="150" height="46" rx="8" class="cd-box cd-accent-box" />
+    <text x="265" y="246" class="cd-label cd-strong">{t.bridge}</text>
+
+    <line x1="238" y1="218" x2="238" y2="128" class="cd-solid" marker-end="url(#cd-arrow)" />
+    <text x="232" y="178" class="cd-small" text-anchor="end">{t.https}</text>
+    <line x1="292" y1="124" x2="292" y2="214" class="cd-solid" marker-end="url(#cd-arrow)" />
+    <text x="298" y="178" class="cd-small">{t.webhook}</text>
+
+    <rect x="450" y="150" width="140" height="46" rx="8" class="cd-box" />
+    <text x="520" y="178" class="cd-label cd-strong">{t.phone}</text>
+
+    <path d="M450 190 C 400 215, 380 240, 344 241" class="cd-solid" marker-end="url(#cd-arrow)" />
+    <text x="592" y="228" class="cd-small" text-anchor="end">{t.toBridge}</text>
+
+    <path d="M450 160 C 400 140, 380 108, 344 104" class="cd-dashed" marker-end="url(#cd-arrow-muted)" />
+    <text x="382" y="138" class="cd-small cd-muted">{t.direct}</text>
+
+    <rect x="450" y="30" width="140" height="42" rx="8" class="cd-box cd-dashed-box" />
+    <text x="520" y="56" class="cd-label">{t.cloud}</text>
+    <path d="M340 90 C 380 70, 410 55, 446 52" class="cd-dashed" marker-end="url(#cd-arrow-muted)" />
+    <text x="378" y="58" class="cd-small cd-muted">{t.cloudHook}</text>
+    <line x1="520" y1="72" x2="520" y2="146" class="cd-dashed" marker-end="url(#cd-arrow-muted)" />
+    <text x="528" y="114" class="cd-small cd-muted">{t.push}</text>
+
+    <line x1="20" y1="314" x2="52" y2="314" class="cd-solid" />
+    <text x="60" y="318" class="cd-small">{t.solid}</text>
+    <line x1="250" y1="314" x2="282" y2="314" class="cd-dashed" />
+    <text x="290" y="318" class="cd-small cd-muted">{t.dashed}</text>
+  </svg>
+</figure>
+
+<style>
+  /* Below ~520px the labels would shrink past legibility, so the figure scrolls sideways instead, like tables do. */
+  .diagram { margin: 1.5em 0; overflow-x: auto; }
+  .diagram svg { display: block; width: 100%; min-width: 520px; height: auto; }
+  .cd-zone { fill: none; stroke: var(--line); stroke-width: 2; stroke-dasharray: 2 5; stroke-linecap: round; }
+  .cd-zone-label { fill: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: .02em; }
+  .cd-box { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+  .cd-accent-box { stroke: var(--accent); stroke-width: 2; }
+  .cd-dashed-box { stroke-dasharray: 5 4; }
+  .cd-label { fill: var(--text); font-size: 14px; text-anchor: middle; }
+  .cd-strong { font-weight: 600; }
+  .cd-small { fill: var(--text); font-size: 12px; paint-order: stroke; stroke: var(--bg); stroke-width: 5px; stroke-linejoin: round; }
+  .cd-muted { fill: var(--muted); }
+  .cd-wire { stroke: var(--line); stroke-width: 2; }
+  .cd-solid { fill: none; stroke: var(--accent); stroke-width: 2; }
+  .cd-dashed { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  .cd-head { fill: var(--accent); }
+  .cd-head-muted { fill: var(--muted); }
+</style>

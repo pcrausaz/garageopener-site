@@ -15,7 +15,7 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
     },
     {
       q: "Why does my relay stay on instead of pulsing?",
-      a: `<p>On Protect 7.2.x the relay's <code>activate</code> call <em>toggles</em> the output rather than pulsing it, whatever the pulse duration says. So the app and the bridge emulate a press: switch on, wait about 800&nbsp;ms, switch off. That is what the <code>emulated</code> pulse mode means, and it is the default because it is what the hardware actually does.</p><p>If your relay genuinely pulses on its own, switch the mode to <code>native</code> and the console's own pulse duration takes over.</p>`,
+      a: `<p>On Protect 7.2.x the relay's <code>activate</code> call <em>toggles</em> the output rather than pulsing it, whatever the pulse duration says. So the app and the bridge emulate a press: switch on, wait about 800&nbsp;ms, switch off. That is what the <code>emulated</code> pulse mode means, and it is the default because it is what the hardware actually does.</p><p>If your relay genuinely pulses on its own, switch the mode to <code>native</code> and the console's own pulse duration takes over: <em>Button press → Single activate</em> in the app when it connects straight to your console, or <code>RELAY_PULSE_MODE=native</code> on a bridge.</p>`,
     },
     {
       q: "Do I need the bridge?",
@@ -27,7 +27,7 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
     },
     {
       q: "The app can't find my bridge.",
-      a: `<p>Discovery uses Bonjour, and multicast does not cross Docker's bridge network. Run the container with <code>--network host</code>. If you cannot, for instance on Docker Desktop for macOS or Windows, publish the port instead with <code>-p 8787:8787</code>, set <code>BONJOUR=false</code>, and type the address on the connection screen. Everything except discovery works identically.</p><p>The bridge listens on <strong>port 8787</strong>, so the address is <code>http://&lt;host&gt;:8787</code> using the LAN address of whatever machine runs the container. Include the port: without it the app tries port 80 and gets nothing. Check too that your phone is on the same network segment and that client isolation is off on that Wi-Fi network.</p>`,
+      a: `<p>Discovery uses Bonjour, and multicast does not cross Docker's bridge network. The reference compose runs the container with <code>network_mode: host</code> for that reason. If you cannot, for instance on Docker Desktop for macOS or Windows, publish <code>8787:8787</code> instead, set <code>BONJOUR=false</code> and <code>PUBLIC_URL=http://&lt;host&gt;:8787</code>, and type the address on the connection screen. Everything except discovery works identically. Bonjour also stops at a VLAN boundary unless your gateway reflects mDNS, so a phone on a different VLAN from the bridge needs the address typed too.</p><p>The bridge listens on <strong>port 8787</strong>, so the address is <code>http://&lt;host&gt;:8787</code> using the LAN address of whatever machine runs the container. Include the port: without it the app tries port 80 and gets nothing. Check too that your phone is on the same network segment and that client isolation is off on that Wi-Fi network.</p>`,
     },
     {
       q: "Does it work when I'm away from home?",
@@ -73,7 +73,7 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
     },
     {
       q: "Pourquoi mon relais reste-t-il activé au lieu de faire une impulsion ?",
-      a: `<p>Sur Protect 7.2.x, l'appel <code>activate</code> du relais <em>bascule</em> la sortie au lieu de l'impulser, quelle que soit la durée d'impulsion configurée. L'app et le bridge émulent donc un appui : activer, attendre environ 800&nbsp;ms, désactiver. C'est ce que signifie le mode d'impulsion <code>emulated</code>, et c'est la valeur par défaut parce que c'est le comportement réel du matériel.</p><p>Si votre relais impulse vraiment de lui-même, passez en mode <code>native</code> et la durée d'impulsion de la console reprend la main.</p>`,
+      a: `<p>Sur Protect 7.2.x, l'appel <code>activate</code> du relais <em>bascule</em> la sortie au lieu de l'impulser, quelle que soit la durée d'impulsion configurée. L'app et le bridge émulent donc un appui : activer, attendre environ 800&nbsp;ms, désactiver. C'est ce que signifie le mode d'impulsion <code>emulated</code>, et c'est la valeur par défaut parce que c'est le comportement réel du matériel.</p><p>Si votre relais impulse vraiment de lui-même, passez en mode <code>native</code> et la durée d'impulsion de la console reprend la main : <em>Appui sur le bouton → Activation simple</em> dans l'app quand elle se connecte directement à la console, ou <code>RELAY_PULSE_MODE=native</code> sur un bridge.</p>`,
     },
     {
       q: "Le bridge est-il nécessaire ?",
@@ -85,7 +85,7 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
     },
     {
       q: "L'app ne trouve pas mon bridge.",
-      a: `<p>La découverte utilise Bonjour, et le multicast ne traverse pas le réseau bridge de Docker. Lancez le conteneur avec <code>--network host</code>. Si ce n'est pas possible, par exemple sur Docker Desktop pour macOS ou Windows, publiez plutôt le port avec <code>-p 8787:8787</code>, mettez <code>BONJOUR=false</code> et saisissez l'adresse sur l'écran de connexion. Tout fonctionne à l'identique, sauf la découverte.</p><p>Le bridge écoute sur le <strong>port 8787</strong> : l'adresse est donc <code>http://&lt;hôte&gt;:8787</code>, avec l'adresse locale de la machine qui héberge le conteneur. N'oubliez pas le port : sans lui, l'app tente le port 80 et n'obtient rien. Vérifiez aussi que votre téléphone est sur le même segment réseau et que l'isolation des clients est désactivée sur ce réseau Wi-Fi.</p>`,
+      a: `<p>La découverte utilise Bonjour, et le multicast ne traverse pas le réseau bridge de Docker. C'est pourquoi le compose de référence lance le conteneur avec <code>network_mode: host</code>. Si ce n'est pas possible, par exemple sur Docker Desktop pour macOS ou Windows, publiez plutôt <code>8787:8787</code>, mettez <code>BONJOUR=false</code> et <code>PUBLIC_URL=http://&lt;hôte&gt;:8787</code>, et saisissez l'adresse sur l'écran de connexion. Tout fonctionne à l'identique, sauf la découverte. Bonjour s'arrête aussi à la frontière d'un VLAN, sauf si votre passerelle relaie le mDNS : un téléphone sur un autre VLAN que le bridge a lui aussi besoin de l'adresse saisie.</p><p>Le bridge écoute sur le <strong>port 8787</strong> : l'adresse est donc <code>http://&lt;hôte&gt;:8787</code>, avec l'adresse locale de la machine qui héberge le conteneur. N'oubliez pas le port : sans lui, l'app tente le port 80 et n'obtient rien. Vérifiez aussi que votre téléphone est sur le même segment réseau et que l'isolation des clients est désactivée sur ce réseau Wi-Fi.</p>`,
     },
     {
       q: "Est-ce que ça marche quand je ne suis pas chez moi ?",

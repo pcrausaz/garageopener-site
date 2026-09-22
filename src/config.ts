@@ -11,6 +11,9 @@ export const CLOUD_HOST = "alerts.garageopener.app";
 
 export const BRIDGE_IMAGE = "ghcr.io/pcrausaz/garage-opener-bridge";
 
+/** Where the reference docker-compose.yml and .env.example are downloaded from (raw, main branch). */
+export const SELFHOST_RAW_URL = "https://raw.githubusercontent.com/pcrausaz/garage-opener-bridge/main/selfhost";
+
 /**
  * ADR-0017: the bridge is public under Apache-2.0. The iOS app and the cloud-alerts Worker are not, and the
  * pages say so explicitly rather than staying quiet about it.

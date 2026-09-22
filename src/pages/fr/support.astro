@@ -66,7 +66,7 @@ const description =
     <ul>
       <li><strong>Une porte par bridge.</strong> Plusieurs portes ne sont pas prises en charge.</li>
       <li><strong>UniFi Protect uniquement.</strong> Les autres relais, les autres hubs et Home Assistant sont hors périmètre.</li>
-      <li><strong>iOS et watchOS uniquement.</strong> Il n’y a pas d’app Android et il n’en est pas prévu.</li>
+      <li><strong>iOS et watchOS uniquement.</strong> Il n’y a pas d’app Android aujourd’hui ; voir la <a href={path("fr", "faq")}>FAQ</a>.</li>
       <li><strong>Une porte arrêtée est lue comme ouverte.</strong> Un capteur d’inclinaison rapporte le même contact pour une porte arrêtée à mi-course et pour une porte grande ouverte ; l’app mémorise donc le sens plutôt que de prétendre le mesurer.</li>
       <li><strong>Les alertes cloud ne peuvent pas fermer la porte.</strong> Le service ne détient aucun identifiant vers votre console ; « Fermer maintenant » est exécuté par l’app, via votre propre connexion.</li>
       <li><strong>Un webhook perdu ressemble à une porte ouverte.</strong> Si votre console n’envoie jamais l’événement « fermée », les alertes cloud continuent de la croire ouverte, d’où la formulation « a signalé ».</li>

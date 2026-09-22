@@ -62,7 +62,7 @@ const description =
     <ul>
       <li><strong>One door per bridge.</strong> Multiple doors are not supported.</li>
       <li><strong>UniFi Protect only.</strong> Other relays, other hubs and Home Assistant are out of scope.</li>
-      <li><strong>iOS and watchOS only.</strong> There is no Android app and none is planned.</li>
+      <li><strong>iOS and watchOS only.</strong> There is no Android app today; see the <a href={path("en", "faq")}>FAQ</a>.</li>
       <li><strong>A stopped door reads as open.</strong> A tilt sensor reports the same contact for a door stopped part-way as for one standing fully open, so the app remembers the direction rather than pretending to measure it.</li>
       <li><strong>Cloud alerts cannot close the door.</strong> The service never holds a credential to your console; “Close now” is carried out by the app, over your own connection.</li>
       <li><strong>Lost webhooks look like an open door.</strong> If your console never sends the “closed” event, cloud alerts keep believing the door is open, which is why the wording says “reported”.</li>

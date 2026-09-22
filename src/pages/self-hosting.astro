@@ -1,10 +1,10 @@
 ---
 import Base from "../layouts/Base.astro";
-import { BRIDGE_IMAGE, SOURCE_REPO_URL, SUPPORT_EMAIL, UPDATED } from "../config";
+import { BRIDGE_IMAGE, SELFHOST_RAW_URL, SOURCE_REPO_URL, SUPPORT_EMAIL, UPDATED } from "../config";
 import { path } from "../i18n/ui";
 
 const description =
-  "Run your own Garage Opener bridge: Protect API key, relay and sensor setup, Docker, first-run pairing, Alarm Manager webhooks and reaching it from outside the house.";
+  "Run your own Garage Opener bridge: Protect API key, relay and sensor setup, network requirements, Docker, first-run pairing, Alarm Manager webhooks, push alerts and reaching it from outside the house.";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -15,11 +15,14 @@ const jsonLd = {
   step: [
     { "@type": "HowToStep", name: "Prepare the hardware in UniFi Protect", text: "Set one relay output to Pulse and mount the all-in-one sensor on the door with mount type Garage." },
     { "@type": "HowToStep", name: "Create a Protect API key", text: "Console settings, Control Plane, Integrations, Create API Key." },
-    { "@type": "HowToStep", name: "Run the bridge in Docker", text: "Copy the example environment file, generate tokens and start the container." },
+    { "@type": "HowToStep", name: "Check the network paths", text: "The bridge must reach the console on 443, and the console and your phone must reach the bridge on 8787." },
+    { "@type": "HowToStep", name: "Run the bridge in Docker", text: "Download the reference docker-compose.yml and .env, fill in the key and generated secrets, and start it." },
     { "@type": "HowToStep", name: "Pair your phone", text: "Paste the single-use invite link the bridge prints at startup into the app." },
     { "@type": "HowToStep", name: "Point Alarm Manager at the bridge", text: "Add sensor opened and closed rules posting to the webhook URL." },
   ],
 };
+
+const raw = SELFHOST_RAW_URL;
 ---
 
 <Base
@@ -31,12 +34,14 @@ const jsonLd = {
   updated={UPDATED}
   toc={[
     { id: "before", label: "Before you start" },
+    { id: "network", label: "What has to reach what" },
     { id: "run", label: "Run it" },
     { id: "pair", label: "Pair your phone" },
     { id: "webhooks", label: "Console webhooks" },
+    { id: "alerts", label: "Alerts on a sleeping phone" },
     { id: "certs", label: "Certificates" },
     { id: "remote", label: "From outside the house" },
-    { id: "updating", label: "Keeping it up to date" },
+    { id: "updating", label: "Updates and backups" },
     { id: "source", label: "Source and licence" },
     { id: "scope", label: "Out of scope" },
   ]}
@@ -79,17 +84,67 @@ const jsonLd = {
         </div>
       </li>
     </ol>
+    <p>
+      <strong>How the bridge finds your door.</strong> With exactly one relay output of type garage door and
+      one sensor mounted as Garage, the bridge finds both on its own and you configure nothing. With more than
+      one candidate it cannot guess, so pin them: <code>DOOR_RELAY_ID</code>, <code>DOOR_OUTPUT_ID</code> (the
+      API id, so output 1 in the app is <code>0</code>) and <code>DOOR_SENSOR_ID</code>. Once the bridge is
+      running, it lists every relay and sensor with its id:
+    </p>
+    <pre><code>{`curl -s -H "Authorization: Bearer <BRIDGE_TOKENS>" http://<bridge-host>:8787/v1/discovery`}</code></pre>
+    <p>
+      <strong>Relay press.</strong> On Protect 7.2.x the relay toggles instead of pulsing, so the bridge
+      presses and releases it itself. That is the default, <code>RELAY_PULSE_MODE=emulated</code>. Only if
+      your relay genuinely pulses on its own, set <code>RELAY_PULSE_MODE=native</code>.
+    </p>
+
+    <h2 id="network">What has to reach what</h2>
+    <p>
+      Everything stays on your network. If the bridge and the console sit on different VLANs, your firewall
+      has to allow both of the first two rows, in the direction shown.
+    </p>
+    <table>
+      <thead><tr><th>From</th><th>To</th><th>Port</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Bridge</td><td>Protect console</td><td>TCP 443 (HTTPS)</td><td>Reading the sensor, pressing the relay. Required.</td></tr>
+        <tr><td>Protect console</td><td>Bridge</td><td>TCP 8787 (HTTP)</td><td>Alarm Manager webhooks, so the bridge reacts instantly. Recommended; it polls anyway.</td></tr>
+        <tr><td>Phone</td><td>Bridge</td><td>TCP 8787 (HTTP)</td><td>The app, widgets, Watch and Shortcuts. Required: on your Wi-Fi, or over a VPN or tunnel when away.</td></tr>
+        <tr><td>Phone</td><td>Bridge</td><td>UDP 5353 (mDNS)</td><td>Finding the bridge without typing its address. Optional; needs host networking and does not cross VLANs unless your gateway reflects mDNS.</td></tr>
+        <tr><td>Bridge</td><td><code>ghcr.io</code></td><td>TCP 443</td><td>Downloading the image, when you install or update.</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The phone must be on a network that can reach the bridge, with client isolation off on that Wi-Fi.
+      Never forward a port from the internet to the bridge; see <a href="#remote">from outside the house</a>.
+    </p>
 
     <h2 id="run">Run it</h2>
-    <p>Create a directory, drop in a <code>docker-compose.yml</code> and a <code>.env</code>, and start it:</p>
+    <p>
+      The image is <code>{BRIDGE_IMAGE}</code>. The reference <a href={`${SOURCE_REPO_URL}/blob/main/selfhost/docker-compose.yml`}>docker-compose.yml</a>
+      and <a href={`${SOURCE_REPO_URL}/blob/main/selfhost/.env.example`}>.env.example</a> live in the bridge
+      repository. Put both in one directory:
+    </p>
+    <pre><code>{`mkdir garage-bridge && cd garage-bridge
+curl -fsSLO ${raw}/docker-compose.yml
+curl -fsSL  ${raw}/.env.example -o .env`}</code></pre>
 
-    <pre><code>{`# .env: the five things that matter
-GARAGE_BRIDGE_TAG=latest                # see "keeping it up to date" below
-PROTECT_URL=https://192.168.1.1         # your console, with https://
-PROTECT_API_KEY=…                       # the key you just created
-BRIDGE_TOKENS=$(openssl rand -hex 24)   # admin token: generate it, don't invent it
-WEBHOOK_SECRET=$(openssl rand -hex 24)  # path secret for the Alarm Manager webhook
+    <p>
+      Open <code>.env</code> and fill in the values at the top. Two of them are secrets you generate, not
+      invent. Run this twice and paste each output into place:
+    </p>
+    <pre><code>openssl rand -hex 24</code></pre>
+    <pre><code>{`# .env: the values that matter
+GARAGE_BRIDGE_TAG=latest     # see "updates and backups" below
+PROTECT_URL=https://192.168.1.1
+PROTECT_API_KEY=…            # the key you just created
+BRIDGE_TOKENS=…              # first openssl output: your admin token
+WEBHOOK_SECRET=…             # second openssl output: the Alarm Manager path secret
 TZ=Europe/Zurich`}</code></pre>
+    <p>
+      <code>.env</code> is read as plain values, not run as a shell script, so a line like
+      <code>BRIDGE_TOKENS=$(openssl rand -hex 24)</code> would store those characters literally. Paste the
+      output, not the command.
+    </p>
 
     <pre><code>{`docker compose up -d
 curl -s localhost:8787/healthz`}</code></pre>
@@ -97,7 +152,15 @@ curl -s localhost:8787/healthz`}</code></pre>
     <p>
       You should get <code>{`{"ok":true,"ready":true,…}`}</code>, with the <code>version</code> that is
       actually running. If <code>ready</code> is <code>false</code>, the bridge is up but hasn't reached the
-      console yet, and the message says why.
+      console yet, and the message says why. Run the same <code>curl</code> from another machine, with the
+      bridge host's address instead of <code>localhost</code>, to check the network path too.
+    </p>
+
+    <h3>Using Dockhand, Portainer or another stack manager</h3>
+    <p>
+      Paste the reference <code>docker-compose.yml</code> as the stack and set the same variables in the
+      stack's environment instead of a <code>.env</code> file. The file lists every setting explicitly, so
+      nothing else is needed. A variable that is not in the file never reaches the bridge.
     </p>
 
     <h3>A note on tokens</h3>
@@ -110,9 +173,11 @@ curl -s localhost:8787/healthz`}</code></pre>
     <h3>Host networking, or not</h3>
     <p>
       The app finds the bridge over Bonjour, and multicast does not cross Docker's bridge network, so the
-      reference compose uses <code>network_mode: host</code>. If that isn't available to you, for instance on Docker Desktop
-      for macOS or Windows, publish <code>8787:8787</code> instead, set <code>BONJOUR=false</code>, and type
-      the address into the app. Everything except discovery is identical.
+      reference compose uses <code>network_mode: host</code>. If that isn't available to you, for instance on
+      Docker Desktop for macOS or Windows, publish <code>8787:8787</code> instead, set
+      <code>BONJOUR=false</code>, and set <code>PUBLIC_URL=http://&lt;host-address&gt;:8787</code>. Without
+      host networking the bridge only sees its container's address, and that is what invite links would
+      otherwise carry.
     </p>
 
     <h2 id="pair">Pair your phone</h2>
@@ -122,21 +187,63 @@ curl -s localhost:8787/healthz`}</code></pre>
     </p>
     <pre><code>docker logs garage-bridge | tail -20</code></pre>
     <p>
-      Paste the <code>garageopener://join…</code> link, or just the code, into the app's
-      <strong>Family → Join</strong> sheet. It's good for fifteen minutes; restart the container for a fresh
-      one. Once a phone has joined, the banner stops and any further phones are invited from the app itself.
+      On the app's first screen, tap <strong>Join with an invite</strong> and paste the
+      <code>garageopener://join…</code> link or just the code. Opening the link on the phone does the same.
+      The invite carries the bridge's address: <code>PUBLIC_URL</code> if you
+      set it, otherwise the host's LAN address. It's good for fifteen minutes; restart the container for a
+      fresh one. Once a phone has joined, the banner stops and any further phones are invited from the app
+      itself.
     </p>
 
     <h2 id="webhooks">Let the console tell the bridge about the door</h2>
     <p>
-      The bridge polls, but webhooks make it react immediately. In Protect, create two Alarm Manager rules,
-      sensor <em>opened</em> and sensor <em>closed</em>, both posting to:
+      The bridge polls, but webhooks make it react within a second. Create two rules on the console:
     </p>
-    <pre><code>http://&lt;bridge-host&gt;:8787/v1/webhooks/alarm-manager/&lt;WEBHOOK_SECRET&gt;</code></pre>
+    <ol class="steps">
+      <li>Open Protect → <strong>Alarm Manager</strong> → <strong>Create Alarm</strong>.</li>
+      <li>
+        Name it <code>garage-door-opened</code>. Trigger: <strong>Sensor → Contact → Opened</strong>, on your
+        garage door sensor.
+      </li>
+      <li>
+        Under <strong>Actions</strong>, add <strong>Webhook</strong>, choose <strong>POST</strong>, untick
+        <em>Send thumbnail</em>, and paste:
+        <pre><code>http://&lt;bridge-host&gt;:8787/v1/webhooks/alarm-manager/&lt;WEBHOOK_SECRET&gt;</code></pre>
+      </li>
+      <li>Repeat with <code>garage-door-closed</code> and <strong>Contact → Closed</strong>. Keep the words <em>opened</em> and <em>closed</em> in the names.</li>
+    </ol>
     <p>
-      The console has to be able to reach that address; it is on the same network as the bridge, so this needs
-      nothing from the internet. A wrong secret returns a bare 404, so if the rules appear to do nothing,
-      check the secret first.
+      <strong>Check it worked</strong> by moving the door (or just the sensor). The app's activity log shows a
+      <em>Sensor</em> entry within a second. Protect's <em>Test alarm</em> button sends a generic sample, not the real
+      event, so it is not a useful test.
+    </p>
+    <p>
+      If nothing arrives: a wrong secret returns a bare 404, so check the secret first, and that nothing
+      trailed it when you pasted. Then check that the console can reach the bridge host (see
+      <a href="#network">what has to reach what</a>).
+    </p>
+
+    <h2 id="alerts">Alerts on a sleeping phone</h2>
+    <p>
+      The bridge evaluates the alert rules around the clock. The app shows them whenever it is running or
+      refreshing in the background, but iOS decides when that happens. For a notification that reliably
+      reaches a phone that is asleep or away from home, have the bridge publish to
+      <a href="https://ntfy.sh">ntfy</a> and subscribe to the topic in the ntfy app:
+    </p>
+    <ul>
+      <li>
+        <strong>Your own ntfy</strong>: the reference compose includes one. Set <code>NTFY_BASE_URL</code> and
+        <code>NTFY_TOPIC</code> in <code>.env</code>, then <code>docker compose --profile ntfy up -d</code>.
+      </li>
+      <li>
+        <strong>ntfy.sh</strong>: set <code>NTFY_URL=https://ntfy.sh</code> and a long random
+        <code>NTFY_TOPIC</code> (<code>openssl rand -hex 16</code>). The topic name is the only thing keeping
+        it private.
+      </li>
+    </ul>
+    <p>
+      With <code>PUBLIC_URL</code> set, ntfy notifications carry <em>Close now</em> and <em>Hold 2h</em> buttons
+      that call your bridge directly.
     </p>
 
     <h2 id="certs">Certificates</h2>
@@ -147,10 +254,11 @@ curl -s localhost:8787/healthz`}</code></pre>
     <pre><code>{`openssl s_client -connect 192.168.1.1:443 -servername 192.168.1.1 </dev/null 2>/dev/null \\
   | openssl x509 -noout -fingerprint -sha256`}</code></pre>
     <p>
-      Put the result in <code>PROTECT_TLS=fingerprint:&lt;sha256&gt;</code>. If your console has a real
-      certificate, use <code>system</code>. The bridge <strong>refuses to start</strong> with
-      <code>insecure</code> if <code>PROTECT_URL</code> is not a LAN address, because that would expose your
-      API key to anyone on the path.
+      Put the result in <code>PROTECT_TLS</code>. You can paste openssl's output as it is
+      (<code>sha256 Fingerprint=AB:CD:…</code>); colons and case are ignored, and it is stored as
+      <code>fingerprint:abcd…</code>. If your console has a real certificate, use <code>system</code>. The
+      bridge <strong>refuses to start</strong> with <code>insecure</code> if <code>PROTECT_URL</code> is not a
+      LAN address, because that would expose your API key to anyone on the path.
     </p>
 
     <h2 id="remote">Reaching it from outside the house</h2>
@@ -176,7 +284,7 @@ curl -s localhost:8787/healthz`}</code></pre>
       </p>
     </div>
 
-    <h2 id="updating">Keeping it up to date</h2>
+    <h2 id="updating">Updates and backups</h2>
     <p>
       <code>latest</code> is the default and is the right choice for most people. Docker never updates a
       container on its own, so <code>latest</code> simply means you get the current release the next time you
@@ -185,15 +293,20 @@ curl -s localhost:8787/healthz`}</code></pre>
     <pre><code>{`docker compose pull && docker compose up -d
 curl -s localhost:8787/healthz   # check the version that came down`}</code></pre>
     <p>
-      Pin an exact version instead, <code>GARAGE_BRIDGE_TAG=0.4.1</code>, if you want upgrades to be a
+      Pin an exact version instead, <code>GARAGE_BRIDGE_TAG=0.5.1</code>, if you want upgrades to be a
       decision rather than a side effect of pulling, or if you run something that pulls automatically such as
       Watchtower. With <code>latest</code> and an automatic updater together, a release that needs a
       configuration change would restart your bridge into a refusal to start while you are not looking.
     </p>
     <p>
-      Either way, read the changelog before a pull. Anything that requires you to touch your configuration is
-      listed under <strong>Action required</strong>, and the bridge fails loudly at startup rather than
-      running in a degraded state.
+      Either way, read the <a href={`${SOURCE_REPO_URL}/blob/main/CHANGELOG.md`}>changelog</a> before a
+      pull. Anything that requires you to touch your configuration is listed under <strong>Action
+      required</strong>, and the bridge fails loudly at startup rather than running in a degraded state.
+    </p>
+    <p>
+      <strong>Back up the <code>garage-bridge-data</code> volume.</strong> It holds the family members, open
+      invites and the activity log. Lose it and every phone has to pair again. Your <code>.env</code> is the
+      only other thing to keep, and it belongs in a password manager rather than a shared backup.
     </p>
 
     <h2 id="source">Source and licence</h2>
