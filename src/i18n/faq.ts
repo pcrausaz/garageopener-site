@@ -42,6 +42,10 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
       a: `<p>Your console posts door events to a private webhook URL, and the service pushes a notification back when the door has been open too long, is still open at your nightly check time, or a car is in the garage with the door up.</p><p>It never holds a credential to your console, so it cannot open or close anything. “Close now” on a notification is carried out by the app, over your own connection. It stores only the event type, device id and timestamp, for seven days.</p>`,
     },
     {
+      q: "How secret is my cloud-alerts webhook address?",
+      a: `<p>Treat it like a password. The long random part of <code>https://alerts.garageopener.app/w/&lt;token&gt;</code> is what identifies your install, so anyone holding it could post fake door events to you — the one worth caring about is a fake "closed" for a door that is actually open, which would stop the alert you wanted.</p><p>It <strong>cannot</strong> be used to read anything, change your settings, or delete your data. All of those need a separate secret that lives in your phone's Keychain and is never part of a web address.</p><p>Because it sits in the address rather than in a hidden header, it is recorded in ordinary web server logs along the way. That is forced rather than chosen: UniFi Protect's Alarm Manager only lets you enter a URL, so there is nowhere else to put it. So: don't paste the full address into a forum post, a screenshot or a support ticket. If you ever think it has been seen, turn cloud alerts off and on again — that issues a new address, and you re-paste it into your two Alarm Manager rules.</p>`,
+    },
+    {
       q: "Is there an Apple Watch app? Widgets? Siri?",
       a: `<p>Yes to all three, plus Control Center, the Action Button, Lock Screen widgets and a Live Activity while the door is open with a Close button on it. Shortcuts actions are included, so you can build your own automations.</p>`,
     },
@@ -94,6 +98,10 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
     {
       q: "À quoi servent les alertes cloud si je n'ai pas de bridge ?",
       a: `<p>Votre console envoie les événements de la porte à une URL de webhook privée, et le service vous renvoie une notification quand la porte est restée ouverte trop longtemps, qu'elle l'est encore à l'heure de votre contrôle nocturne, ou qu'une voiture est dans le garage porte ouverte.</p><p>Le service ne détient aucun identifiant vers votre console : il ne peut donc rien ouvrir ni fermer. « Fermer maintenant » est exécuté par l'app, via votre propre connexion. Il ne conserve que le type d'événement, l'identifiant de l'appareil et l'horodatage, pendant sept jours.</p>`,
+    },
+    {
+      q: "Mon adresse de webhook pour les alertes cloud est-elle secrète ?",
+      a: `<p>Traitez-la comme un mot de passe. La longue partie aléatoire de <code>https://alerts.garageopener.app/w/&lt;jeton&gt;</code> identifie votre installation : quiconque la détient pourrait vous envoyer de faux événements de porte — le cas qui compte étant un faux « fermée » alors que la porte est ouverte, ce qui supprimerait l'alerte que vous attendiez.</p><p>Elle ne permet <strong>pas</strong> de lire quoi que ce soit, de modifier vos réglages ni de supprimer vos données : tout cela exige un autre secret, conservé dans le trousseau de votre téléphone et qui n'apparaît jamais dans une adresse web.</p><p>Comme elle figure dans l'adresse plutôt que dans un en-tête masqué, elle est enregistrée dans les journaux des serveurs web traversés. C'est contraint, pas choisi : l'Alarm Manager d'UniFi Protect ne permet de saisir qu'une URL, il n'y a donc pas d'autre endroit où la mettre. Donc : ne collez pas l'adresse complète dans un forum, une capture d'écran ou un ticket d'assistance. Si vous pensez qu'elle a été vue, désactivez puis réactivez les alertes cloud — une nouvelle adresse est émise, à recoller dans vos deux règles Alarm Manager.</p>`,
     },
     {
       q: "Y a-t-il une app Apple Watch ? Des widgets ? Siri ?",

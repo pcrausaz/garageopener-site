@@ -64,6 +64,7 @@ const description =
       <thead><tr><th>What we store</th><th>Why</th><th>For how long</th></tr></thead>
       <tbody>
         <tr><td>Install id, a hash of the install secret, the routing token</td><td>To route your console's webhooks and to recognise your app</td><td>Until you erase</td></tr>
+        <tr><td><em>Your personal webhook address</em> contains that routing token, so it appears in ordinary web server logs in transit</td><td>Unavoidable: UniFi Protect's Alarm Manager accepts only a URL, so the token cannot travel in a hidden header</td><td>Treat the address as a password; turning cloud alerts off and on issues a new one</td></tr>
         <tr><td>Push tokens for the devices you register, and whether they are sandbox or production</td><td>To send the notification</td><td>Until you erase, or until Apple reports the token invalid</td></tr>
         <tr><td>Your alert settings: thresholds, nightly time, timezone, language</td><td>To decide when to notify, and in which language</td><td>Until you erase</td></tr>
         <tr><td><strong>Events: type, device id and timestamp only</strong></td><td>To know whether the door is open and for how long</td><td><strong>7 days</strong>, then deleted automatically</td></tr>

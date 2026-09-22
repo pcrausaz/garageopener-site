@@ -68,6 +68,7 @@ const description =
       <thead><tr><th>Ce que nous conservons</th><th>Pourquoi</th><th>Combien de temps</th></tr></thead>
       <tbody>
         <tr><td>Identifiant d’installation, empreinte du secret, jeton de routage</td><td>Router les webhooks de votre console et reconnaître votre app</td><td>Jusqu’à effacement</td></tr>
+        <tr><td><em>Votre adresse de webhook personnelle</em> contient ce jeton : elle apparaît donc dans les journaux des serveurs web traversés</td><td>Inévitable : l’Alarm Manager d’UniFi Protect n’accepte qu’une URL, le jeton ne peut pas voyager dans un en-tête masqué</td><td>Traitez l’adresse comme un mot de passe ; désactiver puis réactiver les alertes cloud en émet une nouvelle</td></tr>
         <tr><td>Jetons de notification des appareils enregistrés, et leur environnement</td><td>Envoyer la notification</td><td>Jusqu’à effacement, ou jusqu’à ce qu’Apple signale le jeton invalide</td></tr>
         <tr><td>Vos réglages d’alerte : seuils, heure du contrôle nocturne, fuseau, langue</td><td>Décider quand prévenir, et dans quelle langue</td><td>Jusqu’à effacement</td></tr>
         <tr><td><strong>Événements : type, identifiant d’appareil et horodatage uniquement</strong></td><td>Savoir si la porte est ouverte et depuis combien de temps</td><td><strong>7 jours</strong>, puis suppression automatique</td></tr>
