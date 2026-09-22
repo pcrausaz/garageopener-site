@@ -33,6 +33,7 @@ const raw = SELFHOST_RAW_URL;
   jsonLd={jsonLd}
   updated={UPDATED}
   toc={[
+    { id: "checklist", label: "Liste de contrôle" },
     { id: "before", label: "Avant de commencer" },
     { id: "network", label: "Qui doit joindre quoi" },
     { id: "run", label: "Le lancer" },
@@ -62,6 +63,23 @@ const raw = SELFHOST_RAW_URL;
         ou des raccourcis fiables en arrière-plan.
       </p>
     </div>
+
+    <h2 id="checklist">Liste de contrôle</h2>
+    <p>
+      <strong>À avoir sous la main :</strong> l’adresse de votre console, une nouvelle clé d’API Protect,
+      l’adresse locale de la machine qui fera tourner le bridge, et la sortie de relais qui commande la porte.
+      Suivez ensuite la liste ; chaque étape renvoie à sa section.
+    </p>
+    <ul class="checklist">
+      <li><a href="#before">Sortie de relais en Pulse, capteur monté en Garage, clé d’API créée</a></li>
+      <li><a href="#network">Le bridge joint la console sur le port 443 ; la console et le téléphone joignent le bridge sur le 8787</a></li>
+      <li><a href="#run">Compose et <code>.env</code> téléchargés, deux secrets générés, bridge démarré</a></li>
+      <li><a href="#run"><code>/healthz</code> répond <code>"ready":true</code>, depuis l’hôte et depuis une autre machine</a></li>
+      <li><a href="#pair">Téléphone appairé avec l’invitation du journal du conteneur</a></li>
+      <li><a href="#webhooks">Deux règles Alarm Manager créées, et un mouvement de porte apparaît dans le journal d’activité</a></li>
+      <li><a href="#alerts">ntfy configuré, si vous voulez des alertes sur un téléphone en veille ou à l’extérieur</a></li>
+      <li><a href="#updating">Volume de données dans vos sauvegardes, <code>.env</code> dans un gestionnaire de mots de passe</a></li>
+    </ul>
 
     <h2 id="before">Avant de commencer</h2>
     <ol class="steps">
@@ -115,6 +133,7 @@ const raw = SELFHOST_RAW_URL;
         <tr><td>Console Protect</td><td>Bridge</td><td>TCP 8787 (HTTP)</td><td>Webhooks Alarm Manager, pour que le bridge réagisse instantanément. Recommandé ; il interroge la console de toute façon.</td></tr>
         <tr><td>Téléphone</td><td>Bridge</td><td>TCP 8787 (HTTP)</td><td>L’app, les widgets, la Watch et les Raccourcis. Obligatoire : sur votre Wi-Fi, ou via un VPN ou un tunnel à l’extérieur.</td></tr>
         <tr><td>Téléphone</td><td>Bridge</td><td>UDP 5353 (mDNS)</td><td>Trouver le bridge sans saisir son adresse. Facultatif ; demande le réseau de l’hôte, et ne traverse pas les VLAN sauf si votre passerelle relaie le mDNS.</td></tr>
+        <tr><td>Bridge</td><td>ntfy (le vôtre, ou ntfy.sh)</td><td>TCP 8788, ou 443 pour ntfy.sh</td><td>Alertes push vers un téléphone en veille ou à l’extérieur. Facultatif ; voir <a href="#alerts">alertes</a>.</td></tr>
         <tr><td>Bridge</td><td><code>ghcr.io</code></td><td>TCP 443</td><td>Télécharger l’image, à l’installation et aux mises à jour.</td></tr>
       </tbody>
     </table>
@@ -169,6 +188,16 @@ curl -s localhost:8787/healthz`}</code></pre>
       dans l’environnement de la stack, au lieu d’un fichier <code>.env</code>. Le fichier liste chaque
       réglage explicitement, rien d’autre n’est nécessaire. Une variable absente du fichier n’atteint jamais
       le bridge.
+    </p>
+
+    <h3>Un second bridge sur le même hôte</h3>
+    <p>
+      Un bridge pilote une porte : une seconde porte demande un second bridge. Le compose de référence utilise
+      des noms fixes. Sur un hôte qui en fait déjà tourner un, placez le second dans son propre dossier et,
+      dans cette copie, changez <code>container_name</code> et le nom du volume <code>garage-bridge-data</code>
+      (aux deux endroits où il apparaît). Avec le réseau de l’hôte, donnez-lui aussi son propre port, par
+      exemple <code>PORT=8789</code>, et un <code>PUBLIC_URL</code> assorti. Chaque bridge a sa propre paire de
+      règles Alarm Manager, pointant vers sa propre adresse et son propre secret.
     </p>
 
     <h3>À propos des jetons</h3>
@@ -242,14 +271,23 @@ curl -s localhost:8787/healthz`}</code></pre>
     </p>
     <ul>
       <li>
-        <strong>Votre propre ntfy</strong> : le compose de référence en inclut un. Définissez
-        <code>NTFY_BASE_URL</code> et <code>NTFY_TOPIC</code> dans <code>.env</code>, puis
-        <code>docker compose --profile ntfy up -d</code>.
-      </li>
-      <li>
         <strong>ntfy.sh</strong> : définissez <code>NTFY_URL=https://ntfy.sh</code> et un
         <code>NTFY_TOPIC</code> long et aléatoire (<code>openssl rand -hex 16</code>). Le nom du sujet est la
-        seule chose qui le garde privé.
+        seule chose qui le garde privé. Redémarrez le bridge et abonnez-vous au sujet dans l’app ntfy.
+      </li>
+      <li>
+        <strong>Votre propre ntfy</strong> : le compose de référence en inclut un, qui n’admet personne tant
+        que vous n’avez pas créé d’utilisateur. Dans <code>.env</code>, définissez
+        <code>NTFY_URL=http://127.0.0.1:8788</code> (là où le bridge publie ; <code>http://ntfy:80</code> si
+        vous publiez les ports au lieu du réseau de l’hôte), <code>NTFY_BASE_URL=http://&lt;adresse-de-l’hôte&gt;:8788</code>
+        (là où votre téléphone le joint) et <code>NTFY_TOPIC</code>. Puis :
+        <pre><code>{`docker compose --profile ntfy up -d
+docker exec -it garage-ntfy ntfy user add --role=user garage     # demande un mot de passe
+docker exec -it garage-ntfy ntfy access garage '<NTFY_TOPIC>' read-write
+docker exec -it garage-ntfy ntfy token add garage                # affiche tk_…`}</code></pre>
+        Placez le jeton dans <code>.env</code> sous <code>NTFY_TOKEN</code> et relancez
+        <code>docker compose --profile ntfy up -d</code>. Dans l’app ntfy, ajoutez le serveur <code>NTFY_BASE_URL</code>,
+        connectez-vous en tant que <code>garage</code> et abonnez-vous au sujet.
       </li>
     </ul>
     <p>

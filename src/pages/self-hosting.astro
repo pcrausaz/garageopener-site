@@ -33,6 +33,7 @@ const raw = SELFHOST_RAW_URL;
   jsonLd={jsonLd}
   updated={UPDATED}
   toc={[
+    { id: "checklist", label: "Checklist" },
     { id: "before", label: "Before you start" },
     { id: "network", label: "What has to reach what" },
     { id: "run", label: "Run it" },
@@ -61,6 +62,23 @@ const raw = SELFHOST_RAW_URL;
         exportable activity log, family invites, or background-reliable Shortcuts.
       </p>
     </div>
+
+    <h2 id="checklist">Checklist</h2>
+    <p>
+      <strong>Have to hand:</strong> your console's address, a new Protect API key, the LAN address of the
+      machine that will run the bridge, and which relay output drives the door. Then work down the list; each
+      step links to its section.
+    </p>
+    <ul class="checklist">
+      <li><a href="#before">Relay output set to Pulse, sensor mounted as Garage, API key created</a></li>
+      <li><a href="#network">Bridge can reach the console on 443; console and phone can reach the bridge on 8787</a></li>
+      <li><a href="#run">Compose file and <code>.env</code> downloaded, two secrets generated, bridge started</a></li>
+      <li><a href="#run"><code>/healthz</code> says <code>"ready":true</code>, from the host and from another machine</a></li>
+      <li><a href="#pair">Phone joined with the invite from the container log</a></li>
+      <li><a href="#webhooks">Two Alarm Manager rules created, and a door movement shows up in the activity log</a></li>
+      <li><a href="#alerts">ntfy set up, if you want alerts on a phone that is asleep or away</a></li>
+      <li><a href="#updating">Data volume in your backups, <code>.env</code> in a password manager</a></li>
+    </ul>
 
     <h2 id="before">Before you start</h2>
     <ol class="steps">
@@ -110,6 +128,7 @@ const raw = SELFHOST_RAW_URL;
         <tr><td>Protect console</td><td>Bridge</td><td>TCP 8787 (HTTP)</td><td>Alarm Manager webhooks, so the bridge reacts instantly. Recommended; it polls anyway.</td></tr>
         <tr><td>Phone</td><td>Bridge</td><td>TCP 8787 (HTTP)</td><td>The app, widgets, Watch and Shortcuts. Required: on your Wi-Fi, or over a VPN or tunnel when away.</td></tr>
         <tr><td>Phone</td><td>Bridge</td><td>UDP 5353 (mDNS)</td><td>Finding the bridge without typing its address. Optional; needs host networking and does not cross VLANs unless your gateway reflects mDNS.</td></tr>
+        <tr><td>Bridge</td><td>ntfy (your own, or ntfy.sh)</td><td>TCP 8788, or 443 for ntfy.sh</td><td>Push alerts to a phone that is asleep or away. Optional; see <a href="#alerts">alerts</a>.</td></tr>
         <tr><td>Bridge</td><td><code>ghcr.io</code></td><td>TCP 443</td><td>Downloading the image, when you install or update.</td></tr>
       </tbody>
     </table>
@@ -161,6 +180,16 @@ curl -s localhost:8787/healthz`}</code></pre>
       Paste the reference <code>docker-compose.yml</code> as the stack and set the same variables in the
       stack's environment instead of a <code>.env</code> file. The file lists every setting explicitly, so
       nothing else is needed. A variable that is not in the file never reaches the bridge.
+    </p>
+
+    <h3>Running a second bridge on the same host</h3>
+    <p>
+      One bridge drives one door, so a second door needs a second bridge. The reference compose uses fixed
+      names, so on a host that already runs one, put the second in its own directory and, in that copy,
+      change <code>container_name</code> and the <code>garage-bridge-data</code> volume name (both places it
+      appears). With host networking, also give it its own port, for example <code>PORT=8789</code>, and set
+      <code>PUBLIC_URL</code> to match. Give each bridge its own pair of Alarm Manager rules pointing at its own
+      address and secret.
     </p>
 
     <h3>A note on tokens</h3>
@@ -232,13 +261,22 @@ curl -s localhost:8787/healthz`}</code></pre>
     </p>
     <ul>
       <li>
-        <strong>Your own ntfy</strong>: the reference compose includes one. Set <code>NTFY_BASE_URL</code> and
-        <code>NTFY_TOPIC</code> in <code>.env</code>, then <code>docker compose --profile ntfy up -d</code>.
-      </li>
-      <li>
         <strong>ntfy.sh</strong>: set <code>NTFY_URL=https://ntfy.sh</code> and a long random
         <code>NTFY_TOPIC</code> (<code>openssl rand -hex 16</code>). The topic name is the only thing keeping
-        it private.
+        it private. Restart the bridge and subscribe to the topic in the ntfy app.
+      </li>
+      <li>
+        <strong>Your own ntfy</strong>: the reference compose includes one, which admits nobody until you
+        create a user. In <code>.env</code> set <code>NTFY_URL=http://127.0.0.1:8788</code> (where the bridge
+        publishes; <code>http://ntfy:80</code> if you published ports instead of host networking), <code>NTFY_BASE_URL=http://&lt;host-address&gt;:8788</code> (where your phone reaches it)
+        and <code>NTFY_TOPIC</code>. Then:
+        <pre><code>{`docker compose --profile ntfy up -d
+docker exec -it garage-ntfy ntfy user add --role=user garage     # asks for a password
+docker exec -it garage-ntfy ntfy access garage '<NTFY_TOPIC>' read-write
+docker exec -it garage-ntfy ntfy token add garage                # prints tk_…`}</code></pre>
+        Put the token in <code>.env</code> as <code>NTFY_TOKEN</code> and run
+        <code>docker compose --profile ntfy up -d</code> again. In the ntfy app, add the server at
+        <code>NTFY_BASE_URL</code>, sign in as <code>garage</code>, and subscribe to the topic.
       </li>
     </ul>
     <p>
