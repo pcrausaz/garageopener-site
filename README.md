@@ -24,11 +24,25 @@ src/i18n/ui.ts                 routes, locale strings, absolute()
 src/i18n/faq.ts                FAQ content for BOTH locales + the FAQPage JSON-LD
 src/config.ts                  App Store URL, support address, source repo URL
 public/                        CNAME, robots.txt, icons, og.png, _headers, _redirects
+public/shots/                  app screenshots, dark, en + fr; generated, see below
 ```
 
 **Adding a page** means adding it to `ROUTES` in `src/i18n/ui.ts` and creating it in *both* locales. The
 `hreflang` pairs, the language switcher and the sitemap all derive from that map, so a page that exists in
 only one locale will link to a 404 in the other.
+
+## Screenshots
+
+`public/shots/*.webp` come from the app's own screenshot test, never from a hand-made capture. The test pins
+the door states and a stub home in downtown Austin, so nothing personal ends up on the site. From the app repo:
+
+```bash
+cd app && bundle exec fastlane snapshot --devices "iPhone 17 Pro Max" --dark_mode true \
+  --launch_arguments "-SiteShots" --output_directory /tmp/siteshots
+```
+
+`-SiteShots` adds the Hold, Arriving-home and Stuck captures, which are not part of the App Store set. Resize
+to 660px wide and convert to WebP (`cwebp -q 82`) as `<nn-name>.<en|fr>.webp`.
 
 ## Editing rules that are easy to get wrong
 

@@ -1,0 +1,42 @@
+---
+/**
+ * A capture from the app's own screenshot test (app/GarageOpenerUITests/ScreenshotTests.swift), run dark and
+ * iPhone-only with `-SiteShots`, resized into public/shots. Regenerate them there, never by hand: the
+ * test pins the door states and the home location, so the pictures cannot drift from what the app does.
+ */
+import type { Locale } from "../i18n/ui";
+
+type Shot = "01-home-closed" | "02-home-open" | "04-activity" | "06-hold" | "07-arriving" | "08-stuck";
+interface Props { locale: Locale; shot: Shot; class?: string; eager?: boolean }
+const { locale, shot, class: cls, eager = false } = Astro.props;
+
+const alt: Record<Locale, Record<Shot, string>> = {
+  en: {
+    "01-home-closed": "Garage Opener on iPhone, showing the door closed",
+    "02-home-open": "Garage Opener on iPhone, showing the door open",
+    "04-activity": "The activity log on iPhone",
+    "06-hold": "Garage Opener holding the door open, with alerts paused",
+    "07-arriving": "The arriving-home setting, with its map",
+    "08-stuck": "Garage Opener reporting that the door did not do what was asked",
+  },
+  fr: {
+    "01-home-closed": "Garage Opener sur iPhone, porte fermée",
+    "02-home-open": "Garage Opener sur iPhone, porte ouverte",
+    "04-activity": "Le journal d’activité sur iPhone",
+    "06-hold": "Garage Opener maintient la porte ouverte, alertes en pause",
+    "07-arriving": "Le réglage d’arrivée à la maison, avec sa carte",
+    "08-stuck": "Garage Opener signale que la porte n’a pas fait ce qui était demandé",
+  },
+};
+---
+
+<div class:list={["phone", cls]}>
+  <img
+    src={`/shots/${shot}.${locale}.webp`}
+    alt={alt[locale][shot]}
+    width="660"
+    height="1434"
+    loading={eager ? "eager" : "lazy"}
+    decoding="async"
+  />
+</div>

@@ -1,44 +1,20 @@
 :root {
-  --bg: #f7f9fb;
-  --surface: #ffffff;
-  --surface-2: #eef2f6;
-  --text: #111a22;
-  --muted: #55636f;
-  --line: #dde4ec;
-  /* The app icon's gradient: closed-green #2EA366 → moving-blue #1470D6 (app/Scripts/make-icon.swift). */
-  --accent: #1470D6;
-  --accent-text: #0f5aad;
-  --ok: #1f8551;
+  /* Night: always dark, like the Protect console and a garage at 2am. The app icon's gradient,
+     closed-green #2EA366 → moving-blue #1470D6 (app/Scripts/make-icon.swift), is the only colour. */
+  --bg: #05080d;
+  --surface: rgba(255, 255, 255, .035);
+  --surface-2: rgba(255, 255, 255, .06);
+  --text: #eef3f8;
+  --muted: #8d9bab;
+  --line: rgba(255, 255, 255, .09);
+  --accent: #3b93ff;
+  --accent-text: #7cbaff;
+  --ok: #4cd08a;
   --grad: linear-gradient(135deg, #2EA366, #1470D6);
-  --radius: 12px;
+  --radius: 16px;
   --measure: 37rem;
   --wide: 68rem;
-  color-scheme: light dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0e151c;
-    --surface: #151f28;
-    --surface-2: #1b2732;
-    --text: #e9eff5;
-    --muted: #93a3b2;
-    --line: #26323e;
-    --accent: #2E86E8;
-    --accent-text: #6bb1f2;
-    --ok: #4cc084;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0e151c;
-  --surface: #151f28;
-  --surface-2: #1b2732;
-  --text: #e9eff5;
-  --muted: #93a3b2;
-  --line: #26323e;
-  --accent: #2E86E8;
-  --accent-text: #6bb1f2;
-  --ok: #4cc084;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -48,7 +24,11 @@ html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background:
+    radial-gradient(900px 600px at 85% -10%, rgba(20, 112, 214, .22), transparent 60%),
+    radial-gradient(700px 500px at 10% 5%, rgba(46, 163, 102, .14), transparent 60%),
+    var(--bg);
+  background-repeat: no-repeat;
   color: var(--text);
   font: 400 1.0625rem/1.65 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   text-rendering: optimizeLegibility;
@@ -60,7 +40,9 @@ a { color: var(--accent-text); text-underline-offset: 0.18em; }
 a:hover { text-decoration-thickness: 2px; }
 
 :where(h1, h2, h3) { line-height: 1.2; letter-spacing: -0.015em; font-weight: 680; text-wrap: balance; }
-h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.1rem); margin: 0 0 0.5em; }
+h2 { letter-spacing: -0.025em; font-weight: 700; }
+h1 { font-size: clamp(2.5rem, 1.5rem + 3.8vw, 4.4rem); line-height: 1.02; letter-spacing: -0.035em; font-weight: 760; margin: 0 0 0.5em;
+  background: linear-gradient(180deg, #ffffff 30%, #a9c2dc); -webkit-background-clip: text; background-clip: text; color: transparent; }
 h2 { font-size: clamp(1.35rem, 1.15rem + 0.9vw, 1.75rem); margin: 2.4em 0 0.6em; }
 h3 { font-size: 1.1rem; margin: 2em 0 0.4em; }
 p, li { text-wrap: pretty; }
@@ -72,7 +54,7 @@ p, li { text-wrap: pretty; }
 .skip:focus { left: 0; }
 
 /* ── header ─────────────────────────────────────────────────────────────── */
-.site-head { border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 88%, transparent); position: sticky; top: 0; z-index: 20; backdrop-filter: saturate(1.4) blur(8px); }
+.site-head { border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 70%, transparent); position: sticky; top: 0; z-index: 20; backdrop-filter: saturate(1.4) blur(8px); }
 .site-head .bar { display: flex; align-items: center; gap: 12px; min-height: 60px; flex-wrap: wrap; }
 .brand { display: inline-flex; align-items: center; gap: 9px; font-weight: 660; color: var(--text); text-decoration: none; letter-spacing: -0.01em; }
 .brand:hover { color: var(--accent-text); }
@@ -119,12 +101,13 @@ main { display: block; padding-block: 40px 72px; }
 .prose h2 + p, .prose h3 + p { margin-top: 0; }
 .lede { font-size: 1.18rem; color: var(--muted); max-width: var(--measure); }
 
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+.card { background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.02)); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+.card h3 { color: #fff; }
 .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-block: 1.4em; }
 .grid h3 { margin-top: 0; }
 .grid p:last-child { margin-bottom: 0; }
 
-.note { border-left: 3px solid var(--accent); background: var(--surface-2); padding: 12px 16px; border-radius: 0 var(--radius) var(--radius) 0; margin-block: 1.4em; }
+.note { border-left: 3px solid var(--accent); background: rgba(59, 147, 255, .07); padding: 12px 16px; border-radius: 0 var(--radius) var(--radius) 0; margin-block: 1.4em; }
 .note p:first-child { margin-top: 0; }
 .note p:last-child { margin-bottom: 0; }
 
@@ -144,30 +127,31 @@ pre code { background: none; padding: 0; font-size: 0.85rem; line-height: 1.6; }
 .faq-item > div { padding-bottom: 6px; }
 .faq-item > div > p:first-child { margin-top: 0; }
 
-.btn { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #fff; text-decoration: none; font-weight: 600; padding: 11px 20px; border-radius: 999px; border: 1px solid transparent; }
+.btn { display: inline-flex; align-items: center; gap: 8px; background: var(--grad); color: #fff; text-decoration: none; font-weight: 600; padding: 13px 22px; border-radius: 999px; border: 1px solid transparent; box-shadow: 0 8px 30px -10px rgba(20, 112, 214, .8); }
 .btn:hover { filter: brightness(1.07); }
-.btn.ghost { background: transparent; color: var(--text); border-color: var(--line); }
+.btn.ghost { background: var(--surface-2); color: var(--text); border-color: var(--line); box-shadow: none; }
 .btn.ghost:hover { background: var(--surface-2); filter: none; }
 .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-block: 1.6em; }
 
-.hero { padding-block: 24px 8px; }
-.hero-mark { display: block; border-radius: 16px; margin-bottom: 22px; box-shadow: 0 6px 20px -8px rgba(20, 112, 214, 0.55); }
+.hero { padding-block: 48px 64px; }
+.hero-mark { display: block; border-radius: 16px; margin-bottom: 22px; box-shadow: 0 0 0 1px rgba(255,255,255,.1), 0 0 60px -6px rgba(46, 163, 102, .55); }
 .grid.two { grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
 .card-foot { color: var(--muted); font-size: 0.93rem; margin-bottom: 0 !important; }
 .aside { color: var(--muted); font-size: 0.95rem; }
-.hero h1 { max-width: 17ch; }
+.hero h1 { max-width: 13ch; }
 .hero .lede { margin-bottom: 1.2em; }
-.badge { display: inline-block; font-size: 0.8rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--accent-text); background: color-mix(in srgb, var(--accent) 12%, transparent); padding: 5px 11px; border-radius: 999px; font-weight: 640; margin-bottom: 18px; }
+.badge { display: inline-block; font-size: 0.8rem; letter-spacing: 0.03em; text-transform: uppercase; color: #6fe0a3; background: rgba(76, 208, 138, .1); box-shadow: 0 0 0 1px rgba(76, 208, 138, .25) inset; padding: 5px 11px; border-radius: 999px; font-weight: 640; margin-bottom: 18px; }
+.badge::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); margin-right: 8px; vertical-align: 1px; box-shadow: 0 0 10px var(--ok); }
 
 .steps { counter-reset: s; list-style: none; padding: 0; max-width: var(--measure); }
 .steps > li { counter-increment: s; position: relative; padding-left: 44px; margin-block: 1.2em; }
 .steps > li::before {
   content: counter(s); position: absolute; left: 0; top: -1px;
   width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
-  background: var(--surface-2); border: 1px solid var(--line); color: var(--accent-text); font-weight: 680; font-size: 0.85rem;
+  background: var(--grad); border: 0; color: #fff; font-weight: 680; font-size: 0.85rem;
 }
 
-.site-foot { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--muted); font-size: 0.9rem; }
+.site-foot { border-top: 1px solid var(--line); background: rgba(0, 0, 0, .3); padding-block: 28px 40px; color: var(--muted); font-size: 0.9rem; }
 .site-foot nav { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
 .site-foot a { color: var(--muted); }
 .site-foot p { margin: 4px 0; max-width: var(--measure); }
@@ -178,3 +162,65 @@ pre code { background: none; padding: 0; font-size: 0.85rem; line-height: 1.6; }
 .checklist { list-style: none; padding-left: 0; }
 .checklist > li { position: relative; padding-left: 30px; margin-block: .5em; }
 .checklist > li::before { content: ""; position: absolute; left: 0; top: .2em; width: 16px; height: 16px; border: 2px solid var(--accent); border-radius: 4px; }
+
+/* ── home: screenshots and full-bleed bands ────────────────────────────── */
+html, body { overflow-x: clip; }
+.hero { display: grid; gap: 32px; align-items: center; }
+.hero-copy { min-width: 0; }
+.hero-art { position: relative; display: flex; justify-content: center; }
+/* The icon's gradient as light behind the phones. */
+.hero-art::before { content: ""; position: absolute; left: 50%; top: 45%; width: 120%; aspect-ratio: 1; transform: translate(-50%, -50%);
+  background: conic-gradient(from 200deg, #2EA366, #1470D6, #6a5cff, #2EA366); filter: blur(70px); opacity: .45; border-radius: 50%; }
+@media (min-width: 56rem) {
+  .hero { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 48px; }
+}
+
+/* Real App Store captures, in dark appearance so the unused lower half of each screen is black and runs
+   into the page instead of showing as a white void. The frame is cropped where the content ends. */
+.phone { position: relative; width: min(100%, 17rem); aspect-ratio: 660 / 1040; overflow: hidden; border-radius: 46px 46px 0 0;
+  padding: 9px 9px 0; background: #1a1f26; box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset, 0 40px 90px -30px #000;
+  -webkit-mask-image: linear-gradient(#000 70%, transparent); mask-image: linear-gradient(#000 70%, transparent); }
+.phone img { display: block; width: 100%; height: auto; border-radius: 38px 38px 0 0; }
+.hero-art .phone-back { position: absolute; transform: translate(34%, -6%) rotate(6deg) scale(.9); filter: brightness(.8); }
+.hero-art .phone-front { transform: translateX(-18%); }
+@media (min-width: 56rem) { .hero-art .phone { width: min(100%, 19rem); } }
+@media (max-width: 55.99rem) { .hero-art .phone { width: 13.5rem; } }
+
+.band { position: relative; padding-block: 32px 48px; }
+.band::before { content: ""; position: absolute; inset: 0 calc(50% - 50vw); z-index: -1; border-top: 1px solid var(--line); }
+.band-lead::before { border-top: 0; }
+.band > h2:first-child, .band > .phone + h2 { margin-top: 1.2em; }
+.band-lead > h2 { font-size: clamp(2rem, 1.4rem + 2.2vw, 3rem); }
+.band-lead > p { font-size: 1.2rem; color: var(--muted); }
+
+/* A section with its own screenshot: text column at the reading measure, the phone beside it, sticky
+   while a long section scrolls past. Phones alternate sides. Below the breakpoint the phone sits under
+   the heading, centred. */
+.band > .phone-side { width: 13.5rem; margin: 1.6em auto 0; }
+@media (min-width: 60rem) {
+  .band.has-phone { display: grid; grid-template-columns: minmax(0, var(--measure)) 16rem; column-gap: 64px; justify-content: center; align-items: start; }
+  .band.has-phone > * { grid-column: 1; }
+  .band.has-phone > .phone-side { grid-column: 2; grid-row: 1 / span 30; width: 100%; margin: 2.2em 0 0; position: sticky; top: 96px; }
+  .band.has-phone.phone-left { grid-template-columns: 16rem minmax(0, var(--measure)); }
+  .band.has-phone.phone-left > * { grid-column: 2; }
+  .band.has-phone.phone-left > .phone-side { grid-column: 1; }
+  .shell:not(.has-toc) .band.has-phone > :where(p, ul, ol, h2, h3, .note, .steps) { margin-inline: 0; }
+  .band-features.has-phone { grid-template-columns: 16rem minmax(0, 44rem); }
+}
+
+/* "What you actually get" as tiles. */
+.prose > ul.two-col { list-style: none; padding: 0; display: grid; gap: 12px; max-width: var(--wide); }
+@media (min-width: 60rem) {
+  .prose > ul.two-col { columns: auto; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .band.has-phone > ul.two-col { grid-template-columns: repeat(2, 1fr); }
+}
+.prose > ul.two-col > li { margin: 0; padding: 18px 20px; border-radius: var(--radius); color: var(--muted); border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.02)); }
+/* The bold lead-in stays inline: several items continue the sentence after it ("…open, with a Close button"). */
+.prose > ul.two-col > li strong:first-child { color: var(--text); }
+
+/* The diagram's labels are drawn at 12–14px in a 600-unit viewBox; stretched to the full column they
+   render at ~25px and outshout the headings. Cap it near its natural size. */
+.diagram { max-width: 44rem; margin-inline: auto; }
+/* On a phone the hero art ends in its own fade; the full hero padding under it reads as a hole. */
+@media (max-width: 55.99rem) { .hero { padding-bottom: 8px; } }

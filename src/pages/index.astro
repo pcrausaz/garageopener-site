@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import AppMark from "../components/AppMark.astro";
 import ConnectDiagram from "../components/ConnectDiagram.astro";
+import PhoneShot from "../components/PhoneShot.astro";
 import { APP_STORE_URL, CLOUD_HOST, UPDATED } from "../config";
 import { path } from "../i18n/ui";
 
@@ -23,6 +24,7 @@ const jsonLd = {
 
 <Base locale="en" route="home" title="A real smart garage door for UniFi Protect" description={description} jsonLd={jsonLd} updated={UPDATED}>
   <section class="hero">
+    <div class="hero-copy">
     <AppMark size={72} class="hero-mark" id="hero" />
     <span class="badge">Works with UniFi Protect</span>
     <h1>Your garage door, finally on your phone.</h1>
@@ -38,16 +40,25 @@ const jsonLd = {
         : <span class="btn ghost" aria-disabled="true">Coming to the App Store</span>}
       <a class="btn ghost" href={path("en", "faq")}>How it works</a>
     </div>
+    </div>
+    <div class="hero-art" aria-hidden="false">
+      <PhoneShot locale="en" shot="02-home-open" class="phone-back" />
+      <PhoneShot locale="en" shot="01-home-closed" class="phone-front" eager />
+    </div>
   </section>
 
-  <div class="prose">
+  <section class="prose band band-lead has-phone">
     <h2>The sensor decides, not the app</h2>
     <p>
       Most garage integrations fire the opener and then assume. This one doesn't. Every command is verified
       against the door sensor before the app tells you it worked, so <em>open</em> means the door is open,
       not that a relay clicked. When the door doesn't do what it was asked, you get told, clearly.
     </p>
+    <PhoneShot locale="en" shot="08-stuck" class="phone-side" />
 
+  </section>
+
+  <section class="prose band band-connect">
     <h2>Two ways to connect</h2>
     <p>You pick one during setup, and you can change your mind later.</p>
 
@@ -76,12 +87,16 @@ const jsonLd = {
       </div>
     </div>
 
+  </section>
+
+  <section class="prose band band-alerts has-phone phone-left">
     <h2 id="alerts">Being told the door is open</h2>
     <p>
       Three rules, the same either way: the door has been open too long, it's still open at your nightly
       check time, or a car is in the garage with the door up. A hold keeps it quiet when you leave it open on
       purpose. <strong>Where those rules run is the one real difference between the two setups.</strong>
     </p>
+    <PhoneShot locale="en" shot="06-hold" class="phone-side" />
     <p>
       <strong>With a bridge</strong>, they run on the bridge, on your own hardware, around the clock. The app
       shows them whenever it is running or refreshing in the background. For a notification that reaches a
@@ -120,12 +135,16 @@ const jsonLd = {
       screens. Follow it there rather than here if the two ever disagree.
     </p>
 
+  </section>
+
+  <section class="prose band band-family has-phone">
     <h2 id="family">Everyone at home, without handing out secrets</h2>
     <p>
       The usual way to give a partner access to something like this is to send them the password. Here you
       don't. From the Family screen you create a one-time invite, they scan the code or tap the link, type
       their name, and they're in. It takes about fifteen seconds and they never see your token.
     </p>
+    <PhoneShot locale="en" shot="04-activity" class="phone-side" />
     <ul>
       <li>Invites are single use and expire after fifteen minutes.</li>
       <li>You see everyone who has joined, when they last used it, and you can rename or revoke any of them on the spot.</li>
@@ -133,6 +152,9 @@ const jsonLd = {
       <li>Revoking a phone takes effect immediately, which matters when one gets lost.</li>
     </ul>
 
+  </section>
+
+  <section class="prose band band-features has-phone phone-left">
     <h2>What you actually get</h2>
     <ul class="two-col">
       <li><strong>Everywhere you'd want it.</strong> iPhone, Apple Watch, widgets, Control Center, the Action Button, Siri and Shortcuts.</li>
@@ -142,13 +164,20 @@ const jsonLd = {
       <li><strong>An activity log</strong> you can filter and export, when you run the bridge.</li>
       <li><strong>English and French</strong>, throughout, including the notifications.</li>
     </ul>
+    <PhoneShot locale="en" shot="07-arriving" class="phone-side" />
 
+  </section>
+
+  <section class="prose band band-demo">
     <h2>Try it before you wire anything</h2>
     <p>
       Demo mode runs the whole app against a simulated door, with travel time, a sensor and the alert rules.
       No console, no credentials, no hardware. It's the same mode App Review uses.
     </p>
 
+  </section>
+
+  <section class="prose band band-need">
     <h2>What you need</h2>
     <table>
       <thead><tr><th>Part</th><th>Notes</th></tr></thead>
@@ -164,5 +193,5 @@ const jsonLd = {
       <a href={path("en", "selfHosting")}>guide</a>. The relay is wired like a second wall button, and the <a href={path("en", "faq")}>FAQ</a> answers the
       questions people actually hit, starting with why the relay seems to "toggle".
     </p>
-  </div>
+  </section>
 </Base>

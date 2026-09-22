@@ -2,6 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import AppMark from "../../components/AppMark.astro";
 import ConnectDiagram from "../../components/ConnectDiagram.astro";
+import PhoneShot from "../../components/PhoneShot.astro";
 import { APP_STORE_URL, CLOUD_HOST, UPDATED } from "../../config";
 import { path } from "../../i18n/ui";
 
@@ -23,6 +24,7 @@ const jsonLd = {
 
 <Base locale="fr" route="home" title="Une vraie porte de garage connectée pour UniFi Protect" description={description} jsonLd={jsonLd} updated={UPDATED}>
   <section class="hero">
+    <div class="hero-copy">
     <AppMark size={72} class="hero-mark" id="hero" />
     <span class="badge">Compatible UniFi Protect</span>
     <h1>Votre porte de garage, enfin sur votre téléphone.</h1>
@@ -38,9 +40,14 @@ const jsonLd = {
         : <span class="btn ghost" aria-disabled="true">Bientôt sur l’App Store</span>}
       <a class="btn ghost" href={path("fr", "faq")}>Comment ça marche</a>
     </div>
+    </div>
+    <div class="hero-art" aria-hidden="false">
+      <PhoneShot locale="fr" shot="02-home-open" class="phone-back" />
+      <PhoneShot locale="fr" shot="01-home-closed" class="phone-front" eager />
+    </div>
   </section>
 
-  <div class="prose">
+  <section class="prose band band-lead has-phone">
     <h2>C’est le capteur qui décide, pas l’app</h2>
     <p>
       La plupart des intégrations de garage déclenchent le moteur puis supposent que tout s’est bien passé.
@@ -48,7 +55,11 @@ const jsonLd = {
       a réussi : <em>ouverte</em> signifie donc que la porte est ouverte, pas qu’un relais a cliqué. Et quand
       la porte ne fait pas ce qu’on lui a demandé, on vous le dit clairement.
     </p>
+    <PhoneShot locale="fr" shot="08-stuck" class="phone-side" />
 
+  </section>
+
+  <section class="prose band band-connect">
     <h2>Deux façons de se connecter</h2>
     <p>Vous en choisissez une pendant la configuration, et vous pouvez changer d’avis ensuite.</p>
 
@@ -77,6 +88,9 @@ const jsonLd = {
       </div>
     </div>
 
+  </section>
+
+  <section class="prose band band-alerts has-phone phone-left">
     <h2 id="alerts">Être prévenu que la porte est ouverte</h2>
     <p>
       Trois règles, identiques dans les deux cas : la porte est ouverte depuis trop longtemps, elle l’est
@@ -84,6 +98,7 @@ const jsonLd = {
       fait taire le tout quand vous la laissez ouverte volontairement.
       <strong>Là où ces règles s’exécutent est la seule vraie différence entre les deux configurations.</strong>
     </p>
+    <PhoneShot locale="fr" shot="06-hold" class="phone-side" />
     <p>
       <strong>Avec un bridge</strong>, elles s’exécutent sur le bridge, sur votre propre matériel, en
       permanence. L’app les affiche quand elle est ouverte ou qu’elle se rafraîchit en arrière-plan. Pour une
@@ -124,12 +139,16 @@ const jsonLd = {
       Manager. En cas de divergence, suivez celle de l’app plutôt que celle-ci.
     </p>
 
+  </section>
+
+  <section class="prose band band-family has-phone">
     <h2 id="family">Toute la maison, sans distribuer de secret</h2>
     <p>
       D’habitude, pour donner l’accès à son conjoint, on lui envoie le mot de passe. Ici, non. Depuis l’écran
       Famille, vous créez une invitation à usage unique ; l’autre personne scanne le code ou touche le lien,
       saisit son nom, et c’est fait. Une quinzaine de secondes, et elle ne voit jamais votre jeton.
     </p>
+    <PhoneShot locale="fr" shot="04-activity" class="phone-side" />
     <ul>
       <li>Les invitations sont à usage unique et expirent au bout de quinze minutes.</li>
       <li>Vous voyez qui a rejoint, la dernière utilisation, et vous pouvez renommer ou révoquer sur-le-champ.</li>
@@ -137,6 +156,9 @@ const jsonLd = {
       <li>Une révocation prend effet immédiatement, ce qui compte le jour où un téléphone se perd.</li>
     </ul>
 
+  </section>
+
+  <section class="prose band band-features has-phone phone-left">
     <h2>Ce que vous obtenez vraiment</h2>
     <ul class="two-col">
       <li><strong>Partout où c’est utile.</strong> iPhone, Apple Watch, widgets, Centre de contrôle, bouton Action, Siri et Raccourcis.</li>
@@ -146,7 +168,11 @@ const jsonLd = {
       <li><strong>Un journal d’activité</strong> filtrable et exportable, quand vous utilisez le bridge.</li>
       <li><strong>Français et anglais</strong>, partout, y compris dans les notifications.</li>
     </ul>
+    <PhoneShot locale="fr" shot="07-arriving" class="phone-side" />
 
+  </section>
+
+  <section class="prose band band-demo">
     <h2>Essayez avant de câbler quoi que ce soit</h2>
     <p>
       Le mode Démo fait tourner toute l’app sur une porte simulée, avec temps de course, capteur et règles
@@ -154,6 +180,9 @@ const jsonLd = {
       l’App Store.
     </p>
 
+  </section>
+
+  <section class="prose band band-need">
     <h2>Ce qu’il vous faut</h2>
     <table>
       <thead><tr><th>Élément</th><th>Remarques</th></tr></thead>
@@ -169,5 +198,5 @@ const jsonLd = {
       <a href={path("fr", "selfHosting")}>guide</a>. Le relais se câble comme un second bouton mural, et la <a href={path("fr", "faq")}>FAQ</a> répond aux
       questions qu’on se pose vraiment, à commencer par celle du relais qui semble « basculer ».
     </p>
-  </div>
+  </section>
 </Base>
