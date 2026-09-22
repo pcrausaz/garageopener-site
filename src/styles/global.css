@@ -1,42 +1,44 @@
 :root {
-  --bg: #fbfaf8;
+  --bg: #f7f9fb;
   --surface: #ffffff;
-  --surface-2: #f3f1ed;
-  --text: #1a1916;
-  --muted: #5d5a53;
-  --line: #e2ded6;
-  --accent: #b4541e;
-  --accent-text: #8f4218;
-  --ok: #2f6b3f;
+  --surface-2: #eef2f6;
+  --text: #111a22;
+  --muted: #55636f;
+  --line: #dde4ec;
+  /* The app icon's gradient: closed-green #2EA366 → moving-blue #1470D6 (app/Scripts/make-icon.swift). */
+  --accent: #1470D6;
+  --accent-text: #0f5aad;
+  --ok: #1f8551;
+  --grad: linear-gradient(135deg, #2EA366, #1470D6);
   --radius: 12px;
-  --measure: 34rem;
-  --wide: 62rem;
+  --measure: 37rem;
+  --wide: 68rem;
   color-scheme: light dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #14130f;
-    --surface: #1c1b17;
-    --surface-2: #232219;
-    --text: #f0ece3;
-    --muted: #a8a294;
-    --line: #322f27;
-    --accent: #e8944f;
-    --accent-text: #f0a868;
-    --ok: #7fc08f;
+    --bg: #0e151c;
+    --surface: #151f28;
+    --surface-2: #1b2732;
+    --text: #e9eff5;
+    --muted: #93a3b2;
+    --line: #26323e;
+    --accent: #2E86E8;
+    --accent-text: #6bb1f2;
+    --ok: #4cc084;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #14130f;
-  --surface: #1c1b17;
-  --surface-2: #232219;
-  --text: #f0ece3;
-  --muted: #a8a294;
-  --line: #322f27;
-  --accent: #e8944f;
-  --accent-text: #f0a868;
-  --ok: #7fc08f;
+  --bg: #0e151c;
+  --surface: #151f28;
+  --surface-2: #1b2732;
+  --text: #e9eff5;
+  --muted: #93a3b2;
+  --line: #26323e;
+  --accent: #2E86E8;
+  --accent-text: #6bb1f2;
+  --ok: #4cc084;
 }
 
 * { box-sizing: border-box; }
@@ -74,7 +76,7 @@ p, li { text-wrap: pretty; }
 .site-head .bar { display: flex; align-items: center; gap: 12px; min-height: 60px; flex-wrap: wrap; }
 .brand { display: inline-flex; align-items: center; gap: 9px; font-weight: 660; color: var(--text); text-decoration: none; letter-spacing: -0.01em; }
 .brand:hover { color: var(--accent-text); }
-.brand .mark { width: 26px; height: 26px; flex: none; }
+.brand .mark { width: 26px; height: 26px; flex: none; border-radius: 6px; display: block; }
 .site-head nav { margin-left: auto; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .site-head nav a { color: var(--muted); text-decoration: none; padding: 7px 10px; border-radius: 8px; font-size: 0.94rem; }
 .site-head nav a:hover { color: var(--text); background: var(--surface-2); }
@@ -83,12 +85,36 @@ p, li { text-wrap: pretty; }
 
 /* ── page body ──────────────────────────────────────────────────────────── */
 main { display: block; padding-block: 40px 72px; }
+
+/* Wide screens put the page's own contents list beside the prose. Below that it sits inline, above the
+   text, which is where a phone wants it anyway. */
+.shell { display: grid; gap: 40px; align-items: start; }
+.shell-main { min-width: 0; }
+.updated { color: var(--muted); font-size: 0.875rem; margin-top: 3em; }
+@media (min-width: 62rem) {
+  .shell.has-toc { grid-template-columns: minmax(0, 1fr) 15rem; }
+  .shell.has-toc > .toc { order: 2; position: sticky; top: 84px; }
+}
+.toc { font-size: 0.9rem; }
+.toc h2 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin: 0 0 10px; font-weight: 640; }
+.toc ol { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--line); }
+.toc li { margin: 0; }
+.toc a { display: block; padding: 5px 0 5px 14px; margin-left: -2px; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; }
+.toc a:hover { color: var(--text); border-left-color: var(--line); }
+:where(h2, h3)[id] { scroll-margin-top: 86px; }
 /* The measure belongs to the running text, not to the column. Grids and tables are wide content and
    would otherwise be squeezed into a 34rem gutter alongside the prose they illustrate. */
 .prose { max-width: var(--wide); }
+/* Centre the text column when there is nothing in the right-hand space; left-aligned prose against a
+   large empty gutter reads as unfinished rather than as a deliberate measure. */
+.shell:not(.has-toc) .prose > :where(p, ul, ol, h1, h2, h3, blockquote, .note, details, .steps, .faq-item, .lede) { margin-inline: auto; }
 .prose > :where(p, ul, ol, h2, h3, blockquote, .note, details) { max-width: var(--measure); }
 .prose > p, .prose > ul, .prose > ol { margin-block: 0 1.1em; }
 .prose ul, .prose ol { padding-left: 1.3em; }
+@media (min-width: 60rem) {
+  .prose > ul.two-col { max-width: var(--wide); columns: 2; column-gap: 48px; }
+  .prose > ul.two-col > li { break-inside: avoid; margin-top: 0; }
+}
 .prose li { margin-block: 0.35em; }
 .prose h2 + p, .prose h3 + p { margin-top: 0; }
 .lede { font-size: 1.18rem; color: var(--muted); max-width: var(--measure); }
@@ -125,6 +151,10 @@ pre code { background: none; padding: 0; font-size: 0.85rem; line-height: 1.6; }
 .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-block: 1.6em; }
 
 .hero { padding-block: 24px 8px; }
+.hero-mark { display: block; border-radius: 16px; margin-bottom: 22px; box-shadow: 0 6px 20px -8px rgba(20, 112, 214, 0.55); }
+.grid.two { grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+.card-foot { color: var(--muted); font-size: 0.93rem; margin-bottom: 0 !important; }
+.aside { color: var(--muted); font-size: 0.95rem; }
 .hero h1 { max-width: 17ch; }
 .hero .lede { margin-bottom: 1.2em; }
 .badge { display: inline-block; font-size: 0.8rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--accent-text); background: color-mix(in srgb, var(--accent) 12%, transparent); padding: 5px 11px; border-radius: 999px; font-weight: 640; margin-bottom: 18px; }

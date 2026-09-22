@@ -11,8 +11,8 @@ const description =
   <div class="prose">
     <h1>Support</h1>
     <p class="lede">
-      This is a one-person project. That means you'll get a real answer from someone who knows the code — and
-      that it may take a few days.
+      This is a one-person project. That means you'll get a real answer from someone who knows the code,
+      and that it may take a few days.
     </p>
 
     <h2>Before you write</h2>
@@ -33,9 +33,9 @@ const description =
     <h2>What to include</h2>
     <p>Nearly every question comes down to these five things. Sending them up front usually turns three exchanges into one:</p>
     <ol>
-      <li><strong>What the bridge says about itself</strong> — the output of <code>curl -s http://&lt;bridge-host&gt;:8787/healthz</code>. If you don't run a bridge, say so.</li>
-      <li><strong>Your Protect version</strong> — console → Settings → System, or the <code>applicationVersion</code> in the healthz output above.</li>
-      <li><strong>The app version</strong> — Settings, at the bottom.</li>
+      <li><strong>What the bridge says about itself.</strong> The output of <code>curl -s http://&lt;bridge-host&gt;:8787/healthz</code>. If you don't run a bridge, say so.</li>
+      <li><strong>Your Protect version.</strong> Console → Settings → System, or the <code>applicationVersion</code> in the healthz output above.</li>
+      <li><strong>The app version.</strong> In Settings, at the bottom.</li>
       <li><strong>Your relay and sensor model</strong>, and how the relay output is configured (Pulse or not, and its pulse duration).</li>
       <li><strong>What you expected and what happened</strong>, with rough times, so it can be lined up against the activity log.</li>
     </ol>
@@ -53,7 +53,7 @@ const description =
       <li><strong>iOS and watchOS only.</strong> There is no Android app and none is planned.</li>
       <li><strong>A stopped door reads as open.</strong> A tilt sensor reports the same contact for a door stopped part-way as for one standing fully open, so the app remembers the direction rather than pretending to measure it.</li>
       <li><strong>Cloud alerts cannot close the door.</strong> The service never holds a credential to your console; “Close now” is carried out by the app, over your own connection.</li>
-      <li><strong>Lost webhooks look like an open door.</strong> If your console never sends the “closed” event, cloud alerts keep believing the door is open — which is why the wording says “reported”.</li>
+      <li><strong>Lost webhooks look like an open door.</strong> If your console never sends the “closed” event, cloud alerts keep believing the door is open, which is why the wording says “reported”.</li>
       <li><strong>Protect can change.</strong> Ubiquiti may alter the integration API at any time; when that happens, things break until there is an update.</li>
     </ul>
 

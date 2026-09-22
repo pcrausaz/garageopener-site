@@ -22,13 +22,31 @@ const jsonLd = {
 };
 ---
 
-<Base locale="fr" route="selfHosting" title="Auto-héberger le bridge" description={description} jsonLd={jsonLd} updated={UPDATED}>
+<Base
+  locale="fr"
+  route="selfHosting"
+  title="Auto-héberger le bridge"
+  description={description}
+  jsonLd={jsonLd}
+  updated={UPDATED}
+  toc={[
+    { id: "before", label: "Avant de commencer" },
+    { id: "run", label: "Le lancer" },
+    { id: "pair", label: "Appairer son téléphone" },
+    { id: "webhooks", label: "Webhooks de la console" },
+    { id: "certs", label: "Certificats" },
+    { id: "remote", label: "Depuis l’extérieur" },
+    { id: "updating", label: "Le tenir à jour" },
+    { id: "source", label: "Sources et licence" },
+    { id: "scope", label: "Hors périmètre" },
+  ]}
+>
   <div class="prose">
     <h1>Auto-héberger le bridge</h1>
     <p class="lede">
       Le bridge est un petit service dans un conteneur. Il parle à votre console Protect, tient la machine à
       états de la porte, sert l’app et exécute les règles d’alerte. Il tourne sur un NAS, un Raspberry Pi ou
-      n’importe quelle machine avec Docker — amd64 et arm64.
+      n’importe quelle machine avec Docker, sur amd64 et arm64.
     </p>
 
     <div class="note">
@@ -40,12 +58,12 @@ const jsonLd = {
       </p>
     </div>
 
-    <h2>Avant de commencer</h2>
+    <h2 id="before">Avant de commencer</h2>
     <ol class="steps">
       <li>
         <strong>Configurez une sortie de relais en Pulse.</strong> Dans Protect, ouvrez le relais et
         configurez en <em>Pulse</em>, type porte de garage, la sortie câblée sur les bornes du bouton-poussoir
-        de votre moteur. Notez de quelle sortie il s’agit — la numérotation commence à 1 dans l’app, mais les
+        de votre moteur. Notez de quelle sortie il s’agit : la numérotation commence à 1 dans l’app, mais les
         identifiants de l’API commencent à 0.
       </li>
       <li>
@@ -65,16 +83,16 @@ const jsonLd = {
       </li>
     </ol>
 
-    <h2>Le lancer</h2>
+    <h2 id="run">Le lancer</h2>
     <p>
       Créez un dossier, déposez-y un <code>docker-compose.yml</code> et un <code>.env</code>, puis démarrez :
     </p>
 
-    <pre><code>{`# .env — les cinq valeurs qui comptent
-GARAGE_BRIDGE_TAG=0.4.1                 # épinglez une version ; latest est un tag de développement
+    <pre><code>{`# .env : les cinq valeurs qui comptent
+GARAGE_BRIDGE_TAG=latest                # voir « le tenir à jour » plus bas
 PROTECT_URL=https://192.168.1.1         # votre console, avec https://
 PROTECT_API_KEY=…                       # la clé que vous venez de créer
-BRIDGE_TOKENS=$(openssl rand -hex 24)   # jeton admin — générez-le, ne l'inventez pas
+BRIDGE_TOKENS=$(openssl rand -hex 24)   # jeton admin : générez-le, ne l'inventez pas
 WEBHOOK_SECRET=$(openssl rand -hex 24)  # secret de chemin pour le webhook Alarm Manager
 TZ=Europe/Zurich`}</code></pre>
 
@@ -82,9 +100,9 @@ TZ=Europe/Zurich`}</code></pre>
 curl -s localhost:8787/healthz`}</code></pre>
 
     <p>
-      Vous devriez obtenir <code>{`{"ok":true,"ready":true,…}`}</code> avec une <code>version</code>
-      correspondant au tag épinglé. Si <code>ready</code> vaut <code>false</code>, le bridge tourne mais n’a
-      pas encore joint la console — le message indique pourquoi.
+      Vous devriez obtenir <code>{`{"ok":true,"ready":true,…}`}</code>, avec la <code>version</code>
+      réellement en cours d’exécution. Si <code>ready</code> vaut <code>false</code>, le bridge tourne mais
+      n’a pas encore joint la console, et le message indique pourquoi.
     </p>
 
     <h3>À propos des jetons</h3>
@@ -98,28 +116,28 @@ curl -s localhost:8787/healthz`}</code></pre>
     <h3>Réseau de l’hôte, ou pas</h3>
     <p>
       L’app trouve le bridge via Bonjour, et le multicast ne traverse pas le réseau bridge de Docker : le
-      compose de référence utilise donc <code>network_mode: host</code>. Si ce n’est pas possible chez vous —
-      Docker Desktop sur macOS ou Windows — publiez plutôt <code>8787:8787</code>, mettez
+      compose de référence utilise donc <code>network_mode: host</code>. Si ce n’est pas possible chez vous,
+      par exemple sur Docker Desktop pour macOS ou Windows, publiez plutôt <code>8787:8787</code>, mettez
       <code>BONJOUR=false</code> et saisissez l’adresse dans l’app. Tout est identique, sauf la découverte.
     </p>
 
-    <h2>Appairer votre téléphone</h2>
+    <h2 id="pair">Appairer votre téléphone</h2>
     <p>
       Ne copiez pas votre jeton admin dans l’app. Tant qu’aucun téléphone n’a rejoint, le bridge affiche une
       invitation à usage unique au démarrage :
     </p>
     <pre><code>docker logs garage-bridge | tail -20</code></pre>
     <p>
-      Collez le lien <code>garageopener://join…</code> — ou simplement le code — dans la feuille
+      Collez le lien <code>garageopener://join…</code>, ou simplement le code, dans la feuille
       <strong>Famille → Rejoindre</strong> de l’app. Il est valable quinze minutes ; redémarrez le conteneur
       pour en obtenir un nouveau. Dès qu’un téléphone a rejoint, l’affichage cesse et les téléphones suivants
       sont invités depuis l’app elle-même.
     </p>
 
-    <h2>Laisser la console informer le bridge</h2>
+    <h2 id="webhooks">Laisser la console informer le bridge</h2>
     <p>
       Le bridge interroge la console régulièrement, mais les webhooks le font réagir immédiatement. Dans
-      Protect, créez deux règles Alarm Manager — capteur <em>ouvert</em> et <em>fermé</em> — publiant toutes
+      Protect, créez deux règles Alarm Manager, capteur <em>ouvert</em> et <em>fermé</em>, publiant toutes
       deux vers :
     </p>
     <pre><code>http://&lt;hôte-du-bridge&gt;:8787/v1/webhooks/alarm-manager/&lt;WEBHOOK_SECRET&gt;</code></pre>
@@ -129,7 +147,7 @@ curl -s localhost:8787/healthz`}</code></pre>
       effet, vérifiez d’abord le secret.
     </p>
 
-    <h2>Certificats</h2>
+    <h2 id="certs">Certificats</h2>
     <p>
       Votre console présente un certificat auto-signé : la valeur par défaut est donc
       <code>PROTECT_TLS=insecure</code>, ce qui convient sur un réseau local. Épinglez-le correctement une
@@ -144,7 +162,7 @@ curl -s localhost:8787/healthz`}</code></pre>
       votre clé d’API à quiconque se trouve sur le chemin.
     </p>
 
-    <h2>Y accéder depuis l’extérieur</h2>
+    <h2 id="remote">Y accéder depuis l’extérieur</h2>
     <p>
       Définissez <code>PUBLIC_URL</code> sur l’adresse que le téléphone utilisera : c’est elle que portent les
       liens d’invitation. Ensuite, choisissez :
@@ -163,30 +181,49 @@ curl -s localhost:8787/healthz`}</code></pre>
         <code>TRUST_PROXY</code> compte davantage qu’il n’y paraît. Sans lui, toutes les requêtes semblent
         venir du proxy : la limite par adresse sur les invitations devient cinq par minute pour tout votre
         foyer. Avec lui, alors que rien en amont ne filtre <code>X-Forwarded-For</code>, un appelant peut
-        déclarer l’adresse qu’il veut — ne l’activez donc que si un proxy que vous contrôlez est réellement
+        déclarer l’adresse qu’il veut : ne l’activez donc que si un proxy que vous contrôlez est réellement
         en place.
       </p>
     </div>
 
-    <h2>Le tenir à jour</h2>
+    <h2 id="updating">Le tenir à jour</h2>
     <p>
-      Épinglez une version et changez-la délibérément. <code>latest</code> est le tag de développement et peut
-      bouger sous vos pieds. Le changelog indique ce qui a changé et signale tout ce qui demande une
-      modification de configuration avant la mise à jour.
+      <code>latest</code> est la valeur par défaut et convient à la plupart des gens. Docker ne met jamais un
+      conteneur à jour tout seul : <code>latest</code> signifie simplement que vous obtiendrez la version
+      courante au prochain <em>pull</em> que vous déciderez de faire. Vous restez donc sur les correctifs de
+      sécurité sans avoir à suivre les publications.
     </p>
     <pre><code>{`docker compose pull && docker compose up -d
-curl -s localhost:8787/healthz   # vérifiez que la version est bien celle voulue`}</code></pre>
-
-    <h2>Sources et licence</h2>
+curl -s localhost:8787/healthz   # vérifiez la version récupérée`}</code></pre>
     <p>
-      {SOURCE_REPO_URL
-        ? <Fragment>Le bridge et le Worker d’alertes cloud sont open source sous licence Apache-2.0 : <a href={SOURCE_REPO_URL}>{SOURCE_REPO_URL}</a>. L’app iOS ne l’est pas.</Fragment>
-        : <Fragment>Le bridge est actuellement distribué sous forme d’image de conteneur (<code>{BRIDGE_IMAGE}</code>). Les sources du bridge et du Worker d’alertes cloud sont en cours de préparation pour une publication sous licence Apache-2.0 ; cette page y renverra quand elles seront réellement disponibles, et pas avant.</Fragment>}
+      Épinglez plutôt une version exacte, <code>GARAGE_BRIDGE_TAG=0.4.1</code>, si vous voulez que les mises à
+      jour soient une décision et non un effet de bord d’un <em>pull</em>, ou si vous utilisez un outil de
+      mise à jour automatique comme Watchtower. Avec <code>latest</code> et une mise à jour automatique
+      combinés, une version exigeant un changement de configuration redémarrerait votre bridge sur un refus
+      de démarrer, sans que vous le voyiez.
+    </p>
+    <p>
+      Dans tous les cas, lisez le changelog avant un <em>pull</em>. Tout ce qui demande de toucher à la
+      configuration figure sous <strong>Action required</strong>, et le bridge échoue bruyamment au démarrage
+      plutôt que de tourner dans un état dégradé.
     </p>
 
-    <h2>Hors périmètre</h2>
+    <h2 id="source">Sources et licence</h2>
     <p>
-      Une porte par bridge. UniFi Protect uniquement — pas d’autres relais, pas d’autres hubs. Aucune
+      {SOURCE_REPO_URL
+        ? <Fragment>Le bridge et son contrat OpenAPI sont open source sous licence Apache-2.0 : <a href={SOURCE_REPO_URL}>{SOURCE_REPO_URL}</a>. Vous le faites tourner sur votre propre matériel avec un identifiant vers votre console : vous devez pouvoir le lire.</Fragment>
+        : <Fragment>Le bridge est actuellement distribué sous forme d’image de conteneur (<code>{BRIDGE_IMAGE}</code>). Ses sources, avec le contrat OpenAPI, sont en cours de préparation pour une publication sous licence Apache-2.0. Cette page y renverra quand elles seront réellement disponibles, et pas avant.</Fragment>}
+    </p>
+    <p>
+      L’app iOS n’est pas open source, et le service d’alertes cloud non plus. Ce service est quelque chose
+      que nous exploitons, pas que vous faites tourner ; il ne détient aucun identifiant vers votre console et
+      ne peut rien ouvrir ni fermer. Ce qu’il conserve est décrit intégralement sur la
+      <a href={path("fr", "privacy")}> page de confidentialité</a>.
+    </p>
+
+    <h2 id="scope">Hors périmètre</h2>
+    <p>
+      Une porte par bridge. UniFi Protect uniquement, sans autres relais ni autres hubs. Aucune
       intégration Home Assistant. Pas d’Android. Une installation sans Docker (Node 22 directement)
       fonctionnera mais n’est pas prise en charge : Docker est le chemin testé, et le seul que couvrent ces
       instructions.

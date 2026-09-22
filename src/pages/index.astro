@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
-import { APP_STORE_URL, UPDATED } from "../config";
+import AppMark from "../components/AppMark.astro";
+import { APP_STORE_URL, CLOUD_HOST, UPDATED } from "../config";
 import { path } from "../i18n/ui";
 
 const description =
@@ -21,11 +22,12 @@ const jsonLd = {
 
 <Base locale="en" route="home" title="A real smart garage door for UniFi Protect" description={description} jsonLd={jsonLd} updated={UPDATED}>
   <section class="hero">
+    <AppMark size={72} class="hero-mark" id="hero" />
     <span class="badge">Works with UniFi Protect</span>
     <h1>Your garage door, finally on your phone.</h1>
     <p class="lede">
       You already have a UniFi Protect console, a relay wired to the opener and a sensor on the door.
-      Garage Opener turns those into a proper smart garage door — on your iPhone, your Apple Watch, your Lock
+      Garage Opener turns those into a proper smart garage door, on your iPhone, your Apple Watch, your Lock
       Screen and in Siri. No hub. No subscription. No Home Assistant.
     </p>
 
@@ -41,70 +43,121 @@ const jsonLd = {
     <h2>The sensor decides, not the app</h2>
     <p>
       Most garage integrations fire the opener and then assume. This one doesn't. Every command is verified
-      against the door sensor before the app tells you it worked, so <em>open</em> means the door is open —
+      against the door sensor before the app tells you it worked, so <em>open</em> means the door is open,
       not that a relay clicked. When the door doesn't do what it was asked, you get told, clearly.
     </p>
 
-    <h2>Three ways to run it</h2>
-    <p>Pick one during setup. You can change your mind later.</p>
+    <h2>Two ways to connect</h2>
+    <p>You pick one during setup, and you can change your mind later.</p>
 
-    <div class="grid">
+    <div class="grid two">
       <div class="card">
-        <h3>Connect to Protect directly</h3>
+        <h3>Straight to your console</h3>
         <p>
-          The app talks to your console on your home network. Nothing else to install, nothing else to keep
+          The app talks to UniFi Protect on your home network. Nothing else to install, nothing else to keep
           running. The simplest setup, and the right one for most people.
         </p>
+        <p class="card-foot">Alerts come from the optional cloud service, below.</p>
       </div>
       <div class="card">
-        <h3>Run the bridge</h3>
+        <h3>Through your own bridge</h3>
         <p>
-          A small service on a NAS, a Pi or any box with Docker. Adds always-on alert rules, an activity log
-          you can export, family invites and Shortcuts that work when your phone is asleep.
-          <a href={path("en", "selfHosting")}>Self-hosting guide →</a>
+          A small container on a NAS, a Pi or any box with Docker. It holds one connection to the console and
+          runs the alert rules itself, whether or not a phone is awake. It also adds an activity log you can
+          export and Shortcuts that work reliably in the background.
         </p>
-      </div>
-      <div class="card">
-        <h3>Cloud alerts</h3>
-        <p>
-          No bridge, but you still want to be told when the door is left open. Your console posts door events
-          to a small service we run; it pushes a notification back. It never holds your Protect key.
-          <a href={path("en", "privacy")}>What it stores →</a>
+        <p class="card-foot">
+          Alerts run on the bridge, so no cloud service is involved.
+          <a href={path("en", "selfHosting")}>Self-hosting guide</a>
         </p>
       </div>
     </div>
 
-    <h2>What you actually get</h2>
+    <h2 id="alerts">Being told the door is open</h2>
+    <p>
+      Three rules, the same either way: the door has been open too long, it's still open at your nightly
+      check time, or a car is in the garage with the door up. A hold keeps it quiet when you leave it open on
+      purpose. <strong>Where those rules run is the one real difference between the two setups.</strong>
+    </p>
+    <p>
+      <strong>With a bridge</strong>, they run on the bridge, on your own hardware. Nothing leaves your
+      network and there is nothing to enable.
+    </p>
+    <p>
+      <strong>Without one</strong>, the app can only watch the door while it is running, which is no good for
+      a door left open at 2am. So there is an optional keyless service you can switch on:
+    </p>
+    <ol class="steps">
+      <li>
+        Turn on <strong>Cloud alerts</strong> in the app. It creates an anonymous install on
+        <code>{CLOUD_HOST}</code> and hands you a private webhook address. No account, no email, no password.
+      </li>
+      <li>
+        Paste that address into two Alarm Manager rules on your console, one for the sensor opening and one
+        for it closing. The app shows you the address and walks you through it.
+      </li>
+      <li>
+        Your console posts an event when the door moves. The service starts a timer and pushes you a
+        notification if a rule fires, in English or French, with buttons on it.
+      </li>
+    </ol>
+    <div class="note">
+      <p>
+        <strong>The service never holds a credential to your console</strong>, so it cannot open or close
+        anything, and it never receives images or your Protect API key. It keeps the event type, the sensor
+        id and the time, for seven days. Tapping <em>Close now</em> on a notification is carried out by the
+        app itself, over your own connection.
+        <a href={path("en", "privacy")}>Exactly what is stored</a>.
+      </p>
+    </div>
+    <p class="aside">
+      The app has the current, detailed version of this setup built into it, including the Alarm Manager
+      screens. Follow it there rather than here if the two ever disagree.
+    </p>
+
+    <h2 id="family">Everyone at home, without handing out secrets</h2>
+    <p>
+      The usual way to give a partner access to something like this is to send them the password. Here you
+      don't. From the Family screen you create a one-time invite, they scan the code or tap the link, type
+      their name, and they're in. It takes about fifteen seconds and they never see your token.
+    </p>
     <ul>
-      <li><strong>Everywhere you'd want it</strong> — iPhone, Apple Watch, widgets, Control Center, the Action Button, Siri and Shortcuts.</li>
-      <li><strong>A Live Activity while the door is open</strong>, with a Close button on the Lock Screen.</li>
-      <li><strong>Told when it matters</strong> — open too long, still open at night, or a car in the garage with the door up. Hold it open when you mean to.</li>
+      <li>Invites are single use and expire after fifteen minutes.</li>
+      <li>You see everyone who has joined, when they last used it, and you can rename or revoke any of them on the spot.</li>
+      <li>The activity log records who opened the door by name, not by device.</li>
+      <li>Revoking a phone takes effect immediately, which matters when one gets lost.</li>
+    </ul>
+
+    <h2>What you actually get</h2>
+    <ul class="two-col">
+      <li><strong>Everywhere you'd want it.</strong> iPhone, Apple Watch, widgets, Control Center, the Action Button, Siri and Shortcuts.</li>
+      <li><strong>A Live Activity while the door is open</strong>, with a Close button right on the Lock Screen.</li>
       <li><strong>Arriving home</strong> gets you a notification with an Open button. Nothing ever opens by itself.</li>
       <li><strong>Stop part-way</strong>, and the next press goes the way you expect.</li>
-      <li><strong>Family without secrets</strong> — other phones join with a one-time invite, and you can see and revoke them.</li>
-      <li><strong>English and French</strong>, throughout.</li>
+      <li><strong>An activity log</strong> you can filter and export, when you run the bridge.</li>
+      <li><strong>English and French</strong>, throughout, including the notifications.</li>
     </ul>
 
     <h2>Try it before you wire anything</h2>
     <p>
-      Demo mode runs the whole app against a simulated door — travel time, sensor, alerts, the lot. No
-      console, no credentials, no hardware. It's the same mode App Review uses.
+      Demo mode runs the whole app against a simulated door, with travel time, a sensor and the alert rules.
+      No console, no credentials, no hardware. It's the same mode App Review uses.
     </p>
 
     <h2>What you need</h2>
     <table>
       <thead><tr><th>Part</th><th>Notes</th></tr></thead>
       <tbody>
-        <tr><td>A UniFi Protect console</td><td>Tested on Protect 7.2.x. A UDM, Cloud Key or Dream Machine — anything that runs Protect and offers an integration API key.</td></tr>
+        <tr><td>A UniFi Protect console</td><td>Tested on Protect 7.2.x. A UDM, Cloud Key or Dream Machine, anything that runs Protect and offers an integration API key.</td></tr>
         <tr><td>A relay with an output set to <strong>Pulse</strong></td><td>Wired across your opener's push-button terminals, exactly like the wall button.</td></tr>
-        <tr><td>An all-in-one sensor, mounted as <strong>Garage</strong></td><td>This is the part that makes it honest — it's what reports whether the door is really open.</td></tr>
+        <tr><td>An all-in-one sensor, mounted as <strong>Garage</strong></td><td>This is the part that makes it honest. It's what reports whether the door is really open.</td></tr>
         <tr><td>An iPhone on a recent iOS</td><td>Apple Watch optional.</td></tr>
       </tbody>
     </table>
     <p>
       Setting the hardware up is covered step by step in the
       <a href={path("en", "selfHosting")}>guide</a>, and the <a href={path("en", "faq")}>FAQ</a> answers the
-      questions people actually hit — starting with why the relay seems to "toggle".
+      questions people actually hit, starting with why the relay seems to "toggle".
     </p>
   </div>
 </Base>

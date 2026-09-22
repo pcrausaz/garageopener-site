@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { APP_STORE_URL, UPDATED } from "../../config";
+import AppMark from "../../components/AppMark.astro";
+import { APP_STORE_URL, CLOUD_HOST, UPDATED } from "../../config";
 import { path } from "../../i18n/ui";
 
 const description =
@@ -21,11 +22,12 @@ const jsonLd = {
 
 <Base locale="fr" route="home" title="Une vraie porte de garage connectée pour UniFi Protect" description={description} jsonLd={jsonLd} updated={UPDATED}>
   <section class="hero">
+    <AppMark size={72} class="hero-mark" id="hero" />
     <span class="badge">Compatible UniFi Protect</span>
     <h1>Votre porte de garage, enfin sur votre téléphone.</h1>
     <p class="lede">
       Vous avez déjà une console UniFi Protect, un relais câblé sur le moteur et un capteur sur la porte.
-      Garage Opener en fait une vraie porte de garage connectée — sur votre iPhone, votre Apple Watch, votre
+      Garage Opener en fait une vraie porte de garage connectée, sur votre iPhone, votre Apple Watch, votre
       écran verrouillé et dans Siri. Sans hub. Sans abonnement. Sans Home Assistant.
     </p>
 
@@ -46,52 +48,104 @@ const jsonLd = {
       la porte ne fait pas ce qu’on lui a demandé, on vous le dit clairement.
     </p>
 
-    <h2>Trois façons de l’utiliser</h2>
-    <p>Vous choisissez pendant la configuration, et vous pouvez changer d’avis ensuite.</p>
+    <h2>Deux façons de se connecter</h2>
+    <p>Vous en choisissez une pendant la configuration, et vous pouvez changer d’avis ensuite.</p>
 
-    <div class="grid">
+    <div class="grid two">
       <div class="card">
-        <h3>Connexion directe à Protect</h3>
+        <h3>Directement à votre console</h3>
         <p>
-          L’app parle à votre console sur votre réseau domestique. Rien d’autre à installer, rien d’autre à
+          L’app parle à UniFi Protect sur votre réseau domestique. Rien d’autre à installer, rien d’autre à
           maintenir. La configuration la plus simple, et la bonne pour la plupart des gens.
         </p>
+        <p class="card-foot">Les alertes viennent du service cloud facultatif, ci-dessous.</p>
       </div>
       <div class="card">
-        <h3>Faire tourner le bridge</h3>
+        <h3>Via votre propre bridge</h3>
         <p>
-          Un petit service sur un NAS, un Pi ou n’importe quelle machine avec Docker. Il ajoute des règles
-          d’alerte permanentes, un journal d’activité exportable, les invitations familiales et des raccourcis
-          fiables en arrière-plan.
-          <a href={path("fr", "selfHosting")}>Guide d’auto-hébergement →</a>
+          Un petit conteneur sur un NAS, un Pi ou n’importe quelle machine avec Docker. Il garde une seule
+          connexion vers la console et exécute lui-même les règles d’alerte, que votre téléphone soit réveillé
+          ou non. Il ajoute aussi un journal d’activité exportable et des raccourcis fiables en arrière-plan.
         </p>
-      </div>
-      <div class="card">
-        <h3>Alertes cloud</h3>
-        <p>
-          Pas de bridge, mais vous voulez quand même être prévenu si la porte reste ouverte. Votre console
-          envoie les événements à un petit service que nous hébergeons, qui vous renvoie une notification. Il
-          ne détient jamais votre clé Protect.
-          <a href={path("fr", "privacy")}>Ce qui est conservé →</a>
+        <p class="card-foot">
+          Les alertes tournent sur le bridge : aucun service cloud n’intervient.
+          <a href={path("fr", "selfHosting")}>Guide d’auto-hébergement</a>
         </p>
       </div>
     </div>
 
-    <h2>Ce que vous obtenez vraiment</h2>
+    <h2 id="alerts">Être prévenu que la porte est ouverte</h2>
+    <p>
+      Trois règles, identiques dans les deux cas : la porte est ouverte depuis trop longtemps, elle l’est
+      encore à l’heure de votre contrôle du soir, ou une voiture est dans le garage porte levée. Un maintien
+      fait taire le tout quand vous la laissez ouverte volontairement.
+      <strong>Là où ces règles s’exécutent est la seule vraie différence entre les deux configurations.</strong>
+    </p>
+    <p>
+      <strong>Avec un bridge</strong>, elles s’exécutent sur le bridge, sur votre propre matériel. Rien ne
+      quitte votre réseau et il n’y a rien à activer.
+    </p>
+    <p>
+      <strong>Sans bridge</strong>, l’app ne peut surveiller la porte que pendant qu’elle tourne, ce qui ne
+      sert à rien pour une porte restée ouverte à 2h du matin. Il existe donc un service facultatif et sans
+      clé, que vous pouvez activer :
+    </p>
+    <ol class="steps">
+      <li>
+        Activez les <strong>alertes cloud</strong> dans l’app. Elle crée une installation anonyme sur
+        <code>{CLOUD_HOST}</code> et vous remet une adresse de webhook privée. Sans compte, sans e-mail,
+        sans mot de passe.
+      </li>
+      <li>
+        Collez cette adresse dans deux règles Alarm Manager sur votre console : une pour l’ouverture du
+        capteur, une pour sa fermeture. L’app affiche l’adresse et vous guide pas à pas.
+      </li>
+      <li>
+        Votre console émet un événement quand la porte bouge. Le service arme un minuteur et vous envoie une
+        notification si une règle se déclenche, en français ou en anglais, avec des boutons dessus.
+      </li>
+    </ol>
+    <div class="note">
+      <p>
+        <strong>Le service ne détient aucun identifiant vers votre console</strong> : il ne peut donc rien
+        ouvrir ni fermer, et il ne reçoit jamais d’images ni votre clé d’API Protect. Il conserve le type
+        d’événement, l’identifiant du capteur et l’heure, pendant sept jours. Appuyer sur
+        <em>Fermer maintenant</em> dans une notification est exécuté par l’app elle-même, via votre propre
+        connexion. <a href={path("fr", "privacy")}>Exactement ce qui est conservé</a>.
+      </p>
+    </div>
+    <p class="aside">
+      L’app contient la version détaillée et à jour de cette configuration, y compris les écrans d’Alarm
+      Manager. En cas de divergence, suivez celle de l’app plutôt que celle-ci.
+    </p>
+
+    <h2 id="family">Toute la maison, sans distribuer de secret</h2>
+    <p>
+      D’habitude, pour donner l’accès à son conjoint, on lui envoie le mot de passe. Ici, non. Depuis l’écran
+      Famille, vous créez une invitation à usage unique ; l’autre personne scanne le code ou touche le lien,
+      saisit son nom, et c’est fait. Une quinzaine de secondes, et elle ne voit jamais votre jeton.
+    </p>
     <ul>
-      <li><strong>Partout où c’est utile</strong> — iPhone, Apple Watch, widgets, Centre de contrôle, bouton Action, Siri et Raccourcis.</li>
+      <li>Les invitations sont à usage unique et expirent au bout de quinze minutes.</li>
+      <li>Vous voyez qui a rejoint, la dernière utilisation, et vous pouvez renommer ou révoquer sur-le-champ.</li>
+      <li>Le journal d’activité indique qui a ouvert la porte par son nom, pas par son appareil.</li>
+      <li>Une révocation prend effet immédiatement, ce qui compte le jour où un téléphone se perd.</li>
+    </ul>
+
+    <h2>Ce que vous obtenez vraiment</h2>
+    <ul class="two-col">
+      <li><strong>Partout où c’est utile.</strong> iPhone, Apple Watch, widgets, Centre de contrôle, bouton Action, Siri et Raccourcis.</li>
       <li><strong>Une activité en direct pendant que la porte est ouverte</strong>, avec un bouton Fermer sur l’écran verrouillé.</li>
-      <li><strong>Prévenu quand il le faut</strong> — porte ouverte trop longtemps, encore ouverte le soir, ou voiture dans le garage porte levée. Maintenez-la ouverte quand c’est voulu.</li>
       <li><strong>À votre arrivée</strong>, une notification avec un bouton Ouvrir. Rien ne s’ouvre jamais tout seul.</li>
       <li><strong>Arrêt à mi-course</strong>, et l’appui suivant va dans le sens que vous attendez.</li>
-      <li><strong>La famille sans partager de secret</strong> — les autres téléphones rejoignent par invitation à usage unique, visibles et révocables.</li>
-      <li><strong>Français et anglais</strong>, partout.</li>
+      <li><strong>Un journal d’activité</strong> filtrable et exportable, quand vous utilisez le bridge.</li>
+      <li><strong>Français et anglais</strong>, partout, y compris dans les notifications.</li>
     </ul>
 
     <h2>Essayez avant de câbler quoi que ce soit</h2>
     <p>
-      Le mode Démo fait tourner toute l’app sur une porte simulée — temps de course, capteur, alertes,
-      l’ensemble. Sans console, sans identifiants, sans matériel. C’est le mode qu’utilise la revue de
+      Le mode Démo fait tourner toute l’app sur une porte simulée, avec temps de course, capteur et règles
+      d’alerte. Sans console, sans identifiants, sans matériel. C’est le mode qu’utilise la revue de
       l’App Store.
     </p>
 
@@ -99,7 +153,7 @@ const jsonLd = {
     <table>
       <thead><tr><th>Élément</th><th>Remarques</th></tr></thead>
       <tbody>
-        <tr><td>Une console UniFi Protect</td><td>Testé sur Protect 7.2.x. UDM, Cloud Key ou Dream Machine — tout ce qui fait tourner Protect et propose une clé d’API d’intégration.</td></tr>
+        <tr><td>Une console UniFi Protect</td><td>Testé sur Protect 7.2.x. UDM, Cloud Key ou Dream Machine, tout ce qui fait tourner Protect et propose une clé d’API d’intégration.</td></tr>
         <tr><td>Un relais avec une sortie en <strong>Pulse</strong></td><td>Câblée sur les bornes du bouton-poussoir de votre moteur, exactement comme l’interrupteur mural.</td></tr>
         <tr><td>Un capteur tout-en-un, monté en <strong>Garage</strong></td><td>C’est ce qui rend le système honnête : c’est lui qui dit si la porte est réellement ouverte.</td></tr>
         <tr><td>Un iPhone à jour</td><td>Apple Watch facultative.</td></tr>
@@ -108,7 +162,7 @@ const jsonLd = {
     <p>
       L’installation du matériel est détaillée pas à pas dans le
       <a href={path("fr", "selfHosting")}>guide</a>, et la <a href={path("fr", "faq")}>FAQ</a> répond aux
-      questions qu’on se pose vraiment — à commencer par celle du relais qui semble « basculer ».
+      questions qu’on se pose vraiment, à commencer par celle du relais qui semble « basculer ».
     </p>
   </div>
 </Base>

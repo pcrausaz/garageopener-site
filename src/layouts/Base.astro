@@ -1,6 +1,8 @@
 ---
 import "../styles/global.css";
 import { absolute, HTML_LANG, NAV, path, t, ui, type Locale, type RouteKey } from "../i18n/ui";
+import Toc from "../components/Toc.astro";
+import AppMark from "../components/AppMark.astro";
 
 interface Props {
   locale: Locale;
@@ -11,9 +13,11 @@ interface Props {
   bareTitle?: boolean;
   updated?: string;
   jsonLd?: Record<string, unknown>;
+  /** Renders a sticky contents list beside the prose on wide screens. */
+  toc?: { id: string; label: string }[];
 }
 
-const { locale, route, title, description, bareTitle = false, updated, jsonLd } = Astro.props;
+const { locale, route, title, description, bareTitle = false, updated, jsonLd, toc } = Astro.props;
 const tr = t(locale);
 const site = Astro.site?.origin ?? "https://garageopener.app";
 const canonical = absolute(site, locale, route);
@@ -21,7 +25,7 @@ const enHref = absolute(site, "en", route);
 const frHref = absolute(site, "fr", route);
 const other: Locale = locale === "en" ? "fr" : "en";
 const otherHref = other === "en" ? enHref : frHref;
-const fullTitle = bareTitle ? title : `${title} — ${ui[locale]["site.name"]}`;
+const fullTitle = bareTitle ? title : `${title} · ${ui[locale]["site.name"]}`;
 const ogImage = new URL("/og.png", site).href;
 ---
 
@@ -67,11 +71,7 @@ const ogImage = new URL("/og.png", site).href;
     <header class="site-head">
       <div class="wrap bar">
         <a class="brand" href={path(locale, "home")}>
-          <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
-            <path d="M5.9 14.9 16 7.6l10.1 7.3V26.8H5.9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-            <path d="M10 17.6h12v9.2H10z" fill="var(--accent)" />
-            <path d="M10 20.1h12v1.2H10zM10 23.2h12v1.2H10z" fill="var(--bg)" />
-          </svg>
+          <AppMark size={26} class="mark" />
           {ui[locale]["site.name"]}
         </a>
         <nav aria-label={locale === "en" ? "Main" : "Principale"}>
@@ -89,8 +89,13 @@ const ogImage = new URL("/og.png", site).href;
 
     <main id="main">
       <div class="wrap">
-        <slot />
-        {updated && <p style="color:var(--muted);font-size:0.875rem;margin-top:3em">{tr("updated")}: <time datetime={updated}>{updated}</time></p>}
+        <div class={`shell${toc?.length ? " has-toc" : ""}`}>
+          {toc?.length ? <Toc locale={locale} entries={toc} /> : null}
+          <div class="shell-main">
+            <slot />
+            {updated && <p class="updated">{tr("updated")}: <time datetime={updated}>{updated}</time></p>}
+          </div>
+        </div>
       </div>
     </main>
 

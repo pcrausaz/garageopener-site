@@ -7,7 +7,22 @@ const description =
   "Ce que Garage Opener conserve et ce qu’il ne voit jamais. Aucun compte, aucune analytique, aucun pistage. Les alertes cloud ne gardent que le type d’événement, l’identifiant de l’appareil et l’horodatage, pendant 7 jours, et vous pouvez tout effacer depuis l’app.";
 ---
 
-<Base locale="fr" route="privacy" title="Confidentialité" description={description} updated={UPDATED}>
+<Base
+  locale="fr"
+  route="privacy"
+  title="Confidentialité"
+  description={description}
+  updated={UPDATED}
+  toc={[
+    { id: "short", label: "En résumé" },
+    { id: "local", label: "Ce qui reste chez vous" },
+    { id: "cloud", label: "Les alertes cloud en détail" },
+    { id: "never", label: "Ce que nous ne recevons jamais" },
+    { id: "push", label: "Notifications" },
+    { id: "erase", label: "Tout effacer" },
+    { id: "contact", label: "Contact" },
+  ]}
+>
   <div class="prose">
     <h1>Confidentialité</h1>
     <p class="lede">
@@ -16,7 +31,7 @@ const description =
       facultative.
     </p>
 
-    <h2>En résumé</h2>
+    <h2 id="short">En résumé</h2>
     <div class="note">
       <p>
         Les <strong>alertes cloud</strong> transmettent les événements d’ouverture et de fermeture de votre
@@ -29,7 +44,7 @@ const description =
       </p>
     </div>
 
-    <h2>Ce qui reste sur votre appareil et votre réseau</h2>
+    <h2 id="local">Ce qui reste sur votre appareil et votre réseau</h2>
     <p>
       Votre clé d’API Protect, l’adresse de votre console et le jeton de votre bridge résident dans le
       trousseau de votre iPhone, ou dans la configuration de votre propre bridge. Ils ne nous sont jamais
@@ -37,11 +52,11 @@ const description =
       ce trafic circule directement entre eux sur votre réseau : il ne passe pas par nous.
     </p>
     <p>
-      Le journal d’activité du bridge — qui a ouvert la porte et quand — est un fichier sur <em>votre</em>
+      Le journal d’activité du bridge, qui enregistre qui a ouvert la porte et quand, est un fichier sur <em>votre</em>
       machine. Nous ne le voyons jamais. Vous pouvez l’exporter ou le supprimer.
     </p>
 
-    <h2>Les alertes cloud en détail</h2>
+    <h2 id="cloud">Les alertes cloud en détail</h2>
     <p>
       Les alertes cloud sont facultatives et désactivées tant que vous ne les activez pas. Si vous faites
       tourner le bridge, vous n’en avez pas besoin. À l’activation, l’app crée une installation anonyme sur
@@ -61,7 +76,7 @@ const description =
       </tbody>
     </table>
 
-    <h2>Ce que nous ne recevons jamais</h2>
+    <h2 id="never">Ce que nous ne recevons jamais</h2>
     <ul>
       <li><strong>Ni images ni vidéo.</strong> Si votre console joint une vignette, elle est écartée avant même que le corps de la requête ne soit analysé. Elle n’est écrite nulle part.</li>
       <li><strong>Votre clé d’API Protect.</strong> Le service n’a aucun moyen d’atteindre votre console et ne demande jamais d’identifiant vers elle.</li>
@@ -76,14 +91,14 @@ const description =
       n’exploitons pas ; voir la documentation de Cloudflare sur la protection des données.
     </p>
 
-    <h2>Notifications</h2>
+    <h2 id="push">Notifications</h2>
     <p>
       Les notifications sont acheminées par le service de notifications push d’Apple. Apple assure donc la
       remise du message à votre appareil, comme pour toute app iOS. La notification contient le texte de
-      l’alerte et votre identifiant d’installation — jamais d’images, jamais les détails de votre console.
+      l’alerte et votre identifiant d’installation, jamais d’images, jamais les détails de votre console.
     </p>
 
-    <h2>Tout effacer</h2>
+    <h2 id="erase">Tout effacer</h2>
     <p>
       Dans l’app : <strong>Réglages → Alertes → Désactiver les alertes cloud → Effacer</strong>. Le stockage de
       votre installation est détruit intégralement et immédiatement ; votre URL de webhook cesse de
@@ -109,7 +124,7 @@ const description =
       en modifiant discrètement une page web.
     </p>
 
-    <h2>Contact</h2>
+    <h2 id="contact">Contact</h2>
     <p>
       Questions sur cette page, ou demande relative à vos données :
       <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>. Voir aussi

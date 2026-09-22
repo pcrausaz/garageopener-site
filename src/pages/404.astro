@@ -3,10 +3,10 @@ import Base from "../layouts/Base.astro";
 import { path } from "../i18n/ui";
 ---
 
-<Base locale="en" route="home" title="Page not found — Garage Opener" bareTitle description="That page does not exist." >
+<Base locale="en" route="home" title="Page not found · Garage Opener" bareTitle description="That page does not exist." >
   <div class="prose">
     <h1>Not here</h1>
-    <p class="lede">That page doesn't exist — or it moved and we didn't leave a note. Sorry.</p>
+    <p class="lede">That page doesn't exist, or it moved and we didn't leave a note. Sorry.</p>
     <p>
       <a href={path("en", "home")}>Home</a> · <a href={path("en", "faq")}>FAQ</a> ·
       <a href={path("en", "selfHosting")}>Self-hosting</a> · <a href={path("en", "support")}>Support</a> ·

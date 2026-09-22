@@ -1,0 +1,16 @@
+---
+import type { Locale } from "../i18n/ui";
+
+export interface TocEntry { id: string; label: string }
+interface Props { locale: Locale; entries: TocEntry[] }
+const { locale, entries } = Astro.props;
+---
+
+<nav class="toc" aria-label={locale === "en" ? "On this page" : "Sur cette page"}>
+  <h2>{locale === "en" ? "On this page" : "Sur cette page"}</h2>
+  <ol>
+    {entries.map((e) => (
+      <li><a href={`#${e.id}`}>{e.label}</a></li>
+    ))}
+  </ol>
+</nav>

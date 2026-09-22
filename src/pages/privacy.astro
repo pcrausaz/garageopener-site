@@ -7,7 +7,22 @@ const description =
   "What Garage Opener stores and what it never sees. No accounts, no analytics, no tracking. Cloud alerts keep only event type, device id and timestamp, for 7 days, and you can erase everything from the app.";
 ---
 
-<Base locale="en" route="privacy" title="Privacy" description={description} updated={UPDATED}>
+<Base
+  locale="en"
+  route="privacy"
+  title="Privacy"
+  description={description}
+  updated={UPDATED}
+  toc={[
+    { id: "short", label: "The short version" },
+    { id: "local", label: "What stays on your device" },
+    { id: "cloud", label: "Cloud alerts in detail" },
+    { id: "never", label: "What we never receive" },
+    { id: "push", label: "Notifications" },
+    { id: "erase", label: "Erasing everything" },
+    { id: "contact", label: "Contact" },
+  ]}
+>
   <div class="prose">
     <h1>Privacy</h1>
     <p class="lede">
@@ -15,7 +30,7 @@ const description =
       network. This page says exactly what the one optional online piece does store.
     </p>
 
-    <h2>The short version</h2>
+    <h2 id="short">The short version</h2>
     <div class="note">
       <p>
         <strong>Cloud alerts</strong> send your garage door's open and close events from your UniFi Protect
@@ -26,19 +41,19 @@ const description =
       </p>
     </div>
 
-    <h2>What stays on your device and your network</h2>
+    <h2 id="local">What stays on your device and your network</h2>
     <p>
       Your Protect API key, your console address and your bridge token live in your iPhone's Keychain, or in
       your own bridge's configuration. They are never sent to us and we have no way to read them. When the app
-      talks to your console or your bridge, that traffic goes directly between them on your network — it does
+      talks to your console or your bridge, that traffic goes directly between them on your network. It does
       not pass through us.
     </p>
     <p>
-      The bridge's activity log — who opened the door and when — is a file on <em>your</em> machine. We never
+      The bridge's activity log, which records who opened the door and when, is a file on <em>your</em> machine. We never
       see it. You can export it or delete it.
     </p>
 
-    <h2>Cloud alerts, in detail</h2>
+    <h2 id="cloud">Cloud alerts, in detail</h2>
     <p>
       Cloud alerts are optional and off unless you turn them on. If you run the bridge, you don't need them at
       all. When you enable them, the app creates an anonymous install on <code>{CLOUD_HOST}</code> and gets
@@ -57,7 +72,7 @@ const description =
       </tbody>
     </table>
 
-    <h2>What we never receive</h2>
+    <h2 id="never">What we never receive</h2>
     <ul>
       <li><strong>Images or video.</strong> If your console attaches a thumbnail, it is discarded before the body is even parsed. It is never written anywhere.</li>
       <li><strong>Your Protect API key.</strong> The service has no way to reach your console and never asks for a credential to it.</li>
@@ -71,14 +86,14 @@ const description =
       infrastructure logging we do not control and do not use; see Cloudflare's own privacy documentation.
     </p>
 
-    <h2>Notifications</h2>
+    <h2 id="push">Notifications</h2>
     <p>
       Push notifications are delivered by Apple's Push Notification service. Apple therefore handles the
       delivery of the message to your device, as it does for every iOS app. The push contains the alert text
-      and your install id — never images and never your console details.
+      and your install id, never images and never your console details.
     </p>
 
-    <h2>Erasing everything</h2>
+    <h2 id="erase">Erasing everything</h2>
     <p>
       In the app: <strong>Settings → Alerts → Turn off cloud alerts → Erase</strong>. This destroys the
       storage for your install in full and immediately; your webhook URL stops working the same second. There
@@ -96,7 +111,7 @@ const description =
       notes say so. We will not start collecting something new and quietly update a web page.
     </p>
 
-    <h2>Contact</h2>
+    <h2 id="contact">Contact</h2>
     <p>
       Questions about this page, or a request about data: <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
       See also <a href={path("en", "support")}>Support</a> and <a href={path("en", "terms")}>Terms</a>.

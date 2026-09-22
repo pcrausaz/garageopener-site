@@ -11,7 +11,7 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
   en: [
     {
       q: "What hardware do I need?",
-      a: `<p>A UniFi Protect console (tested on Protect 7.2.x), a relay with one output configured as <strong>Pulse</strong> and wired across your opener's push-button terminals, and a Protect all-in-one sensor mounted on the door with its mount type set to <strong>Garage</strong>. The sensor is not optional — it is the thing that makes every command verified rather than hopeful.</p>`,
+      a: `<p>A UniFi Protect console (tested on Protect 7.2.x), a relay with one output configured as <strong>Pulse</strong> and wired across your opener's push-button terminals, and a Protect all-in-one sensor mounted on the door with its mount type set to <strong>Garage</strong>. The sensor is not optional: it is the thing that makes every command verified rather than hopeful.</p>`,
     },
     {
       q: "Why does my relay stay on instead of pulsing?",
@@ -27,11 +27,11 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
     },
     {
       q: "The app can't find my bridge.",
-      a: `<p>Discovery uses Bonjour, and multicast does not cross Docker's bridge network. Run the container with <code>--network host</code>. If you cannot — on Docker Desktop for macOS or Windows, for instance — map the port instead, set <code>BONJOUR=false</code>, and type the bridge's address on the connection screen. Everything except discovery works identically.</p><p>Also check that your phone is on the same network segment and that client isolation is off on that Wi-Fi network.</p>`,
+      a: `<p>Discovery uses Bonjour, and multicast does not cross Docker's bridge network. Run the container with <code>--network host</code>. If you cannot, for instance on Docker Desktop for macOS or Windows, publish the port instead with <code>-p 8787:8787</code>, set <code>BONJOUR=false</code>, and type the address on the connection screen. Everything except discovery works identically.</p><p>The bridge listens on <strong>port 8787</strong>, so the address is <code>http://&lt;host&gt;:8787</code> using the LAN address of whatever machine runs the container. Include the port: without it the app tries port 80 and gets nothing. Check too that your phone is on the same network segment and that client isolation is off on that Wi-Fi network.</p>`,
     },
     {
       q: "Does it work when I'm away from home?",
-      a: `<p>Yes, once the bridge is reachable from outside. The recommended route is a VPN back to your house — WireGuard on the UDM, or Tailscale — because nothing is exposed. A Cloudflare Tunnel or your own reverse proxy with a certificate also works.</p><p>Port forwarding is not recommended and is deliberately not documented: it puts a device that opens your garage on the public internet behind a single token.</p>`,
+      a: `<p>Yes, once the bridge is reachable from outside. The recommended route is a VPN back to your house, either WireGuard on the UDM or Tailscale, because nothing is exposed. A Cloudflare Tunnel or your own reverse proxy with a certificate also works.</p><p>Port forwarding is not recommended and is deliberately not documented: it puts a device that opens your garage on the public internet behind a single token.</p>`,
     },
     {
       q: "How do other people in my household get access?",
@@ -47,7 +47,7 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
     },
     {
       q: "Can I try it without the hardware?",
-      a: `<p>Yes. Demo mode drives a simulated door — travel time, sensor, alerts and all — with no console and no credentials. It is the same mode App Review uses to test the app.</p>`,
+      a: `<p>Yes. Demo mode drives a simulated door, with travel time, a sensor and the alert rules, and no console and no credentials. It is the same mode App Review uses to test the app.</p>`,
     },
     {
       q: "Will it open my door by itself?",
@@ -55,11 +55,11 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
     },
     {
       q: "What happens if I stop the door half-way?",
-      a: `<p>The app remembers which way it was travelling, because the sensor cannot tell a door stopped part-way from one standing fully open — it reports the same contact for both. So the next press goes the direction you expect rather than the direction a naive reading would suggest.</p>`,
+      a: `<p>The app remembers which way it was travelling, because the sensor cannot tell a door stopped part-way from one standing fully open, since it reports the same contact for both. So the next press goes the direction you expect rather than the direction a naive reading would suggest.</p>`,
     },
     {
       q: "Is there an Android app?",
-      a: `<p>No, and there are no plans for one.</p>`,
+      a: `<p>Not today. The app is iOS and watchOS, and a good Android version would be a real piece of work rather than a port, because so much of what this does is Live Activities, widgets, Siri and Shortcuts.</p><p>It isn't ruled out. If enough people ask, it moves up the list, so it is worth telling us you would use one.</p>`,
     },
   ],
   fr: [
@@ -81,11 +81,11 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
     },
     {
       q: "L'app ne trouve pas mon bridge.",
-      a: `<p>La découverte utilise Bonjour, et le multicast ne traverse pas le réseau bridge de Docker. Lancez le conteneur avec <code>--network host</code>. Si ce n'est pas possible — sur Docker Desktop pour macOS ou Windows par exemple — publiez plutôt le port, mettez <code>BONJOUR=false</code> et saisissez l'adresse du bridge sur l'écran de connexion. Tout fonctionne à l'identique, sauf la découverte.</p><p>Vérifiez aussi que votre téléphone est sur le même segment réseau et que l'isolation des clients est désactivée sur ce réseau Wi-Fi.</p>`,
+      a: `<p>La découverte utilise Bonjour, et le multicast ne traverse pas le réseau bridge de Docker. Lancez le conteneur avec <code>--network host</code>. Si ce n'est pas possible, par exemple sur Docker Desktop pour macOS ou Windows, publiez plutôt le port avec <code>-p 8787:8787</code>, mettez <code>BONJOUR=false</code> et saisissez l'adresse sur l'écran de connexion. Tout fonctionne à l'identique, sauf la découverte.</p><p>Le bridge écoute sur le <strong>port 8787</strong> : l'adresse est donc <code>http://&lt;hôte&gt;:8787</code>, avec l'adresse locale de la machine qui héberge le conteneur. N'oubliez pas le port : sans lui, l'app tente le port 80 et n'obtient rien. Vérifiez aussi que votre téléphone est sur le même segment réseau et que l'isolation des clients est désactivée sur ce réseau Wi-Fi.</p>`,
     },
     {
       q: "Est-ce que ça marche quand je ne suis pas chez moi ?",
-      a: `<p>Oui, dès que le bridge est joignable depuis l'extérieur. La voie recommandée est un VPN vers votre domicile — WireGuard sur l'UDM, ou Tailscale — parce que rien n'est exposé. Un tunnel Cloudflare ou votre propre reverse proxy avec certificat fonctionnent aussi.</p><p>La redirection de port n'est pas recommandée et n'est volontairement pas documentée : elle place sur l'internet public un appareil qui ouvre votre garage, protégé par un seul jeton.</p>`,
+      a: `<p>Oui, dès que le bridge est joignable depuis l'extérieur. La voie recommandée est un VPN vers votre domicile, WireGuard sur l'UDM ou Tailscale, parce que rien n'est exposé. Un tunnel Cloudflare ou votre propre reverse proxy avec certificat fonctionnent aussi.</p><p>La redirection de port n'est pas recommandée et n'est volontairement pas documentée : elle place sur l'internet public un appareil qui ouvre votre garage, protégé par un seul jeton.</p>`,
     },
     {
       q: "Comment donner l'accès aux autres personnes du foyer ?",
@@ -101,7 +101,7 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
     },
     {
       q: "Puis-je essayer sans le matériel ?",
-      a: `<p>Oui. Le mode Démo pilote une porte simulée — temps de course, capteur, alertes — sans console ni identifiants. C'est le mode qu'utilise la revue de l'App Store.</p>`,
+      a: `<p>Oui. Le mode Démo pilote une porte simulée, avec temps de course, capteur et alertes, sans console ni identifiants. C'est le mode qu'utilise la revue de l'App Store.</p>`,
     },
     {
       q: "Est-ce que la porte peut s'ouvrir toute seule ?",
@@ -113,7 +113,7 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
     },
     {
       q: "Y a-t-il une app Android ?",
-      a: `<p>Non, et ce n'est pas prévu.</p>`,
+      a: `<p>Pas aujourd'hui. L'app est iOS et watchOS, et une bonne version Android serait un vrai chantier plutôt qu'un portage, parce qu'une grande partie de ce qu'elle fait repose sur les activités en direct, les widgets, Siri et les Raccourcis.</p><p>Ce n'est pas exclu pour autant. Si suffisamment de personnes le demandent, cela remonte dans la liste : dites-le nous si vous en voudriez une.</p>`,
     },
   ],
 };
