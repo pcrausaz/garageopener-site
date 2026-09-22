@@ -68,10 +68,16 @@ That move becomes necessary if universal links are ever wanted: Apple requires
    fires on traffic that reaches the Cloudflare edge, which unproxied traffic never does.
 4. Enable "Enforce HTTPS" in the repository's Pages settings once the certificate is live.
 
-**While the zone is grey-clouded, Cloudflare enforces nothing here.** `always_use_https`, minimum TLS version
-and every other zone setting are no-ops on an unproxied hostname: TLS and the HTTP→HTTPS redirect are entirely
-GitHub's. Proxying the apex is what turns those settings on, and it is also the point at which a Cloudflare
-`www` → apex redirect rule becomes worth adding (it survives a later origin change, which the Pages redirect
-does not).
+**The apex and `www` are grey-clouded, so Cloudflare enforces nothing on them.** `always_use_https`, minimum
+TLS version and every other zone setting are no-ops on an unproxied hostname: for this site, TLS and the
+HTTP→HTTPS redirect are entirely GitHub's, and GitHub does serve a real `301` on `http://` once Enforce HTTPS
+is on. (It answered `404` for a short window right after that was enabled; that was transitional, not the
+steady state — don't read a `301` as a regression.)
+
+Note this is now a per-hostname statement, not a zone one: `demo.garageopener.app` is proxied, so the zone's
+`always_use_https` and `min_tls_version` **are** live there. Proxying the apex would extend them to it, and is
+also the point at which a Cloudflare `www` → apex redirect rule becomes worth adding (it survives a later
+origin change, which the Pages redirect does not). A real `http` → `https` redirect is *not* a reason to
+proxy — GitHub already provides one.
 
 `support@garageopener.app` needs a Cloudflare Email Routing alias before the support page is truthful.
