@@ -6,8 +6,8 @@ export const APP_STORE_URL: string | null = null;
 
 export const SUPPORT_EMAIL = "support@garageopener.app";
 
-/** The shared cloud-alerts service. Hostname is deliberately not on the brand domain — see ADR-0016. */
-export const CLOUD_HOST = "garage-alerts.liqpil.com";
+/** The shared cloud-alerts service, on the brand domain since ADR-0016's 2026-09-22 amendment. */
+export const CLOUD_HOST = "alerts.garageopener.app";
 
 export const BRIDGE_IMAGE = "ghcr.io/pcrausaz/garage-opener-bridge";
 
