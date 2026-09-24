@@ -38,6 +38,10 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
       a: `<p>From the Family screen you create a one-time invite; the other phone scans or pastes it and joins. They never see your admin token. You can see everyone who has joined, rename them, and revoke any of them, and the activity log records who did what by name.</p>`,
     },
     {
+      q: "I have two garage doors. Can it handle both?",
+      a: `<p>Each door needs its own relay output (the relay has two) and its own all-in-one sensor mounted on that door. The sensor is what confirms every command, so a door without one cannot be controlled.</p><p>Today one bridge drives one door, so two doors means two bridges, and each phone connects to one of them. That suits a household where each person mostly uses their own door. Using the other door from the same phone means pairing it again: controlling both doors from one phone, with a default door per person, is not supported yet. The self-hosting guide explains how to run a second bridge on the same host.</p>`,
+    },
+    {
       q: "What do cloud alerts do if I don't have a bridge?",
       a: `<p>Your console posts door events to a private webhook URL, and the service pushes a notification back when the door has been open too long, is still open at your nightly check time, or a car is in the garage with the door up.</p><p>It never holds a credential to your console, so it cannot open or close anything. “Close now” on a notification is carried out by the app, over your own connection. It stores only the event type, device id and timestamp, for seven days.</p>`,
     },
@@ -94,6 +98,10 @@ export const FAQ: Record<Locale, FaqEntry[]> = {
     {
       q: "Comment donner l'accès aux autres personnes du foyer ?",
       a: `<p>Depuis l'écran Famille, vous créez une invitation à usage unique ; l'autre téléphone la scanne ou la colle et rejoint. Il ne voit jamais votre jeton d'administration. Vous voyez qui a rejoint, vous pouvez renommer et révoquer, et le journal d'activité indique qui a fait quoi, par son nom.</p>`,
+    },
+    {
+      q: "J'ai deux portes de garage. Peut-il gérer les deux ?",
+      a: `<p>Chaque porte a besoin de sa propre sortie de relais (le relais en a deux) et de son propre capteur tout-en-un monté sur cette porte. C'est le capteur qui confirme chaque commande : une porte sans capteur ne peut pas être pilotée.</p><p>Aujourd'hui, un bridge pilote une porte : deux portes demandent deux bridges, et chaque téléphone se connecte à l'un d'eux. Cela convient à un foyer où chacun utilise surtout sa propre porte. Pour utiliser l'autre porte depuis le même téléphone, il faut l'appairer à nouveau : piloter les deux portes depuis un seul téléphone, avec une porte par défaut pour chaque personne, n'est pas encore possible. Le guide d'auto-hébergement explique comment faire tourner un second bridge sur le même hôte.</p>`,
     },
     {
       q: "À quoi servent les alertes cloud si je n'ai pas de bridge ?",
