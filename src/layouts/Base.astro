@@ -101,18 +101,21 @@ const ogImage = new URL("/og.png", site).href;
 
     <footer class="site-foot">
       <div class="wrap">
-        <nav aria-label={locale === "en" ? "Footer" : "Pied de page"}>
-          <a href={path(locale, "home")}>{tr("nav.home")}</a>
-          <a href={path(locale, "faq")}>{tr("nav.faq")}</a>
-          <a href={path(locale, "selfHosting")}>{tr("nav.selfHosting")}</a>
-          <a href={path(locale, "support")}>{tr("nav.support")}</a>
-          <a href={path(locale, "privacy")}>{tr("nav.privacy")}</a>
-          <a href={path(locale, "terms")}>{tr("nav.terms")}</a>
-          {SOURCE_REPO_URL && <a href={SOURCE_REPO_URL} rel="noopener">{tr("nav.source")}</a>}
-        </nav>
+        <div class="foot-row">
+          <nav aria-label={locale === "en" ? "Footer" : "Pied de page"}>
+            <a href={path(locale, "home")}>{tr("nav.home")}</a>
+            <a href={path(locale, "faq")}>{tr("nav.faq")}</a>
+            <a href={path(locale, "selfHosting")}>{tr("nav.selfHosting")}</a>
+            <a href={path(locale, "support")}>{tr("nav.support")}</a>
+            <a href={path(locale, "privacy")}>{tr("nav.privacy")}</a>
+            <a href={path(locale, "terms")}>{tr("nav.terms")}</a>
+            {SOURCE_REPO_URL && <a href={SOURCE_REPO_URL} rel="noopener">{tr("nav.source")}</a>}
+          </nav>
+          {/* Beside the links but outside <nav>: it is not navigation. */}
+          <span class="copyright">© {new Date().getFullYear()} <a href="https://liqpil.com" rel="noopener">liqpil</a></span>
+        </div>
         <p>{tr("footer.note")}</p>
         <p>{tr("footer.trademark")}</p>
-        <p class="copyright">© {new Date().getFullYear()} <a href="https://liqpil.com" rel="noopener">liqpil</a></p>
       </div>
     </footer>
   </body>
