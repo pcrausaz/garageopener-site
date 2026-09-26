@@ -133,9 +133,13 @@ pre code { background: none; padding: 0; font-size: 0.85rem; line-height: 1.6; }
 .btn:hover { filter: brightness(1.07); }
 .btn.ghost { background: var(--surface-2); color: var(--text); border-color: var(--line); box-shadow: none; }
 .btn.ghost:hover { background: var(--surface-2); filter: none; }
-/* Apple's official badge artwork, unmodified; sized to sit level with the pill buttons beside it. */
-.store-badge { display: inline-flex; border-radius: 9px; }
-.store-badge img { display: block; height: 50px; width: auto; }
+/* Apple's official badge artwork, unmodified; sized to sit level with the pill buttons beside it. A CSS
+   background, not an <img>: Safari's Live Text makes the badge wording selectable on an image, so a click-drag
+   selects "App Store" instead of following the link. Aspect ratios come from each SVG's viewBox. Hover may only
+   touch opacity: the `background` shorthand would wipe the image. */
+.store-badge { display: inline-block; height: 50px; background: center / contain no-repeat; }
+.store-badge--en { aspect-ratio: 119.66407 / 40; background-image: url(/badges/app-store-en.svg); }
+.store-badge--fr { aspect-ratio: 126.50751 / 40; background-image: url(/badges/app-store-fr.svg); }
 .store-badge:hover { opacity: .85; }
 .actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-block: 1.6em; }
 

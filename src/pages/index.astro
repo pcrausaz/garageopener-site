@@ -37,7 +37,7 @@ const jsonLd = {
 
     <div class="actions">
       {APP_STORE_URL
-        ? <a class="store-badge" href={APP_STORE_URL}><img src="/badges/app-store-en.svg" alt="Download on the App Store" width="120" height="40" /></a>
+        ? <a class="store-badge store-badge--en" href={APP_STORE_URL} aria-label="Download on the App Store"></a>
         : <span class="btn ghost" aria-disabled="true">Coming to the App Store</span>}
       <a class="btn ghost" href={path("en", "faq")}>How it works</a>
     </div>
