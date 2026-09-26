@@ -133,7 +133,11 @@ pre code { background: none; padding: 0; font-size: 0.85rem; line-height: 1.6; }
 .btn:hover { filter: brightness(1.07); }
 .btn.ghost { background: var(--surface-2); color: var(--text); border-color: var(--line); box-shadow: none; }
 .btn.ghost:hover { background: var(--surface-2); filter: none; }
-.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-block: 1.6em; }
+/* Apple's official badge artwork, unmodified; sized to sit level with the pill buttons beside it. */
+.store-badge { display: inline-flex; border-radius: 9px; }
+.store-badge img { display: block; height: 50px; width: auto; }
+.store-badge:hover { opacity: .85; }
+.actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-block: 1.6em; }
 
 .hero { padding-block: 48px 64px; }
 .hero-mark { display: block; border-radius: 16px; margin-bottom: 22px; box-shadow: 0 0 0 1px rgba(255,255,255,.1), 0 0 60px -6px rgba(46, 163, 102, .55); }

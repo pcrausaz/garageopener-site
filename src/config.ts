@@ -1,8 +1,11 @@
+/** App Store id, approved 2026-09-26. Also drives the Smart App Banner in Base.astro. */
+export const APP_STORE_ID = "6813968421";
+
 /**
- * Set APP_STORE_URL once the app is live and the badge appears everywhere it is referenced. Until then the
- * hero shows an honest "not on the App Store yet" line rather than a badge that 404s.
+ * Storefront-neutral link: Apple redirects it to the visitor's own country store, which suits a bilingual
+ * site better than the /us/ URL. Null would bring back the "Coming to the App Store" placeholder.
  */
-export const APP_STORE_URL: string | null = null;
+export const APP_STORE_URL: string | null = `https://apps.apple.com/app/id${APP_STORE_ID}`;
 
 export const SUPPORT_EMAIL = "support@garageopener.app";
 

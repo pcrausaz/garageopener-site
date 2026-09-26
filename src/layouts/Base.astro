@@ -3,7 +3,7 @@ import "../styles/global.css";
 import { absolute, HTML_LANG, NAV, path, t, ui, type Locale, type RouteKey } from "../i18n/ui";
 import Toc from "../components/Toc.astro";
 import AppMark from "../components/AppMark.astro";
-import { SOURCE_REPO_URL } from "../config";
+import { APP_STORE_ID, APP_STORE_URL, SOURCE_REPO_URL } from "../config";
 
 interface Props {
   locale: Locale;
@@ -58,6 +58,7 @@ const ogImage = new URL("/og.png", site).href;
     <meta name="twitter:image" content={ogImage} />
 
     <meta name="theme-color" content="#05080d" />
+    {APP_STORE_URL && <meta name="apple-itunes-app" content={`app-id=${APP_STORE_ID}`} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />

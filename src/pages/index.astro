@@ -19,6 +19,7 @@ const jsonLd = {
   url: "https://garageopener.app",
   inLanguage: ["en-US", "fr-FR"],
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  ...(APP_STORE_URL && { downloadUrl: APP_STORE_URL }),
 };
 ---
 
@@ -36,7 +37,7 @@ const jsonLd = {
 
     <div class="actions">
       {APP_STORE_URL
-        ? <a class="btn" href={APP_STORE_URL}>Download on the App Store</a>
+        ? <a class="store-badge" href={APP_STORE_URL}><img src="/badges/app-store-en.svg" alt="Download on the App Store" width="120" height="40" /></a>
         : <span class="btn ghost" aria-disabled="true">Coming to the App Store</span>}
       <a class="btn ghost" href={path("en", "faq")}>How it works</a>
     </div>
