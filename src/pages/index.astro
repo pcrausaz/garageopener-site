@@ -18,7 +18,14 @@ const jsonLd = {
   description,
   url: "https://garageopener.app",
   inLanguage: ["en-US", "fr-FR"],
-  offers: { "@type": "Offer", price: "3.99", priceCurrency: "USD" },
+  // Free download (ADR-0022). The one-time unlock is an in-app purchase, so the offer itself is 0.
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+    description:
+      "Free download with 20 door opens included. Garage Opener Unlimited, a one-time in-app purchase (US$4.99), removes the limit. No subscription.",
+  },
   ...(APP_STORE_URL && { downloadUrl: APP_STORE_URL }),
 };
 ---
@@ -41,6 +48,9 @@ const jsonLd = {
         : <span class="btn ghost" aria-disabled="true">Coming to the App Store</span>}
       <a class="btn ghost" href={path("en", "faq")}>How it works</a>
     </div>
+    <p class="aside">
+      Free with 20 opens. <a href="#cost">One purchase</a> unlocks the rest, and there is no subscription.
+    </p>
     </div>
     <div class="hero-art" aria-hidden="false">
       <PhoneShot locale="en" shot="02-home-open" class="phone-back" />
@@ -60,33 +70,102 @@ const jsonLd = {
   </section>
 
   <section class="prose band band-connect">
-    <h2>Two ways to connect</h2>
-    <p>You pick one during setup, and you can change your mind later.</p>
+    <h2 id="connect">Two ways to connect</h2>
+    <p>
+      The app either talks to your console itself, or to a small bridge you run at home. You pick one during
+      setup. Switching later means setting the app up again; nothing changes on the door.
+    </p>
+
+    <h3>Either way you get</h3>
+    <ul class="checks">
+      <li>Open and close, verified by the door sensor</li>
+      <li>Apple Watch, widgets, Control Center, Siri and Shortcuts</li>
+      <li>Alerts when the door is left open</li>
+      <li>Access away from home, over your VPN</li>
+    </ul>
 
     <ConnectDiagram locale="en" />
 
-    <div class="grid two">
-      <div class="card">
-        <h3>Straight to your console</h3>
-        <p>
-          The app talks to UniFi Protect on your home network. Nothing else to install, nothing else to keep
-          running. The simplest setup, and the right one for most people.
-        </p>
-        <p class="card-foot">Alerts come from the optional cloud service, below.</p>
-      </div>
+    <div class="compare">
       <div class="card">
         <h3>Through your own bridge</h3>
-        <p>
-          A small container on a NAS, a Pi or any box with Docker. It holds one connection to the console and
-          runs the alert rules itself, whether or not a phone is awake. It also adds an activity log you can
-          export and Shortcuts that work reliably in the background.
-        </p>
-        <p class="card-foot">
-          Alerts run on the bridge, so no Garage Opener service is involved.
-          <a href={path("en", "selfHosting")}>Self-hosting guide</a>
-        </p>
+        <div class="row">
+          <h4>What it is</h4>
+          <p>A small free container at home that holds one connection to Protect for every phone.</p>
+        </div>
+        <div class="row">
+          <h4>You need</h4>
+          <ul>
+            <li>An always-on NAS, Raspberry Pi, VPS or any other box with Docker that can reach your console.</li>
+            <li>About 15 minutes, with the <a href={path("en", "selfHosting")}>self-hosting guide</a>.</li>
+          </ul>
+        </div>
+        <div class="row">
+          <h4>You gain</h4>
+          <ul>
+            <li>Family joins by QR code. Nobody else holds your Protect key, and one person can be revoked.</li>
+            <li>An activity log by name, which you can filter and export.</li>
+            <li>Alert rules run on your own hardware, with no outside service, plus nightly auto-close and licence-plate rules.</li>
+            <li>Shortcuts that work reliably in the background.</li>
+          </ul>
+        </div>
+        <div class="row">
+          <h4>You give up</h4>
+          <ul>
+            <li>One more thing to run and keep updated.</li>
+            <li>Alerts reach a sleeping phone through the ntfy app, not as Garage Opener notifications.</li>
+          </ul>
+        </div>
+        <div class="row">
+          <h4>Best for</h4>
+          <p>Households: several people, several phones, and one place to decide who has access.</p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Straight to your console</h3>
+        <div class="row">
+          <h4>What it is</h4>
+          <p>The iPhone talks to your Protect console itself.</p>
+        </div>
+        <div class="row">
+          <h4>You need</h4>
+          <ul>
+            <li>A Protect API key <strong>on every device</strong> that uses the door.</li>
+            <li>Nothing to install.</li>
+          </ul>
+        </div>
+        <div class="row">
+          <h4>You gain</h4>
+          <ul>
+            <li>Ready in two minutes.</li>
+            <li>Alerts through the optional Garage Opener cloud service, as ordinary iPhone notifications.</li>
+          </ul>
+        </div>
+        <div class="row">
+          <h4>You give up</h4>
+          <ul>
+            <li>Adding a family member is harder: a key per person, typed on each device, and removing someone means deleting their key in Protect.</li>
+            <li>No activity log.</li>
+            <li>Alerts depend on the cloud service.</li>
+          </ul>
+        </div>
+        <div class="row">
+          <h4>Best for</h4>
+          <p>The fastest start: one person, or a household that doesn't mind a key on each device.</p>
+        </div>
       </div>
     </div>
+
+    <p>
+      <strong>Alerts run around the clock on both.</strong> Your console reports door events to the bridge or
+      to the cloud service, and neither needs a phone to be awake. What differs is who runs the rules and how
+      the alert is delivered, which is <a href="#alerts">the next section</a>.
+    </p>
+    <p>
+      <strong>Away from home is the same on both:</strong> a VPN back to your house, WireGuard on the console
+      or Tailscale. A bridge can also be reached through a Cloudflare Tunnel or your own reverse proxy, if you
+      would rather not use a VPN.
+    </p>
 
   </section>
 
@@ -95,18 +174,21 @@ const jsonLd = {
     <p>
       Three rules, the same either way: the door has been open too long, it's still open at your nightly
       check time, or a car is in the garage with the door up. A hold keeps it quiet when you leave it open on
-      purpose. <strong>Where those rules run is the one real difference between the two setups.</strong>
+      purpose. Both setups watch the door around the clock: your console reports every movement, and no phone
+      has to be awake. <strong>What differs is who runs the rules and how the alert reaches you.</strong>
     </p>
     <PhoneShot locale="en" shot="06-hold" class="phone-side" />
     <p>
-      <strong>With a bridge</strong>, they run on the bridge, on your own hardware, around the clock. The app
-      shows them whenever it is running or refreshing in the background. For a notification that reaches a
-      phone that is asleep or away from home, point the bridge at <a href={`${path("en", "selfHosting")}#alerts`}>ntfy</a>,
-      your own or ntfy.sh.
+      <strong>With a bridge</strong>, the bridge runs them, on your own hardware, and no outside service is
+      involved. The app shows them whenever it is running or refreshing in the background. For a notification
+      that reaches a phone that is asleep or away from home, point the bridge at
+      <a href={`${path("en", "selfHosting")}#alerts`}>ntfy</a>, your own or ntfy.sh; it arrives through the
+      ntfy app.
     </p>
     <p>
-      <strong>Without one</strong>, the app can only watch the door while it is running, which is no good for
-      a door left open at 2am. So there is an optional keyless service you can switch on:
+      <strong>Straight to the console</strong>, nothing at home can run the rules once the app is closed, so
+      an optional keyless service of ours runs them instead, and they arrive as ordinary iPhone
+      notifications:
     </p>
     <ol class="steps">
       <li>
@@ -152,6 +234,10 @@ const jsonLd = {
       <li>The activity log records who opened the door by name, not by device.</li>
       <li>Revoking a phone takes effect immediately, which matters when one gets lost.</li>
     </ul>
+    <p class="aside">
+      Invites, and the log by name, are what the bridge adds. Straight to the console, each person enters
+      their own Protect API key instead.
+    </p>
 
   </section>
 
@@ -162,6 +248,8 @@ const jsonLd = {
       <li><strong>A Live Activity while the door is open</strong>, with a Close button right on the Lock Screen.</li>
       <li><strong>Arriving home</strong> gets you a notification with an Open button. Nothing ever opens by itself.</li>
       <li><strong>Stop part-way</strong>, and the next press goes the way you expect.</li>
+      <li><strong>Two garage doors</strong> from one phone. Each door needs its own relay output and its own sensor. Each person picks a default door, and the other one sits right below it.</li>
+      <li><strong>A camera picture on the door screen</strong>, to see that nothing is in the way and that it really closed. Snapshots, not live video. Through the bridge, your Protect key never reaches family phones.</li>
       <li><strong>An activity log</strong> you can filter and export, when you run the bridge.</li>
       <li><strong>English and French</strong>, throughout, including the notifications.</li>
     </ul>
@@ -173,7 +261,24 @@ const jsonLd = {
     <h2>Try it before you wire anything</h2>
     <p>
       Demo mode runs the whole app against a simulated door, with travel time, a sensor and the alert rules.
-      No console, no credentials, no hardware. It's the same mode App Review uses.
+      No console, no credentials, no hardware. It's the same mode App Review uses. Nothing you do in the demo
+      counts towards the free opens.
+    </p>
+
+  </section>
+
+  <section class="prose band band-cost">
+    <h2 id="cost">What it costs</h2>
+    <p>
+      The app is free to download and includes 20 opens, enough to wire things up and see that it works with
+      your door. After that, one purchase in the app, <strong>Garage Opener Unlimited</strong> (US$4.99, or
+      the equivalent in your App Store), removes the limit for good. It is not a subscription, and Family
+      Sharing covers your household.
+    </p>
+    <p>
+      Only opening counts. <strong>Close and Stop always work</strong>, because the app must never be the
+      reason a garage is left open. If you bought the app before it became free, you are unlocked
+      automatically. The bridge and the cloud-alerts service cost nothing.
     </p>
 
   </section>
@@ -186,6 +291,7 @@ const jsonLd = {
         <tr><td>A UniFi Protect console</td><td>Tested on Protect 7.2.x. A UDM, Cloud Key or Dream Machine, anything that runs Protect and offers an integration API key.</td></tr>
         <tr><td>A relay with an output set to <strong>Pulse</strong></td><td>Wired across your opener's push-button terminals, exactly like the wall button.</td></tr>
         <tr><td>An all-in-one sensor, mounted as <strong>Garage</strong></td><td>This is the part that makes it honest. It's what reports whether the door is really open.</td></tr>
+        <tr><td>For a second door</td><td>Its own relay output, on the same relay or another one, and its own sensor mounted as <strong>Garage</strong>.</td></tr>
         <tr><td>An iPhone on a recent iOS</td><td>Apple Watch optional.</td></tr>
       </tbody>
     </table>

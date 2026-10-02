@@ -18,7 +18,14 @@ const jsonLd = {
   description,
   url: "https://garageopener.app/fr",
   inLanguage: ["fr-FR", "en-US"],
-  offers: { "@type": "Offer", price: "3.99", priceCurrency: "EUR" },
+  // Téléchargement gratuit (ADR-0022). Le déblocage est un achat intégré : l’offre elle-même vaut 0.
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "EUR",
+    description:
+      "Téléchargement gratuit, 20 ouvertures de porte incluses. Garage Opener Unlimited, un achat intégré unique, supprime la limite. Sans abonnement.",
+  },
   ...(APP_STORE_URL && { downloadUrl: APP_STORE_URL }),
 };
 ---
@@ -41,6 +48,9 @@ const jsonLd = {
         : <span class="btn ghost" aria-disabled="true">Bientôt sur l’App Store</span>}
       <a class="btn ghost" href={path("fr", "faq")}>Comment ça marche</a>
     </div>
+    <p class="aside">
+      Gratuit, avec 20 ouvertures. <a href="#cost">Un seul achat</a> débloque la suite, sans abonnement.
+    </p>
     </div>
     <div class="hero-art" aria-hidden="false">
       <PhoneShot locale="fr" shot="02-home-open" class="phone-back" />
@@ -61,33 +71,104 @@ const jsonLd = {
   </section>
 
   <section class="prose band band-connect">
-    <h2>Deux façons de se connecter</h2>
-    <p>Vous en choisissez une pendant la configuration, et vous pouvez changer d’avis ensuite.</p>
+    <h2 id="connect">Deux façons de se connecter</h2>
+    <p>
+      L’app parle soit directement à votre console, soit à un petit bridge que vous faites tourner chez vous.
+      Vous choisissez pendant la configuration. Changer ensuite revient à reconfigurer l’app ; rien ne change
+      du côté de la porte.
+    </p>
+
+    <h3>Dans les deux cas, vous avez</h3>
+    <ul class="checks">
+      <li>L’ouverture et la fermeture, vérifiées par le capteur de porte</li>
+      <li>L’Apple Watch, les widgets, le Centre de contrôle, Siri et les Raccourcis</li>
+      <li>Des alertes quand la porte reste ouverte</li>
+      <li>L’accès hors de chez vous, via votre VPN</li>
+    </ul>
 
     <ConnectDiagram locale="fr" />
 
-    <div class="grid two">
-      <div class="card">
-        <h3>Directement à votre console</h3>
-        <p>
-          L’app parle à UniFi Protect sur votre réseau domestique. Rien d’autre à installer, rien d’autre à
-          maintenir. La configuration la plus simple, et la bonne pour la plupart des gens.
-        </p>
-        <p class="card-foot">Les alertes viennent du service cloud facultatif, ci-dessous.</p>
-      </div>
+    <div class="compare">
       <div class="card">
         <h3>Via votre propre bridge</h3>
-        <p>
-          Un petit conteneur sur un NAS, un Pi ou n’importe quelle machine avec Docker. Il garde une seule
-          connexion vers la console et exécute lui-même les règles d’alerte, que votre téléphone soit réveillé
-          ou non. Il ajoute aussi un journal d’activité exportable et des raccourcis fiables en arrière-plan.
-        </p>
-        <p class="card-foot">
-          Les alertes tournent sur le bridge : aucun service Garage Opener n’intervient.
-          <a href={path("fr", "selfHosting")}>Guide d’auto-hébergement</a>
-        </p>
+        <div class="row">
+          <h4>Ce que c’est</h4>
+          <p>Un petit conteneur gratuit, chez vous, qui garde une seule connexion vers Protect pour tous les téléphones.</p>
+        </div>
+        <div class="row">
+          <h4>Il vous faut</h4>
+          <ul>
+            <li>Un NAS, un Raspberry Pi, un VPS ou toute autre machine avec Docker, allumée en permanence et capable de joindre votre console.</li>
+            <li>Un quart d’heure environ, avec le <a href={path("fr", "selfHosting")}>guide d’auto-hébergement</a>.</li>
+          </ul>
+        </div>
+        <div class="row">
+          <h4>Vous y gagnez</h4>
+          <ul>
+            <li>La famille rejoint par code QR. Personne d’autre ne détient votre clé Protect, et vous pouvez révoquer une seule personne.</li>
+            <li>Un journal d’activité par nom, filtrable et exportable.</li>
+            <li>Des règles d’alerte exécutées sur votre propre matériel, sans service extérieur, plus la fermeture nocturne automatique et les règles par plaque d’immatriculation.</li>
+            <li>Des raccourcis fiables en arrière-plan.</li>
+          </ul>
+        </div>
+        <div class="row">
+          <h4>Vous y renoncez</h4>
+          <ul>
+            <li>Une chose de plus à faire tourner et à tenir à jour.</li>
+            <li>Sur un téléphone en veille, les alertes arrivent par l’app ntfy, pas comme des notifications Garage Opener.</li>
+          </ul>
+        </div>
+        <div class="row">
+          <h4>Idéal pour</h4>
+          <p>Un foyer : plusieurs personnes, plusieurs téléphones, et un seul endroit où décider qui a accès.</p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Directement à votre console</h3>
+        <div class="row">
+          <h4>Ce que c’est</h4>
+          <p>L’iPhone parle lui-même à votre console Protect.</p>
+        </div>
+        <div class="row">
+          <h4>Il vous faut</h4>
+          <ul>
+            <li>Une clé d’API Protect <strong>sur chaque appareil</strong> qui utilise la porte.</li>
+            <li>Rien à installer.</li>
+          </ul>
+        </div>
+        <div class="row">
+          <h4>Vous y gagnez</h4>
+          <ul>
+            <li>Prêt en deux minutes.</li>
+            <li>Des alertes par le service cloud facultatif de Garage Opener, sous forme de notifications iPhone ordinaires.</li>
+          </ul>
+        </div>
+        <div class="row">
+          <h4>Vous y renoncez</h4>
+          <ul>
+            <li>Ajouter un membre de la famille est plus laborieux : une clé par personne, saisie sur chaque appareil, et retirer quelqu’un revient à supprimer sa clé dans Protect.</li>
+            <li>Pas de journal d’activité.</li>
+            <li>Les alertes dépendent du service cloud.</li>
+          </ul>
+        </div>
+        <div class="row">
+          <h4>Idéal pour</h4>
+          <p>Démarrer au plus vite : une personne seule, ou un foyer qu’une clé par appareil ne dérange pas.</p>
+        </div>
       </div>
     </div>
+
+    <p>
+      <strong>Les alertes fonctionnent jour et nuit dans les deux cas.</strong> Votre console signale les
+      événements de la porte au bridge ou au service cloud, et ni l’un ni l’autre n’a besoin d’un téléphone
+      réveillé. Ce qui change, c’est qui exécute les règles et comment l’alerte vous parvient : c’est
+      <a href="#alerts">la section suivante</a>.
+    </p>
+    <p>
+      <strong>Hors de chez vous, c’est pareil dans les deux cas :</strong> un VPN vers votre domicile,
+      WireGuard sur la console ou Tailscale. Un bridge peut aussi être joint par un tunnel Cloudflare ou votre
+      propre reverse proxy, si vous préférez vous passer de VPN.
+    </p>
 
   </section>
 
@@ -96,20 +177,22 @@ const jsonLd = {
     <p>
       Trois règles, identiques dans les deux cas : la porte est ouverte depuis trop longtemps, elle l’est
       encore à l’heure de votre contrôle du soir, ou une voiture est dans le garage porte levée. Un maintien
-      fait taire le tout quand vous la laissez ouverte volontairement.
-      <strong>Là où ces règles s’exécutent est la seule vraie différence entre les deux configurations.</strong>
+      fait taire le tout quand vous la laissez ouverte volontairement. Les deux configurations surveillent la
+      porte jour et nuit : votre console signale chaque mouvement, et aucun téléphone n’a besoin d’être
+      réveillé. <strong>Ce qui change, c’est qui exécute les règles et comment l’alerte vous parvient.</strong>
     </p>
     <PhoneShot locale="fr" shot="06-hold" class="phone-side" />
     <p>
-      <strong>Avec un bridge</strong>, elles s’exécutent sur le bridge, sur votre propre matériel, en
-      permanence. L’app les affiche quand elle est ouverte ou qu’elle se rafraîchit en arrière-plan. Pour une
-      notification qui atteint un téléphone en veille ou loin de chez vous, faites publier le bridge sur
-      <a href={`${path("fr", "selfHosting")}#alerts`}>ntfy</a>, le vôtre ou ntfy.sh.
+      <strong>Avec un bridge</strong>, c’est lui qui les exécute, sur votre propre matériel, sans aucun
+      service extérieur. L’app les affiche quand elle est ouverte ou qu’elle se rafraîchit en arrière-plan.
+      Pour une notification qui atteint un téléphone en veille ou loin de chez vous, faites publier le bridge
+      sur <a href={`${path("fr", "selfHosting")}#alerts`}>ntfy</a>, le vôtre ou ntfy.sh ; elle arrive alors
+      par l’app ntfy.
     </p>
     <p>
-      <strong>Sans bridge</strong>, l’app ne peut surveiller la porte que pendant qu’elle tourne, ce qui ne
-      sert à rien pour une porte restée ouverte à 2h du matin. Il existe donc un service facultatif et sans
-      clé, que vous pouvez activer :
+      <strong>Directement à la console</strong>, rien chez vous ne peut exécuter les règles une fois l’app
+      fermée. Un service facultatif et sans clé, que nous exploitons, s’en charge donc, et les alertes
+      arrivent comme des notifications iPhone ordinaires :
     </p>
     <ol class="steps">
       <li>
@@ -156,6 +239,10 @@ const jsonLd = {
       <li>Le journal d’activité indique qui a ouvert la porte par son nom, pas par son appareil.</li>
       <li>Une révocation prend effet immédiatement, ce qui compte le jour où un téléphone se perd.</li>
     </ul>
+    <p class="aside">
+      Les invitations et le journal par nom sont ce qu’apporte le bridge. Directement à la console, chaque
+      personne saisit à la place sa propre clé d’API Protect.
+    </p>
 
   </section>
 
@@ -166,6 +253,8 @@ const jsonLd = {
       <li><strong>Une activité en direct pendant que la porte est ouverte</strong>, avec un bouton Fermer sur l’écran verrouillé.</li>
       <li><strong>À votre arrivée</strong>, une notification avec un bouton Ouvrir. Rien ne s’ouvre jamais tout seul.</li>
       <li><strong>Arrêt à mi-course</strong>, et l’appui suivant va dans le sens que vous attendez.</li>
+      <li><strong>Deux portes de garage</strong> depuis un seul téléphone. Chaque porte a besoin de sa propre sortie de relais et de son propre capteur. Chacun choisit sa porte par défaut, et l’autre se trouve juste en dessous.</li>
+      <li><strong>Une image de la caméra sur l’écran de la porte</strong>, pour voir que rien ne gêne et qu’elle s’est vraiment fermée. Des images fixes, pas de vidéo en direct. Via le bridge, votre clé Protect n’atteint jamais les téléphones de la famille.</li>
       <li><strong>Un journal d’activité</strong> filtrable et exportable, quand vous utilisez le bridge.</li>
       <li><strong>Français et anglais</strong>, partout, y compris dans les notifications.</li>
     </ul>
@@ -178,7 +267,24 @@ const jsonLd = {
     <p>
       Le mode Démo fait tourner toute l’app sur une porte simulée, avec temps de course, capteur et règles
       d’alerte. Sans console, sans identifiants, sans matériel. C’est le mode qu’utilise la revue de
-      l’App Store.
+      l’App Store. Rien de ce que vous y faites n’est décompté des ouvertures gratuites.
+    </p>
+
+  </section>
+
+  <section class="prose band band-cost">
+    <h2 id="cost">Ce que ça coûte</h2>
+    <p>
+      L’app est gratuite au téléchargement et comprend 20 ouvertures : de quoi tout câbler et constater que
+      cela fonctionne avec votre porte. Ensuite, un seul achat dans l’app,
+      <strong>Garage Opener Unlimited</strong> (4,99 $ US, ou l’équivalent dans votre App Store), supprime la
+      limite pour de bon. Ce n’est pas un abonnement, et le Partage familial couvre votre foyer.
+    </p>
+    <p>
+      Seules les ouvertures sont décomptées. <strong>Fermer et Arrêter fonctionnent toujours</strong>, parce
+      que l’app ne doit jamais être la raison pour laquelle un garage reste ouvert. Si vous avez acheté l’app
+      avant qu’elle ne devienne gratuite, vous êtes débloqué automatiquement. Le bridge et le service
+      d’alertes cloud ne coûtent rien.
     </p>
 
   </section>
@@ -191,6 +297,7 @@ const jsonLd = {
         <tr><td>Une console UniFi Protect</td><td>Testé sur Protect 7.2.x. UDM, Cloud Key ou Dream Machine, tout ce qui fait tourner Protect et propose une clé d’API d’intégration.</td></tr>
         <tr><td>Un relais avec une sortie en <strong>Pulse</strong></td><td>Câblée sur les bornes du bouton-poussoir de votre moteur, exactement comme l’interrupteur mural.</td></tr>
         <tr><td>Un capteur tout-en-un, monté en <strong>Garage</strong></td><td>C’est ce qui rend le système honnête : c’est lui qui dit si la porte est réellement ouverte.</td></tr>
+        <tr><td>Pour une seconde porte</td><td>Sa propre sortie de relais, sur le même relais ou sur un autre, et son propre capteur monté en <strong>Garage</strong>.</td></tr>
         <tr><td>Un iPhone à jour</td><td>Apple Watch facultative.</td></tr>
       </tbody>
     </table>

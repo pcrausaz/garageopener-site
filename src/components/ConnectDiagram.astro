@@ -5,7 +5,7 @@ const { locale } = Astro.props;
 const t = {
   en: {
     title: "How the pieces connect",
-    desc: "Your home network holds the relay, the door sensor, the Protect console and, optionally, your bridge. With a bridge, the phone talks to the bridge on port 8787, the bridge talks to the console over HTTPS on port 443, and the console posts webhooks to the bridge on port 8787. Without one, the phone talks to the console directly and the console posts webhooks to the optional cloud alerts service, which pushes notifications to the phone.",
+    desc: "Your home network holds the relay, the door sensor, the Protect console and, optionally, your bridge. With a bridge, the phone talks to the bridge on port 8787, the bridge talks to the console over HTTPS on port 443, and the console posts webhooks to the bridge on port 8787. Without one, the phone talks to the console directly, on your LAN or over your VPN, and the console posts webhooks to the optional cloud alerts service, which pushes notifications to the phone.",
     home: "Your home network",
     relay: "Relay",
     sensor: "Door sensor",
@@ -16,7 +16,7 @@ const t = {
     https: "HTTPS :443",
     webhook: "webhook :8787",
     toBridge: ":8787 (LAN, VPN or tunnel)",
-    direct: "direct, on your LAN",
+    direct: "direct (LAN or VPN)",
     cloudHook: "webhook",
     push: "push",
     solid: "Through your own bridge",
@@ -24,7 +24,7 @@ const t = {
   },
   fr: {
     title: "Comment les éléments se connectent",
-    desc: "Votre réseau domestique contient le relais, le capteur de porte, la console Protect et, en option, votre bridge. Avec un bridge, le téléphone parle au bridge sur le port 8787, le bridge parle à la console en HTTPS sur le port 443, et la console envoie ses webhooks au bridge sur le port 8787. Sans bridge, le téléphone parle directement à la console, et la console envoie ses webhooks au service d'alertes cloud facultatif, qui envoie les notifications au téléphone.",
+    desc: "Votre réseau domestique contient le relais, le capteur de porte, la console Protect et, en option, votre bridge. Avec un bridge, le téléphone parle au bridge sur le port 8787, le bridge parle à la console en HTTPS sur le port 443, et la console envoie ses webhooks au bridge sur le port 8787. Sans bridge, le téléphone parle directement à la console, sur votre LAN ou via votre VPN, et la console envoie ses webhooks au service d'alertes cloud facultatif, qui envoie les notifications au téléphone.",
     home: "Votre réseau domestique",
     relay: "Relais",
     sensor: "Capteur de porte",
@@ -35,7 +35,7 @@ const t = {
     https: "HTTPS :443",
     webhook: "webhook :8787",
     toBridge: ":8787 (LAN, VPN ou tunnel)",
-    direct: "direct, sur votre LAN",
+    direct: "direct (LAN ou VPN)",
     cloudHook: "webhook",
     push: "push",
     solid: "Via votre propre bridge",

@@ -235,3 +235,24 @@ html, body { overflow-x: clip; }
 .diagram { max-width: 44rem; margin-inline: auto; }
 /* On a phone the hero art ends in its own fade; the full hero padding under it reads as a hole. */
 @media (max-width: 55.99rem) { .hero { padding-bottom: 8px; } }
+
+/* "Two ways to connect": the two paths as cards whose rows line up, so "You need" sits opposite "You need".
+   Subgrid does the aligning on wide screens; below that the cards simply stack. */
+.compare { display: grid; gap: 14px; margin-block: 1.6em; }
+.compare > .card { display: grid; row-gap: 0; align-content: start; }
+.compare h3 { margin: 0 0 12px; }
+.compare .row { border-top: 1px solid var(--line); padding-block: 12px; }
+.compare .row:last-child { padding-bottom: 0; }
+.compare h4 { margin: 0 0 4px; font-size: 0.78rem; font-weight: 640; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.compare .row > :where(p, ul) { margin: 0; font-size: 0.97rem; }
+.compare .row > ul { padding-left: 1.1em; }
+.compare .row li { margin-block: 0.3em; }
+@media (min-width: 52rem) {
+  .compare { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .compare > .card { grid-row: span 6; grid-template-rows: subgrid; }
+}
+
+/* "Either way you get": what both paths share, ticked in the door-closed green. */
+.prose > ul.checks { list-style: none; padding-left: 0; }
+.checks > li { position: relative; padding-left: 28px; }
+.checks > li::before { content: "✓"; position: absolute; left: 2px; color: var(--ok); font-weight: 700; }
