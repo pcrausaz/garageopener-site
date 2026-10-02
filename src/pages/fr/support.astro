@@ -50,7 +50,7 @@ const description =
     <ol>
       <li><strong>Ce que le bridge dit de lui-même.</strong> La sortie de <code>curl -s http://&lt;hôte-du-bridge&gt;:8787/healthz</code>. Si vous n’utilisez pas de bridge, précisez-le.</li>
       <li><strong>Votre version de Protect.</strong> Console → Réglages → Système, ou le champ <code>applicationVersion</code> dans la sortie ci-dessus.</li>
-      <li><strong>La version de l’app.</strong> Dans les Réglages, tout en bas.</li>
+      <li><strong>La version de l’app.</strong> Dans les Réglages, tout en bas. Pour toute question sur l’achat, précisez aussi si les Réglages indiquent Garage Opener Unlimited comme débloqué.</li>
       <li><strong>Les modèles de votre relais et de votre capteur</strong>, et la configuration de la sortie du relais (Pulse ou non, et sa durée d’impulsion).</li>
       <li><strong>Ce que vous attendiez et ce qui s’est passé</strong>, avec les heures approximatives, pour pouvoir recouper avec le journal d’activité.</li>
     </ol>
@@ -64,7 +64,8 @@ const description =
 
     <h2>Limites connues</h2>
     <ul>
-      <li><strong>Une porte par bridge.</strong> Plusieurs portes ne sont pas prises en charge.</li>
+      <li><strong>Deux portes au maximum.</strong> Chacune a besoin de sa propre sortie de relais et de son propre capteur, et avec un bridge il faut la version 0.6 ou ultérieure. La seconde porte n’a été testée que sur le simulateur, pas sur une seconde porte réelle.</li>
+      <li><strong>Des images de la caméra, pas de vidéo.</strong> L’écran de la porte affiche des images fixes rafraîchies toutes les quelques secondes. Il n’y a pas de flux en direct.</li>
       <li><strong>UniFi Protect uniquement.</strong> Les autres relais, les autres hubs et Home Assistant sont hors périmètre.</li>
       <li><strong>iOS et watchOS uniquement.</strong> Il n’y a pas d’app Android aujourd’hui ; voir la <a href={path("fr", "faq")}>FAQ</a>.</li>
       <li><strong>Une porte arrêtée est lue comme ouverte.</strong> Un capteur d’inclinaison rapporte le même contact pour une porte arrêtée à mi-course et pour une porte grande ouverte ; l’app mémorise donc le sens plutôt que de prétendre le mesurer.</li>

@@ -37,6 +37,7 @@ const raw = SELFHOST_RAW_URL;
     { id: "before", label: "Avant de commencer" },
     { id: "network", label: "Qui doit joindre quoi" },
     { id: "run", label: "Le lancer" },
+    { id: "two-doors", label: "Deux portes" },
     { id: "pair", label: "Appairer son téléphone" },
     { id: "webhooks", label: "Webhooks de la console" },
     { id: "alerts", label: "Alertes, téléphone en veille" },
@@ -51,16 +52,18 @@ const raw = SELFHOST_RAW_URL;
     <h1>Auto-héberger le bridge</h1>
     <p class="lede">
       Le bridge est un petit service dans un conteneur. Il parle à votre console Protect, tient la machine à
-      états de la porte, sert l’app et exécute les règles d’alerte. Il tourne sur un NAS, un Raspberry Pi ou
-      n’importe quelle machine avec Docker, sur amd64 et arm64.
+      états de la porte, sert l’app et exécute les règles d’alerte. Il tourne sur toute machine allumée en
+      permanence, avec Docker, capable de joindre votre console : un NAS, un Raspberry Pi ou un VPS, sur amd64
+      et arm64.
     </p>
 
     <div class="note">
       <p>
         <strong>Vous n’êtes pas obligé de l’utiliser.</strong> L’app se connecte directement à votre console
         Protect et fonctionne sur votre réseau domestique sans rien installer d’autre. Le bridge sert si vous
-        voulez des règles d’alerte permanentes, un journal d’activité exportable, les invitations familiales
-        ou des raccourcis fiables en arrière-plan.
+        voulez des invitations familiales qui ne distribuent jamais votre clé Protect, un journal d’activité
+        par nom, des règles d’alerte exécutées sur votre propre matériel, ou des raccourcis fiables en
+        arrière-plan. <a href={`${path("fr", "home")}#connect`}>Les deux façons de se connecter, comparées</a>.
       </p>
     </div>
 
@@ -110,8 +113,9 @@ const raw = SELFHOST_RAW_URL;
       porte de garage et un seul capteur monté en Garage, le bridge les trouve seul et vous n’avez rien à
       configurer. S’il y a plusieurs candidats, il ne peut pas deviner : épinglez-les avec
       <code>DOOR_RELAY_ID</code>, <code>DOOR_OUTPUT_ID</code> (l’identifiant de l’API : la sortie 1 dans l’app
-      vaut <code>0</code>) et <code>DOOR_SENSOR_ID</code>. Une fois le bridge lancé, il liste chaque relais et
-      capteur avec son identifiant :
+      vaut <code>0</code>) et <code>DOOR_SENSOR_ID</code>. Une seconde porte est toujours déclarée
+      explicitement, jamais devinée ; voir <a href="#two-doors">deux portes</a>. Une fois le bridge lancé, il
+      liste chaque relais et capteur avec son identifiant :
     </p>
     <pre><code>{`curl -s -H "Authorization: Bearer <BRIDGE_TOKENS>" http://<hôte-du-bridge>:8787/v1/discovery`}</code></pre>
     <p>
@@ -190,15 +194,62 @@ curl -s localhost:8787/healthz`}</code></pre>
       le bridge.
     </p>
 
-    <h3>Un second bridge sur le même hôte</h3>
+    <h3 id="two-doors">Deux portes sur un seul bridge</h3>
     <p>
-      Un bridge pilote une porte : une seconde porte demande un second bridge. Le compose de référence utilise
-      des noms fixes. Sur un hôte qui en fait déjà tourner un, placez le second dans son propre dossier et,
-      dans cette copie, changez <code>container_name</code> et le nom du volume <code>garage-bridge-data</code>
-      (aux deux endroits où il apparaît). Avec le réseau de l’hôte, donnez-lui aussi son propre port, par
-      exemple <code>PORT=8789</code>, et un <code>PUBLIC_URL</code> assorti. Chaque bridge a sa propre paire de
-      règles Alarm Manager, pointant vers sa propre adresse et son propre secret.
+      À partir du bridge 0.6, un seul bridge pilote deux portes : plus besoin d’un second bridge. Chaque porte
+      a besoin de sa propre sortie de relais, sur le même relais ou sur un autre, et de son propre capteur
+      monté en Garage. La première porte garde ses réglages <code>DOOR_*</code> ; la seconde est décrite par
+      <code>DOOR2_*</code> :
     </p>
+    <pre><code>{`# .env : deux portes (bridge 0.6 ou ultérieur)
+DOOR_NAME=Porte gauche
+DOOR_RELAY_ID=…
+DOOR_OUTPUT_ID=0                # identifiant de l'API : sortie 1 dans Protect
+DOOR_SENSOR_ID=…
+
+DOOR2_NAME=Porte droite
+DOOR2_RELAY_ID=…                # le même relais, ou un second
+DOOR2_OUTPUT_ID=1               # identifiant de l'API : sortie 2 dans Protect
+DOOR2_SENSOR_ID=…               # le capteur de cette porte
+# DOOR2_INTERIOR_CAMERA_ID=…    # facultatif : l'image sur l'écran de cette porte
+# DOOR2_DRIVEWAY_CAMERA_ID=…    # facultatif : la caméra qui voit l'allée`}</code></pre>
+    <p>
+      Avec deux sorties de garage et deux capteurs, le bridge ne les apparie pas tout seul : deviner quel
+      capteur surveille quelle porte, c’est le meilleur moyen d’ouvrir la mauvaise. Il affiche au démarrage
+      un appariement suggéré, par nom, et attend que vous l’écriviez comme ci-dessus. Les identifiants
+      viennent du même appel <code>/v1/discovery</code>. <code>DOOR_NAME</code> et <code>DOOR2_NAME</code>
+      sont les noms que l’app, les notifications et le journal d’activité donnent à chaque porte.
+    </p>
+    <ul>
+      <li>
+        <strong>Fichier compose.</strong> Le compose de référence ne transmet que les variables qu’il liste :
+        utilisez celui publié avec la version 0.6 ou ultérieure, ou ajoutez les lignes <code>DOOR2_*</code>
+        à votre copie.
+      </li>
+      <li>
+        <strong>Alarm Manager.</strong> Le second capteur a besoin de ses propres
+        <a href="#webhooks">règles d’ouverture et de fermeture</a>, qui publient vers la même adresse. Le
+        bridge distingue les portes d’après le capteur qui a émis l’événement.
+      </li>
+      <li>
+        <strong>Caméras.</strong> Deux portes peuvent désigner la même caméra.
+        <code>DOOR_INTERIOR_CAMERA_ID</code> et <code>DOOR2_INTERIOR_CAMERA_ID</code> choisissent l’image
+        affichée sur l’écran de chaque porte dans l’app.
+      </li>
+      <li>
+        <strong>Téléphones.</strong> Personne n’a besoin de s’appairer à nouveau. Chacun choisit sa porte par
+        défaut dans l’app (version 1.1 ou ultérieure) ; une app plus ancienne continue de piloter la première
+        porte, exactement comme avant.
+      </li>
+    </ul>
+    <div class="note">
+      <p>
+        Nous n’avons nous-mêmes qu’une seule porte : la seconde n’est testée que sur le simulateur. Une
+        seconde sortie de relais réelle et les événements Alarm Manager d’un second capteur restent non
+        vérifiés tant qu’une personne équipée de deux portes ne nous a pas fait de retour. Si c’est vous,
+        <a href={`mailto:${SUPPORT_EMAIL}`}>dites-nous comment cela s’est passé</a>.
+      </p>
+    </div>
 
     <h3>À propos des jetons</h3>
     <p>
@@ -346,7 +397,7 @@ docker exec -it garage-ntfy ntfy token add garage                # affiche tk_�
     <pre><code>{`docker compose pull && docker compose up -d
 curl -s localhost:8787/healthz   # vérifiez la version récupérée`}</code></pre>
     <p>
-      Épinglez plutôt une version exacte, <code>GARAGE_BRIDGE_TAG=0.5.1</code>, si vous voulez que les mises à
+      Épinglez plutôt une version exacte, <code>GARAGE_BRIDGE_TAG=0.6.0</code>, si vous voulez que les mises à
       jour soient une décision et non un effet de bord d’un <em>pull</em>, ou si vous utilisez un outil de
       mise à jour automatique comme Watchtower. Avec <code>latest</code> et une mise à jour automatique
       combinés, une version exigeant un changement de configuration redémarrerait votre bridge sur un refus
@@ -380,7 +431,7 @@ curl -s localhost:8787/healthz   # vérifiez la version récupérée`}</code></p
 
     <h2 id="scope">Hors périmètre</h2>
     <p>
-      Une porte par bridge. UniFi Protect uniquement, sans autres relais ni autres hubs. Aucune
+      Plus de deux portes par bridge. La vidéo en direct ; l’app affiche à la place des images fixes de la caméra. UniFi Protect uniquement, sans autres relais ni autres hubs. Aucune
       intégration Home Assistant. Pas d’Android. Une installation sans Docker (Node 22 directement)
       fonctionnera mais n’est pas prise en charge : Docker est le chemin testé, et le seul que couvrent ces
       instructions.

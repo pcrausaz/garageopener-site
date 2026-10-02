@@ -37,6 +37,7 @@ const raw = SELFHOST_RAW_URL;
     { id: "before", label: "Before you start" },
     { id: "network", label: "What has to reach what" },
     { id: "run", label: "Run it" },
+    { id: "two-doors", label: "Two doors" },
     { id: "pair", label: "Pair your phone" },
     { id: "webhooks", label: "Console webhooks" },
     { id: "alerts", label: "Alerts on a sleeping phone" },
@@ -51,15 +52,16 @@ const raw = SELFHOST_RAW_URL;
     <h1>Self-hosting the bridge</h1>
     <p class="lede">
       The bridge is one small service in a container. It talks to your Protect console, keeps the door state
-      machine, serves the app and runs the alert rules. It runs on a NAS, a Raspberry Pi or any box with
-      Docker, on amd64 and arm64.
+      machine, serves the app and runs the alert rules. It runs on any always-on machine with Docker that can
+      reach your console, a NAS, a Raspberry Pi or a VPS, on amd64 and arm64.
     </p>
 
     <div class="note">
       <p>
         <strong>You don't have to run it.</strong> The app connects straight to your Protect console and works
-        on your home network with nothing else installed. Run the bridge if you want always-on alert rules, an
-        exportable activity log, family invites, or background-reliable Shortcuts.
+        on your home network with nothing else installed. Run the bridge if you want family invites that never
+        hand out your Protect key, an activity log by name, alert rules that run on your own hardware, or
+        background-reliable Shortcuts. <a href={`${path("en", "home")}#connect`}>The two ways to connect, compared</a>.
       </p>
     </div>
 
@@ -106,8 +108,9 @@ const raw = SELFHOST_RAW_URL;
       <strong>How the bridge finds your door.</strong> With exactly one relay output of type garage door and
       one sensor mounted as Garage, the bridge finds both on its own and you configure nothing. With more than
       one candidate it cannot guess, so pin them: <code>DOOR_RELAY_ID</code>, <code>DOOR_OUTPUT_ID</code> (the
-      API id, so output 1 in the app is <code>0</code>) and <code>DOOR_SENSOR_ID</code>. Once the bridge is
-      running, it lists every relay and sensor with its id:
+      API id, so output 1 in the app is <code>0</code>) and <code>DOOR_SENSOR_ID</code>. A second door is
+      always written down, never guessed; see <a href="#two-doors">two doors</a>. Once the bridge is running,
+      it lists every relay and sensor with its id:
     </p>
     <pre><code>{`curl -s -H "Authorization: Bearer <BRIDGE_TOKENS>" http://<bridge-host>:8787/v1/discovery`}</code></pre>
     <p>
@@ -182,15 +185,57 @@ curl -s localhost:8787/healthz`}</code></pre>
       nothing else is needed. A variable that is not in the file never reaches the bridge.
     </p>
 
-    <h3>Running a second bridge on the same host</h3>
+    <h3 id="two-doors">Two doors on one bridge</h3>
     <p>
-      One bridge drives one door, so a second door needs a second bridge. The reference compose uses fixed
-      names, so on a host that already runs one, put the second in its own directory and, in that copy,
-      change <code>container_name</code> and the <code>garage-bridge-data</code> volume name (both places it
-      appears). With host networking, also give it its own port, for example <code>PORT=8789</code>, and set
-      <code>PUBLIC_URL</code> to match. Give each bridge its own pair of Alarm Manager rules pointing at its own
-      address and secret.
+      From bridge 0.6, one bridge drives two doors, and no second bridge is needed. Each door needs its own
+      relay output, on the same relay or on another one, and its own sensor mounted as Garage. The first door
+      keeps its <code>DOOR_*</code> settings; the second is described by <code>DOOR2_*</code>:
     </p>
+    <pre><code>{`# .env: two doors (bridge 0.6 or later)
+DOOR_NAME=Left door
+DOOR_RELAY_ID=…
+DOOR_OUTPUT_ID=0                # API id: output 1 in Protect
+DOOR_SENSOR_ID=…
+
+DOOR2_NAME=Right door
+DOOR2_RELAY_ID=…                # the same relay, or a second one
+DOOR2_OUTPUT_ID=1               # API id: output 2 in Protect
+DOOR2_SENSOR_ID=…               # this door's own sensor
+# DOOR2_INTERIOR_CAMERA_ID=…    # optional: the picture on this door's screen
+# DOOR2_DRIVEWAY_CAMERA_ID=…    # optional: the camera that sees the driveway`}</code></pre>
+    <p>
+      With two garage outputs and two sensors the bridge does not pair them on its own, because guessing which
+      sensor watches which door is how the wrong door ends up opening. It logs a suggested pairing, by name,
+      at startup, and waits for you to write it down as above. The ids come from the same
+      <code>/v1/discovery</code> call. <code>DOOR_NAME</code> and <code>DOOR2_NAME</code> are what the app,
+      the notifications and the activity log call each door.
+    </p>
+    <ul>
+      <li>
+        <strong>Compose file.</strong> The reference compose passes only the variables it lists, so use the
+        one published with 0.6 or later, or add the <code>DOOR2_*</code> lines to your own copy.
+      </li>
+      <li>
+        <strong>Alarm Manager.</strong> The second sensor needs its own <a href="#webhooks">opened and closed
+        rules</a>, posting to the same address. The bridge tells the doors apart by the sensor that sent the
+        event.
+      </li>
+      <li>
+        <strong>Cameras.</strong> Two doors may name the same camera. <code>DOOR_INTERIOR_CAMERA_ID</code>
+        and <code>DOOR2_INTERIOR_CAMERA_ID</code> choose the picture shown on each door's screen in the app.
+      </li>
+      <li>
+        <strong>Phones.</strong> Nobody has to pair again. Each person picks their default door in the app
+        (version 1.1 or later); an older app keeps driving the first door, exactly as before.
+      </li>
+    </ul>
+    <div class="note">
+      <p>
+        We have one door ourselves, so a second door is tested against the simulator only. A real second
+        relay output and a second sensor's Alarm Manager events are unverified until someone with two doors
+        reports back. If that is you, <a href={`mailto:${SUPPORT_EMAIL}`}>tell us how it went</a>.
+      </p>
+    </div>
 
     <h3>A note on tokens</h3>
     <p>
@@ -331,7 +376,7 @@ docker exec -it garage-ntfy ntfy token add garage                # prints tk_…
     <pre><code>{`docker compose pull && docker compose up -d
 curl -s localhost:8787/healthz   # check the version that came down`}</code></pre>
     <p>
-      Pin an exact version instead, <code>GARAGE_BRIDGE_TAG=0.5.1</code>, if you want upgrades to be a
+      Pin an exact version instead, <code>GARAGE_BRIDGE_TAG=0.6.0</code>, if you want upgrades to be a
       decision rather than a side effect of pulling, or if you run something that pulls automatically such as
       Watchtower. With <code>latest</code> and an automatic updater together, a release that needs a
       configuration change would restart your bridge into a refusal to start while you are not looking.
@@ -361,7 +406,7 @@ curl -s localhost:8787/healthz   # check the version that came down`}</code></pr
 
     <h2 id="scope">Out of scope</h2>
     <p>
-      One door per bridge. UniFi Protect only, with no other relays and no other hubs. No Home Assistant integration.
+      More than two doors per bridge. Live video; the app shows camera snapshots instead. UniFi Protect only, with no other relays and no other hubs. No Home Assistant integration.
       No Android. A non-Docker install (Node 22 directly) will run but is not supported: Docker is the tested
       path and the only one the instructions cover.
     </p>

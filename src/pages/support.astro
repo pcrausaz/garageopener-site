@@ -47,7 +47,7 @@ const description =
     <ol>
       <li><strong>What the bridge says about itself.</strong> The output of <code>curl -s http://&lt;bridge-host&gt;:8787/healthz</code>. If you don't run a bridge, say so.</li>
       <li><strong>Your Protect version.</strong> Console → Settings → System, or the <code>applicationVersion</code> in the healthz output above.</li>
-      <li><strong>The app version.</strong> In Settings, at the bottom.</li>
+      <li><strong>The app version.</strong> In Settings, at the bottom. For anything about the purchase, say also whether Settings shows Garage Opener Unlimited as unlocked.</li>
       <li><strong>Your relay and sensor model</strong>, and how the relay output is configured (Pulse or not, and its pulse duration).</li>
       <li><strong>What you expected and what happened</strong>, with rough times, so it can be lined up against the activity log.</li>
     </ol>
@@ -60,7 +60,8 @@ const description =
 
     <h2>Known limitations</h2>
     <ul>
-      <li><strong>One door per bridge.</strong> Multiple doors are not supported.</li>
+      <li><strong>Two doors at most.</strong> Each needs its own relay output and its own sensor, and with a bridge it takes bridge 0.6 or later. The second door has only been tested against the simulator, not against a second real door.</li>
+      <li><strong>Camera pictures, not video.</strong> The door screen shows snapshots refreshed every few seconds. There is no live stream.</li>
       <li><strong>UniFi Protect only.</strong> Other relays, other hubs and Home Assistant are out of scope.</li>
       <li><strong>iOS and watchOS only.</strong> There is no Android app today; see the <a href={path("en", "faq")}>FAQ</a>.</li>
       <li><strong>A stopped door reads as open.</strong> A tilt sensor reports the same contact for a door stopped part-way as for one standing fully open, so the app remembers the direction rather than pretending to measure it.</li>
