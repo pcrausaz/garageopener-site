@@ -4,14 +4,14 @@ import { CLOUD_HOST, SUPPORT_EMAIL, UPDATED } from "../config";
 import { path } from "../i18n/ui";
 
 const description =
-  "Terms of use for Garage Opener: the app controls a physical door, the self-hosted bridge is yours to run, and the shared cloud-alerts service is best effort.";
+  "Terms of use for Garage Opener: the app controls a physical door, the one-time unlock is bought through Apple, the self-hosted bridge is yours to run, and the shared cloud-alerts service is best effort.";
 ---
 
 <Base locale="en" route="terms" title="Terms" description={description} updated={UPDATED}>
   <div class="prose">
     <h1>Terms</h1>
     <p class="lede">
-      Short, because there isn't much to say. You bought an app that talks to hardware you own. Here is what
+      Short, because there isn't much to say. You use an app that talks to hardware you own. Here is what
       that does and does not promise.
     </p>
 
@@ -27,6 +27,22 @@ const description =
       The app is provided as is, without warranty of any kind. To the fullest extent the law allows, we are
       not liable for damage, injury or loss arising from the door operating, failing to operate, or reporting
       a state that turns out to be wrong.
+    </p>
+
+    <h2>The free opens and the one-time purchase</h2>
+    <p>
+      The app is free to download and includes 20 opens. <strong>Garage Opener Unlimited</strong> is a single
+      in-app purchase that removes that limit for good. It is not a subscription and it never renews. Closing
+      and stopping the door, alerts and Demo mode are not limited, before or after the purchase.
+    </p>
+    <p>
+      The purchase is made through Apple's App Store, under Apple's terms. Payment, receipts, Family Sharing,
+      restoring the purchase on another device and refunds are all handled by Apple; we never see your payment
+      details. If you bought the app before it became free, you are unlocked without buying anything.
+    </p>
+    <p>
+      The purchase unlocks the app. It does not change anything else on this page: the cloud-alerts service
+      stays free and best effort, and the same goes for support.
     </p>
 
     <h2>Your hardware and your network are yours</h2>

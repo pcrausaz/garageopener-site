@@ -19,6 +19,7 @@ const description =
     { id: "cloud", label: "Cloud alerts in detail" },
     { id: "never", label: "What we never receive" },
     { id: "push", label: "Notifications" },
+    { id: "purchase", label: "The in-app purchase" },
     { id: "erase", label: "Erasing everything" },
     { id: "contact", label: "Contact" },
   ]}
@@ -52,6 +53,12 @@ const description =
       The bridge's activity log, which records who opened the door and when, is a file on <em>your</em> machine. We never
       see it. You can export it or delete it.
     </p>
+    <p>
+      The camera picture on the door screen travels between your phone and your bridge, or between your phone
+      and your console, and nowhere else. A bridge holds only the most recent picture, briefly, so that
+      several phones share one request to the console. It is never sent to us, and the cloud-alerts service
+      never receives it.
+    </p>
 
     <h2 id="cloud">Cloud alerts, in detail</h2>
     <p>
@@ -75,11 +82,12 @@ const description =
 
     <h2 id="never">What we never receive</h2>
     <ul>
-      <li><strong>Images or video.</strong> If your console attaches a thumbnail, it is discarded before the body is even parsed. It is never written anywhere.</li>
+      <li><strong>Images or video.</strong> If your console attaches a thumbnail, it is discarded before the body is even parsed. It is never written anywhere. The camera picture in the app does not come this way at all.</li>
       <li><strong>Your Protect API key.</strong> The service has no way to reach your console and never asks for a credential to it.</li>
       <li><strong>Your console's address</strong>, your bridge's address, or camera names.</li>
       <li><strong>Your location.</strong> The arriving-home reminder is a geofence evaluated by iOS on your phone; the region never leaves it.</li>
       <li><strong>Your Apple ID, name or email.</strong> There is no account to have one.</li>
+      <li><strong>Payment details.</strong> The in-app purchase is handled entirely by Apple.</li>
       <li><strong>Analytics of any kind.</strong> No SDK, no crash reporter, no advertising identifier.</li>
     </ul>
     <p>
@@ -92,6 +100,17 @@ const description =
       Push notifications are delivered by Apple's Push Notification service. Apple therefore handles the
       delivery of the message to your device, as it does for every iOS app. The push contains the alert text
       and your install id, never images and never your console details.
+    </p>
+
+    <h2 id="purchase">The in-app purchase</h2>
+    <p>
+      Garage Opener Unlimited is bought through Apple's App Store. Apple takes the payment and tells the app,
+      on your device, whether the purchase exists. We receive no name, no card and no Apple ID; what Apple
+      gives us is sales totals, not who bought.
+    </p>
+    <p>
+      The count of free opens is kept on your device and is never sent to us. Our service does not know
+      whether you have paid, or how many of the free opens you have used.
     </p>
 
     <h2 id="erase">Erasing everything</h2>

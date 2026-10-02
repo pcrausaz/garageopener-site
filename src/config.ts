@@ -26,4 +26,4 @@ export const SOURCE_REPO_URL: string | null = "https://github.com/pcrausaz/garag
 /** Public uptime page for the shared services: the cloud-alerts Worker, this site, and the demo bridge. */
 export const STATUS_PAGE_URL = "https://monitor.liqpil.com/status/garageopener";
 
-export const UPDATED = "2026-09-22";
+export const UPDATED = "2026-10-02";

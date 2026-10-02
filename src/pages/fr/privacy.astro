@@ -19,6 +19,7 @@ const description =
     { id: "cloud", label: "Les alertes cloud en détail" },
     { id: "never", label: "Ce que nous ne recevons jamais" },
     { id: "push", label: "Notifications" },
+    { id: "purchase", label: "L’achat intégré" },
     { id: "erase", label: "Tout effacer" },
     { id: "contact", label: "Contact" },
   ]}
@@ -55,6 +56,12 @@ const description =
       Le journal d’activité du bridge, qui enregistre qui a ouvert la porte et quand, est un fichier sur <em>votre</em>
       machine. Nous ne le voyons jamais. Vous pouvez l’exporter ou le supprimer.
     </p>
+    <p>
+      L’image de la caméra affichée sur l’écran de la porte circule entre votre téléphone et votre bridge, ou
+      entre votre téléphone et votre console, et nulle part ailleurs. Un bridge ne garde que l’image la plus
+      récente, brièvement, pour que plusieurs téléphones partagent une seule requête vers la console. Elle
+      ne nous est jamais envoyée, et le service d’alertes cloud ne la reçoit jamais.
+    </p>
 
     <h2 id="cloud">Les alertes cloud en détail</h2>
     <p>
@@ -79,11 +86,12 @@ const description =
 
     <h2 id="never">Ce que nous ne recevons jamais</h2>
     <ul>
-      <li><strong>Ni images ni vidéo.</strong> Si votre console joint une vignette, elle est écartée avant même que le corps de la requête ne soit analysé. Elle n’est écrite nulle part.</li>
+      <li><strong>Ni images ni vidéo.</strong> Si votre console joint une vignette, elle est écartée avant même que le corps de la requête ne soit analysé. Elle n’est écrite nulle part. L’image de la caméra dans l’app ne passe pas du tout par là.</li>
       <li><strong>Votre clé d’API Protect.</strong> Le service n’a aucun moyen d’atteindre votre console et ne demande jamais d’identifiant vers elle.</li>
       <li><strong>L’adresse de votre console</strong>, celle de votre bridge, ni les noms de vos caméras.</li>
       <li><strong>Votre position.</strong> Le rappel d’arrivée à la maison est une zone géographique évaluée par iOS sur votre téléphone ; elle ne le quitte jamais.</li>
       <li><strong>Votre identifiant Apple, votre nom ou votre e-mail.</strong> Il n’y a pas de compte pour les contenir.</li>
+      <li><strong>Vos données de paiement.</strong> L’achat intégré est entièrement géré par Apple.</li>
       <li><strong>Aucune analytique.</strong> Pas de SDK, pas de rapport de plantage, pas d’identifiant publicitaire.</li>
     </ul>
     <p>
@@ -97,6 +105,17 @@ const description =
       Les notifications sont acheminées par le service de notifications push d’Apple. Apple assure donc la
       remise du message à votre appareil, comme pour toute app iOS. La notification contient le texte de
       l’alerte et votre identifiant d’installation, jamais d’images, jamais les détails de votre console.
+    </p>
+
+    <h2 id="purchase">L’achat intégré</h2>
+    <p>
+      Garage Opener Unlimited s’achète via l’App Store d’Apple. Apple encaisse le paiement et indique à l’app,
+      sur votre appareil, si l’achat existe. Nous ne recevons ni nom, ni carte, ni identifiant Apple ; ce
+      qu’Apple nous communique, ce sont des totaux de ventes, pas l’identité des acheteurs.
+    </p>
+    <p>
+      Le décompte des ouvertures gratuites est conservé sur votre appareil et ne nous est jamais transmis.
+      Notre service ne sait ni si vous avez payé, ni combien d’ouvertures gratuites vous avez utilisées.
     </p>
 
     <h2 id="erase">Tout effacer</h2>
