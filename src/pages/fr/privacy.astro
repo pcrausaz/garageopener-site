@@ -76,7 +76,7 @@ const description =
       <tbody>
         <tr><td>Identifiant d’installation, empreinte du secret, jeton de routage</td><td>Router les webhooks de votre console et reconnaître votre app</td><td>Jusqu’à effacement</td></tr>
         <tr><td><em>Votre adresse de webhook personnelle</em> contient ce jeton : elle apparaît donc dans les journaux des serveurs web traversés</td><td>Inévitable : l’Alarm Manager d’UniFi Protect n’accepte qu’une URL, le jeton ne peut pas voyager dans un en-tête masqué</td><td>Traitez l’adresse comme un mot de passe ; désactiver puis réactiver les alertes cloud en émet une nouvelle</td></tr>
-        <tr><td>Jetons de notification des appareils enregistrés, et leur environnement</td><td>Envoyer la notification</td><td>Jusqu’à effacement, ou jusqu’à ce qu’Apple signale le jeton invalide</td></tr>
+        <tr><td>Jetons de notification des appareils enregistrés (un jeton push Apple pour un iPhone ou une Apple Watch, un jeton Firebase Cloud Messaging pour un téléphone Android), et la plateforme de chacun</td><td>Envoyer la notification</td><td>Jusqu’à effacement, ou jusqu’à ce qu’Apple ou Google signale le jeton invalide</td></tr>
         <tr><td>Vos réglages d’alerte : seuils, heure du contrôle nocturne, fuseau, langue</td><td>Décider quand prévenir, et dans quelle langue</td><td>Jusqu’à effacement</td></tr>
         <tr><td><strong>Événements : type, identifiant d’appareil et horodatage uniquement</strong></td><td>Savoir si la porte est ouverte et depuis combien de temps</td><td><strong>7 jours</strong>, puis suppression automatique</td></tr>
         <tr><td>L’indicateur de maintien ouvert et son échéance</td><td>Rester silencieux quand vous l’avez demandé</td><td>Jusqu’à expiration</td></tr>
@@ -90,8 +90,8 @@ const description =
       <li><strong>Votre clé d’API Protect.</strong> Le service n’a aucun moyen d’atteindre votre console et ne demande jamais d’identifiant vers elle.</li>
       <li><strong>L’adresse de votre console</strong>, celle de votre bridge, ni les noms de vos caméras.</li>
       <li><strong>Votre position.</strong> Le rappel d’arrivée à la maison est une zone géographique évaluée par iOS sur votre téléphone ; elle ne le quitte jamais.</li>
-      <li><strong>Votre identifiant Apple, votre nom ou votre e-mail.</strong> Il n’y a pas de compte pour les contenir.</li>
-      <li><strong>Vos données de paiement.</strong> L’achat intégré est entièrement géré par Apple.</li>
+      <li><strong>Votre identifiant Apple ou votre compte Google, votre nom ou votre e-mail.</strong> Il n’y a pas de compte pour les contenir.</li>
+      <li><strong>Vos données de paiement.</strong> L’achat intégré est entièrement géré par Apple ou par Google.</li>
       <li><strong>Aucune analytique.</strong> Pas de SDK, pas de rapport de plantage, pas d’identifiant publicitaire.</li>
     </ul>
     <p>
@@ -102,9 +102,12 @@ const description =
 
     <h2 id="push">Notifications</h2>
     <p>
-      Les notifications sont acheminées par le service de notifications push d’Apple. Apple assure donc la
-      remise du message à votre appareil, comme pour toute app iOS. La notification contient le texte de
-      l’alerte et votre identifiant d’installation, jamais d’images, jamais les détails de votre console.
+      Les notifications sont acheminées par le service propre à chaque plateforme : le service de
+      notifications push d’Apple pour un iPhone ou une Apple Watch, Firebase Cloud Messaging de Google pour
+      un téléphone Android. Apple ou Google assure donc la remise du message à votre appareil, comme pour
+      toute app de cette plateforme. La notification contient le texte de l’alerte et votre identifiant
+      d’installation, jamais d’images, jamais les détails de votre console. Sur Android, Firebase ne sert
+      qu’à la remise des messages : l’app n’intègre ni Google Analytics ni rapport de plantage.
     </p>
 
     <h2 id="purchase">L’achat intégré</h2>

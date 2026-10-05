@@ -72,7 +72,7 @@ const description =
       <tbody>
         <tr><td>Install id, a hash of the install secret, the routing token</td><td>To route your console's webhooks and to recognise your app</td><td>Until you erase</td></tr>
         <tr><td><em>Your personal webhook address</em> contains that routing token, so it appears in ordinary web server logs in transit</td><td>Unavoidable: UniFi Protect's Alarm Manager accepts only a URL, so the token cannot travel in a hidden header</td><td>Treat the address as a password; turning cloud alerts off and on issues a new one</td></tr>
-        <tr><td>Push tokens for the devices you register, and whether they are sandbox or production</td><td>To send the notification</td><td>Until you erase, or until Apple reports the token invalid</td></tr>
+        <tr><td>Push tokens for the devices you register (an Apple push token for an iPhone or Apple Watch, a Firebase Cloud Messaging token for an Android phone), and which platform each one is</td><td>To send the notification</td><td>Until you erase, or until Apple or Google reports the token invalid</td></tr>
         <tr><td>Your alert settings: thresholds, nightly time, timezone, language</td><td>To decide when to notify, and in which language</td><td>Until you erase</td></tr>
         <tr><td><strong>Events: type, device id and timestamp only</strong></td><td>To know whether the door is open and for how long</td><td><strong>7 days</strong>, then deleted automatically</td></tr>
         <tr><td>A hold-open flag and its expiry</td><td>To stay quiet when you've said so</td><td>Until it expires</td></tr>
@@ -86,8 +86,8 @@ const description =
       <li><strong>Your Protect API key.</strong> The service has no way to reach your console and never asks for a credential to it.</li>
       <li><strong>Your console's address</strong>, your bridge's address, or camera names.</li>
       <li><strong>Your location.</strong> The arriving-home reminder is a geofence evaluated by iOS on your phone; the region never leaves it.</li>
-      <li><strong>Your Apple ID, name or email.</strong> There is no account to have one.</li>
-      <li><strong>Payment details.</strong> The in-app purchase is handled entirely by Apple.</li>
+      <li><strong>Your Apple ID or Google account, name or email.</strong> There is no account to have one.</li>
+      <li><strong>Payment details.</strong> The in-app purchase is handled entirely by Apple or Google.</li>
       <li><strong>Analytics of any kind.</strong> No SDK, no crash reporter, no advertising identifier.</li>
     </ul>
     <p>
@@ -97,9 +97,12 @@ const description =
 
     <h2 id="push">Notifications</h2>
     <p>
-      Push notifications are delivered by Apple's Push Notification service. Apple therefore handles the
-      delivery of the message to your device, as it does for every iOS app. The push contains the alert text
-      and your install id, never images and never your console details.
+      Push notifications are delivered by the platform's own service: Apple's Push Notification service for
+      an iPhone or Apple Watch, Google's Firebase Cloud Messaging for an Android phone. Apple or Google
+      therefore handles the delivery of the message to your device, as it does for every app on that
+      platform. The push contains the alert text and your install id, never images and never your console
+      details. On Android, Firebase is used for message delivery only: the app includes no Google Analytics
+      and no crash reporting.
     </p>
 
     <h2 id="purchase">The in-app purchase</h2>
