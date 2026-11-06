@@ -16,6 +16,7 @@ const description =
   toc={[
     { id: "short", label: "The short version" },
     { id: "local", label: "What stays on your device" },
+    { id: "location", label: "Location" },
     { id: "cloud", label: "Cloud alerts in detail" },
     { id: "never", label: "What we never receive" },
     { id: "push", label: "Notifications" },
@@ -40,12 +41,17 @@ const description =
         you register and your alert settings. We never receive images, your Protect API key, your console
         address or your location. There is no account. You can erase everything from the app at any time.
       </p>
+      <p>
+        <strong>Location</strong> is used only if you turn on the optional arriving-home reminder, to notice when
+        you get home, even when the app is closed. It is used on your phone and never sent to us. See
+        <a href="#location">Location</a>.
+      </p>
     </div>
 
     <h2 id="local">What stays on your device and your network</h2>
     <p>
-      Your Protect API key, your console address and your bridge token live in your iPhone's Keychain, or in
-      your own bridge's configuration. They are never sent to us and we have no way to read them. When the app
+      Your Protect API key, your console address and your bridge token live in your phone's secure storage (the Keychain on
+      iPhone, encrypted app storage on Android), or in your own bridge's configuration. They are never sent to us and we have no way to read them. When the app
       talks to your console or your bridge, that traffic goes directly between them on your network. It does
       not pass through us.
     </p>
@@ -59,6 +65,35 @@ const description =
       several phones share one request to the console. It is never sent to us, and the cloud-alerts service
       never receives it.
     </p>
+
+    <h2 id="location">Location</h2>
+    <p>
+      Garage Opener can ask whether to open the garage when you get home. This <strong>arriving-home
+      reminder</strong> (Settings → Arriving home) is off by default. Only if you turn it on, the app asks for
+      access to your precise location, <strong>including in the background</strong> ("Allow all the time" on
+      Android, "Always" on iPhone), because you arrive while the app is closed or not in use. Before Android
+      asks, the app explains this on its own screen, and you can say "Not now".
+    </p>
+    <ul>
+      <li><strong>What is accessed:</strong> your phone's precise location: once when you set your home
+        ("Use my current location as home"), and afterwards by the phone's own geofencing, which notices when
+        you enter the circle around that home.</li>
+      <li><strong>What it is used for:</strong> only to show you a notification asking whether to open the
+        garage. The door never opens by itself. Location is used for nothing else: no tracking, no movement
+        history, no advertising.</li>
+      <li><strong>What is stored, and where:</strong> the home position and the radius you chose, in the app's
+        settings on your phone. No record of where you go is kept. On Android this setting is excluded from
+        backups.</li>
+      <li><strong>Who receives it:</strong> not us, not your bridge and not the cloud-alerts service; the app
+        never sends your location to any of them. The arrival is detected by your phone's operating system:
+        Google Play services' geofencing on Android, iOS region monitoring on iPhone. The map of your home
+        area in Settings is drawn by Google Maps on Android and by Apple Maps on iPhone, which load the map of
+        that area from Google or Apple; on iPhone, Apple's geocoding also turns the home position into a town
+        name for that screen. Google's and Apple's own privacy policies apply to those services.</li>
+      <li><strong>How long, and how to stop:</strong> the home is kept until you set a new one or uninstall
+        the app. Turning the switch off stops the monitoring at once. You can also withdraw the location
+        permission at any time in your phone's settings.</li>
+    </ul>
 
     <h2 id="cloud">Cloud alerts, in detail</h2>
     <p>
@@ -85,7 +120,7 @@ const description =
       <li><strong>Images or video.</strong> If your console attaches a thumbnail, it is discarded before the body is even parsed. It is never written anywhere. The camera picture in the app does not come this way at all.</li>
       <li><strong>Your Protect API key.</strong> The service has no way to reach your console and never asks for a credential to it.</li>
       <li><strong>Your console's address</strong>, your bridge's address, or camera names.</li>
-      <li><strong>Your location.</strong> The arriving-home reminder is a geofence evaluated by iOS on your phone; the region never leaves it.</li>
+      <li><strong>Your location.</strong> The arriving-home reminder runs on your phone; see <a href="#location">Location</a>.</li>
       <li><strong>Your Apple ID or Google account, name or email.</strong> There is no account to have one.</li>
       <li><strong>Payment details.</strong> The in-app purchase is handled entirely by Apple or Google.</li>
       <li><strong>Analytics of any kind.</strong> No SDK, no crash reporter, no advertising identifier.</li>
@@ -107,9 +142,10 @@ const description =
 
     <h2 id="purchase">The in-app purchase</h2>
     <p>
-      Garage Opener Unlimited is bought through Apple's App Store. Apple takes the payment and tells the app,
-      on your device, whether the purchase exists. We receive no name, no card and no Apple ID; what Apple
-      gives us is sales totals, not who bought.
+      Garage Opener Unlimited is bought through Apple's App Store on iPhone, or Google Play on Android. The
+      store takes the payment and tells the app, on your device, whether the purchase exists. We receive no
+      name, no card, no Apple ID and no Google account; what the store gives us is sales totals, not who
+      bought.
     </p>
     <p>
       The count of free opens is kept on your device and is never sent to us. Our service does not know

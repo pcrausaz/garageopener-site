@@ -16,6 +16,7 @@ const description =
   toc={[
     { id: "short", label: "En résumé" },
     { id: "local", label: "Ce qui reste chez vous" },
+    { id: "location", label: "Position" },
     { id: "cloud", label: "Les alertes cloud en détail" },
     { id: "never", label: "Ce que nous ne recevons jamais" },
     { id: "push", label: "Notifications" },
@@ -43,12 +44,18 @@ const description =
         Protect, ni l’adresse de votre console, ni votre position. Il n’y a pas de compte. Vous pouvez tout
         effacer depuis l’app à tout moment.
       </p>
+      <p>
+        La <strong>position</strong> n’est utilisée que si vous activez le rappel facultatif d’arrivée à la
+        maison, pour remarquer votre retour, même lorsque l’app est fermée. Elle est utilisée sur votre
+        téléphone et ne nous est jamais transmise. Voir <a href="#location">Position</a>.
+      </p>
     </div>
 
     <h2 id="local">Ce qui reste sur votre appareil et votre réseau</h2>
     <p>
       Votre clé d’API Protect, l’adresse de votre console et le jeton de votre bridge résident dans le
-      trousseau de votre iPhone, ou dans la configuration de votre propre bridge. Ils ne nous sont jamais
+      stockage sécurisé de votre téléphone (le trousseau sur iPhone, un stockage chiffré de l’app sur
+      Android), ou dans la configuration de votre propre bridge. Ils ne nous sont jamais
       transmis et nous n’avons aucun moyen de les lire. Quand l’app parle à votre console ou à votre bridge,
       ce trafic circule directement entre eux sur votre réseau : il ne passe pas par nous.
     </p>
@@ -62,6 +69,39 @@ const description =
       récente, brièvement, pour que plusieurs téléphones partagent une seule requête vers la console. Elle
       ne nous est jamais envoyée, et le service d’alertes cloud ne la reçoit jamais.
     </p>
+
+    <h2 id="location">Position</h2>
+    <p>
+      Garage Opener peut vous proposer d’ouvrir le garage quand vous rentrez. Ce <strong>rappel d’arrivée à
+      la maison</strong> (Réglages → Arrivée à la maison) est désactivé par défaut. Uniquement si vous
+      l’activez, l’app demande l’accès à votre position précise, <strong>y compris en arrière-plan</strong>
+      (« Toujours autoriser » sur Android, « Toujours » sur iPhone), car vous arrivez pendant que l’app est
+      fermée ou inutilisée. Avant la question d’Android, l’app l’explique sur son propre écran, et vous
+      pouvez répondre « Plus tard ».
+    </p>
+    <ul>
+      <li><strong>Ce qui est consulté :</strong> la position précise de votre téléphone : une fois quand vous
+        choisissez votre domicile (« Utiliser ma position actuelle comme domicile »), puis par le
+        géorepérage du téléphone lui-même, qui remarque quand vous entrez dans le cercle autour de ce
+        domicile.</li>
+      <li><strong>À quoi elle sert :</strong> uniquement à vous montrer une notification demandant s’il faut
+        ouvrir le garage. La porte ne s’ouvre jamais toute seule. La position ne sert à rien d’autre : ni
+        pistage, ni historique de déplacements, ni publicité.</li>
+      <li><strong>Ce qui est conservé, et où :</strong> la position du domicile et le rayon choisi, dans les
+        réglages de l’app sur votre téléphone. Aucune trace de vos déplacements n’est gardée. Sur Android, ce
+        réglage est exclu des sauvegardes.</li>
+      <li><strong>Qui la reçoit :</strong> ni nous, ni votre bridge, ni le service d’alertes cloud ; l’app ne
+        leur envoie jamais votre position. L’arrivée est détectée par le système de votre téléphone : le
+        géorepérage des services Google Play sur Android, la surveillance de zones d’iOS sur iPhone. La carte
+        de votre quartier dans les Réglages est affichée par Google Maps sur Android et par Plans d’Apple sur
+        iPhone, qui chargent la carte de cette zone depuis Google ou Apple ; sur iPhone, le géocodage d’Apple
+        transforme aussi la position du domicile en nom de localité pour cet écran. Les politiques de
+        confidentialité de Google et d’Apple s’appliquent à ces services.</li>
+      <li><strong>Combien de temps, et comment arrêter :</strong> le domicile est conservé jusqu’à ce que
+        vous en choisissiez un autre ou que vous désinstalliez l’app. Désactiver l’interrupteur arrête
+        aussitôt la surveillance. Vous pouvez aussi retirer l’autorisation de localisation à tout moment dans
+        les réglages de votre téléphone.</li>
+    </ul>
 
     <h2 id="cloud">Les alertes cloud en détail</h2>
     <p>
@@ -89,7 +129,7 @@ const description =
       <li><strong>Ni images ni vidéo.</strong> Si votre console joint une vignette, elle est écartée avant même que le corps de la requête ne soit analysé. Elle n’est écrite nulle part. L’image de la caméra dans l’app ne passe pas du tout par là.</li>
       <li><strong>Votre clé d’API Protect.</strong> Le service n’a aucun moyen d’atteindre votre console et ne demande jamais d’identifiant vers elle.</li>
       <li><strong>L’adresse de votre console</strong>, celle de votre bridge, ni les noms de vos caméras.</li>
-      <li><strong>Votre position.</strong> Le rappel d’arrivée à la maison est une zone géographique évaluée par iOS sur votre téléphone ; elle ne le quitte jamais.</li>
+      <li><strong>Votre position.</strong> Le rappel d’arrivée à la maison fonctionne sur votre téléphone ; voir <a href="#location">Position</a>.</li>
       <li><strong>Votre identifiant Apple ou votre compte Google, votre nom ou votre e-mail.</strong> Il n’y a pas de compte pour les contenir.</li>
       <li><strong>Vos données de paiement.</strong> L’achat intégré est entièrement géré par Apple ou par Google.</li>
       <li><strong>Aucune analytique.</strong> Pas de SDK, pas de rapport de plantage, pas d’identifiant publicitaire.</li>
@@ -112,9 +152,10 @@ const description =
 
     <h2 id="purchase">L’achat intégré</h2>
     <p>
-      Garage Opener Unlimited s’achète via l’App Store d’Apple. Apple encaisse le paiement et indique à l’app,
-      sur votre appareil, si l’achat existe. Nous ne recevons ni nom, ni carte, ni identifiant Apple ; ce
-      qu’Apple nous communique, ce sont des totaux de ventes, pas l’identité des acheteurs.
+      Garage Opener Unlimited s’achète via l’App Store d’Apple sur iPhone, ou via Google Play sur Android. Le
+      store encaisse le paiement et indique à l’app, sur votre appareil, si l’achat existe. Nous ne recevons
+      ni nom, ni carte, ni identifiant Apple, ni compte Google ; ce que le store nous communique, ce sont des
+      totaux de ventes, pas l’identité des acheteurs.
     </p>
     <p>
       Le décompte des ouvertures gratuites est conservé sur votre appareil et ne nous est jamais transmis.
