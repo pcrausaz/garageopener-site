@@ -423,7 +423,7 @@ curl -s localhost:8787/healthz   # vérifiez la version récupérée`}</code></p
         : <Fragment>Le bridge est actuellement distribué sous forme d’image de conteneur (<code>{BRIDGE_IMAGE}</code>). Ses sources, avec le contrat OpenAPI, sont en cours de préparation pour une publication sous licence Apache-2.0. Cette page y renverra quand elles seront réellement disponibles, et pas avant.</Fragment>}
     </p>
     <p>
-      L’app iOS n’est pas open source, et le service d’alertes cloud non plus. Ce service est quelque chose
+      Les apps iPhone et Android ne sont pas open source, et le service d’alertes cloud non plus. Ce service est quelque chose
       que nous exploitons, pas que vous faites tourner ; il ne détient aucun identifiant vers votre console et
       ne peut rien ouvrir ni fermer. Ce qu’il conserve est décrit intégralement sur la
       <a href={path("fr", "privacy")}> page de confidentialité</a>.
@@ -432,7 +432,7 @@ curl -s localhost:8787/healthz   # vérifiez la version récupérée`}</code></p
     <h2 id="scope">Hors périmètre</h2>
     <p>
       Plus de deux portes par bridge. La vidéo en direct ; l’app affiche à la place des images fixes de la caméra. UniFi Protect uniquement, sans autres relais ni autres hubs. Aucune
-      intégration Home Assistant. Pas d’Android. Une installation sans Docker (Node 22 directement)
+      intégration Home Assistant. Une installation sans Docker (Node 22 directement)
       fonctionnera mais n’est pas prise en charge : Docker est le chemin testé, et le seul que couvrent ces
       instructions.
     </p>

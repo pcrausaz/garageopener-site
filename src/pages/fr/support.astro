@@ -67,7 +67,7 @@ const description =
       <li><strong>Deux portes au maximum.</strong> Chacune a besoin de sa propre sortie de relais et de son propre capteur, et avec un bridge il faut la version 0.6 ou ultérieure. La seconde porte n’a été testée que sur le simulateur, pas sur une seconde porte réelle.</li>
       <li><strong>Des images de la caméra, pas de vidéo.</strong> L’écran de la porte affiche des images fixes rafraîchies toutes les quelques secondes. Il n’y a pas de flux en direct.</li>
       <li><strong>UniFi Protect uniquement.</strong> Les autres relais, les autres hubs et Home Assistant sont hors périmètre.</li>
-      <li><strong>iOS et watchOS uniquement.</strong> Il n’y a pas d’app Android aujourd’hui ; voir la <a href={path("fr", "faq")}>FAQ</a>.</li>
+      <li><strong>Android diffère par endroits.</strong> Pas de widgets sur l’écran verrouillé, pas de phrases vocales comme avec Siri, et Garage Opener Unlimited ne peut pas être partagé avec la famille sur Google Play ; voir la <a href={path("fr", "faq")}>FAQ</a>.</li>
       <li><strong>Une porte arrêtée est lue comme ouverte.</strong> Un capteur d’inclinaison rapporte le même contact pour une porte arrêtée à mi-course et pour une porte grande ouverte ; l’app mémorise donc le sens plutôt que de prétendre le mesurer.</li>
       <li><strong>Les alertes cloud ne peuvent pas fermer la porte.</strong> Le service ne détient aucun identifiant vers votre console ; « Fermer maintenant » est exécuté par l’app, via votre propre connexion.</li>
       <li><strong>Un webhook perdu ressemble à une porte ouverte.</strong> Si votre console n’envoie jamais l’événement « fermée », les alertes cloud continuent de la croire ouverte, d’où la formulation « a signalé ».</li>

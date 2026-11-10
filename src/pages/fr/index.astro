@@ -3,18 +3,18 @@ import Base from "../../layouts/Base.astro";
 import AppMark from "../../components/AppMark.astro";
 import ConnectDiagram from "../../components/ConnectDiagram.astro";
 import PhoneShot from "../../components/PhoneShot.astro";
-import { APP_STORE_URL, CLOUD_HOST, UPDATED } from "../../config";
+import { APP_STORE_URL, CLOUD_HOST, PLAY_STORE_URL, UPDATED } from "../../config";
 import { path } from "../../i18n/ui";
 
 const description =
-  "Ouvrez et fermez votre porte de garage depuis l’iPhone, l’Apple Watch, les widgets, Siri ou le bouton Action, à partir d’un relais et d’un capteur UniFi Protect. Vérifié par le capteur, sans hub, sans abonnement.";
+  "Ouvrez et fermez votre porte de garage depuis l’iPhone, Android, l’Apple Watch, Wear OS, les widgets ou Siri, à partir d’un relais et d’un capteur UniFi Protect. Vérifié par le capteur, sans hub, sans abonnement.";
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   name: "Garage Opener",
   applicationCategory: "LifestyleApplication",
-  operatingSystem: "iOS, watchOS",
+  operatingSystem: "iOS, watchOS, Android, Wear OS",
   description,
   url: "https://garageopener.app/fr",
   inLanguage: ["fr-FR", "en-US"],
@@ -26,7 +26,7 @@ const jsonLd = {
     description:
       "Téléchargement gratuit, 20 ouvertures de porte incluses. Garage Opener Unlimited, un achat intégré unique, supprime la limite. Sans abonnement.",
   },
-  ...(APP_STORE_URL && { downloadUrl: APP_STORE_URL }),
+  downloadUrl: [APP_STORE_URL, PLAY_STORE_URL].filter(Boolean),
 };
 ---
 
@@ -39,13 +39,14 @@ const jsonLd = {
     <p class="lede">
       Vous avez déjà une console UniFi Protect, un relais câblé sur le moteur et un capteur sur la porte.
       Garage Opener en fait une vraie porte de garage connectée, sur votre iPhone, votre Apple Watch, votre
-      écran verrouillé et dans Siri. Sans hub. Sans abonnement. Sans Home Assistant.
+      écran verrouillé et dans Siri, ou sur votre téléphone Android et votre montre Wear OS. Sans hub. Sans abonnement. Sans Home Assistant.
     </p>
 
     <div class="actions">
       {APP_STORE_URL
         ? <a class="store-badge store-badge--fr" href={APP_STORE_URL} aria-label="Télécharger dans l’App Store"></a>
         : <span class="btn ghost" aria-disabled="true">Bientôt sur l’App Store</span>}
+      <a class="store-badge store-badge--play-fr" href={PLAY_STORE_URL} aria-label="Disponible sur Google Play"></a>
       <a class="btn ghost" href={path("fr", "faq")}>Comment ça marche</a>
     </div>
     <p class="aside">
@@ -249,7 +250,7 @@ const jsonLd = {
   <section class="prose band band-features has-phone phone-left">
     <h2>Ce que vous obtenez vraiment</h2>
     <ul class="two-col">
-      <li><strong>Partout où c’est utile.</strong> iPhone, Apple Watch, widgets, Centre de contrôle, bouton Action, Siri et Raccourcis.</li>
+      <li><strong>Partout où c’est utile.</strong> iPhone, Apple Watch, widgets, Centre de contrôle, bouton Action, Siri et Raccourcis. Sur Android, widgets, boutons Réglages rapides et une app Wear OS.</li>
       <li><strong>Une activité en direct pendant que la porte est ouverte</strong>, avec un bouton Fermer sur l’écran verrouillé.</li>
       <li><strong>À votre arrivée</strong>, une notification avec un bouton Ouvrir. Rien ne s’ouvre jamais tout seul.</li>
       <li><strong>Arrêt à mi-course</strong>, et l’appui suivant va dans le sens que vous attendez.</li>
@@ -298,7 +299,7 @@ const jsonLd = {
         <tr><td>Un relais avec une sortie en <strong>Pulse</strong></td><td>Câblée sur les bornes du bouton-poussoir de votre moteur, exactement comme l’interrupteur mural.</td></tr>
         <tr><td>Un capteur tout-en-un, monté en <strong>Garage</strong></td><td>C’est ce qui rend le système honnête : c’est lui qui dit si la porte est réellement ouverte.</td></tr>
         <tr><td>Pour une seconde porte</td><td>Sa propre sortie de relais, sur le même relais ou sur un autre, et son propre capteur monté en <strong>Garage</strong>.</td></tr>
-        <tr><td>Un iPhone à jour</td><td>Apple Watch facultative.</td></tr>
+        <tr><td>Un iPhone à jour, ou un téléphone sous Android 9 ou ultérieur</td><td>Apple Watch ou montre Wear OS facultative.</td></tr>
       </tbody>
     </table>
     <p>

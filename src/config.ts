@@ -7,6 +7,10 @@ export const APP_STORE_ID = "6813968421";
  */
 export const APP_STORE_URL: string | null = `https://apps.apple.com/app/id${APP_STORE_ID}`;
 
+/** Google Play listing, public since 2026-11-09. No hl= parameter, so Play shows the visitor's own language. */
+export const PLAY_STORE_PACKAGE = "com.askpascal.garageopener";
+export const PLAY_STORE_URL = `https://play.google.com/store/apps/details?id=${PLAY_STORE_PACKAGE}`;
+
 export const SUPPORT_EMAIL = "support@garageopener.app";
 
 /** The shared cloud-alerts service, on the brand domain since ADR-0016's 2026-09-22 amendment. */
@@ -26,4 +30,4 @@ export const SOURCE_REPO_URL: string | null = "https://github.com/pcrausaz/garag
 /** Public uptime page for the shared services: the cloud-alerts Worker, this site, and the demo bridge. */
 export const STATUS_PAGE_URL = "https://monitor.liqpil.com/status/garageopener";
 
-export const UPDATED = "2026-11-06";
+export const UPDATED = "2026-11-09";

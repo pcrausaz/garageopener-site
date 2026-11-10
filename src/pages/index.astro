@@ -3,18 +3,18 @@ import Base from "../layouts/Base.astro";
 import AppMark from "../components/AppMark.astro";
 import ConnectDiagram from "../components/ConnectDiagram.astro";
 import PhoneShot from "../components/PhoneShot.astro";
-import { APP_STORE_URL, CLOUD_HOST, UPDATED } from "../config";
+import { APP_STORE_URL, CLOUD_HOST, PLAY_STORE_URL, UPDATED } from "../config";
 import { path } from "../i18n/ui";
 
 const description =
-  "Open and close your garage door from iPhone, Apple Watch, widgets, Siri or the Action Button, using a UniFi Protect relay and door sensor. Verified by the sensor, no hub, no subscription.";
+  "Open and close your garage door from iPhone, Android, Apple Watch, Wear OS, widgets or Siri, using a UniFi Protect relay and door sensor. Verified by the sensor, no hub, no subscription.";
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   name: "Garage Opener",
   applicationCategory: "LifestyleApplication",
-  operatingSystem: "iOS, watchOS",
+  operatingSystem: "iOS, watchOS, Android, Wear OS",
   description,
   url: "https://garageopener.app",
   inLanguage: ["en-US", "fr-FR"],
@@ -26,7 +26,7 @@ const jsonLd = {
     description:
       "Free download with 20 door opens included. Garage Opener Unlimited, a one-time in-app purchase (US$4.99), removes the limit. No subscription.",
   },
-  ...(APP_STORE_URL && { downloadUrl: APP_STORE_URL }),
+  downloadUrl: [APP_STORE_URL, PLAY_STORE_URL].filter(Boolean),
 };
 ---
 
@@ -39,13 +39,14 @@ const jsonLd = {
     <p class="lede">
       You already have a UniFi Protect console, a relay wired to the opener and a sensor on the door.
       Garage Opener turns those into a proper smart garage door, on your iPhone, your Apple Watch, your Lock
-      Screen and in Siri. No hub. No subscription. No Home Assistant.
+      Screen and in Siri, or on your Android phone and Wear OS watch. No hub. No subscription. No Home Assistant.
     </p>
 
     <div class="actions">
       {APP_STORE_URL
         ? <a class="store-badge store-badge--en" href={APP_STORE_URL} aria-label="Download on the App Store"></a>
         : <span class="btn ghost" aria-disabled="true">Coming to the App Store</span>}
+      <a class="store-badge store-badge--play-en" href={PLAY_STORE_URL} aria-label="Get it on Google Play"></a>
       <a class="btn ghost" href={path("en", "faq")}>How it works</a>
     </div>
     <p class="aside">
@@ -244,7 +245,7 @@ const jsonLd = {
   <section class="prose band band-features has-phone phone-left">
     <h2>What you actually get</h2>
     <ul class="two-col">
-      <li><strong>Everywhere you'd want it.</strong> iPhone, Apple Watch, widgets, Control Center, the Action Button, Siri and Shortcuts.</li>
+      <li><strong>Everywhere you'd want it.</strong> iPhone, Apple Watch, widgets, Control Center, the Action Button, Siri and Shortcuts. On Android, widgets, Quick Settings tiles and a Wear OS app.</li>
       <li><strong>A Live Activity while the door is open</strong>, with a Close button right on the Lock Screen.</li>
       <li><strong>Arriving home</strong> gets you a notification with an Open button. Nothing ever opens by itself.</li>
       <li><strong>Stop part-way</strong>, and the next press goes the way you expect.</li>
@@ -292,7 +293,7 @@ const jsonLd = {
         <tr><td>A relay with an output set to <strong>Pulse</strong></td><td>Wired across your opener's push-button terminals, exactly like the wall button.</td></tr>
         <tr><td>An all-in-one sensor, mounted as <strong>Garage</strong></td><td>This is the part that makes it honest. It's what reports whether the door is really open.</td></tr>
         <tr><td>For a second door</td><td>Its own relay output, on the same relay or another one, and its own sensor mounted as <strong>Garage</strong>.</td></tr>
-        <tr><td>An iPhone on a recent iOS</td><td>Apple Watch optional.</td></tr>
+        <tr><td>An iPhone on a recent iOS, or a phone on Android 9 or later</td><td>Apple Watch or Wear OS watch optional.</td></tr>
       </tbody>
     </table>
     <p>

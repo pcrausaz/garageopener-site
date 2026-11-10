@@ -22,7 +22,7 @@ src/pages/404.astro
 src/layouts/Base.astro         head, SEO, nav, footer
 src/i18n/ui.ts                 routes, locale strings, absolute()
 src/i18n/faq.ts                FAQ content for BOTH locales + the FAQPage JSON-LD
-src/config.ts                  App Store URL, support address, source repo URL
+src/config.ts                  App Store and Google Play URLs, support address, source repo URL
 public/                        CNAME, robots.txt, icons, og.png, _headers, _redirects
 public/shots/                  app screenshots, dark, en + fr; generated, see below
 ```
